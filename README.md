@@ -3,4 +3,6 @@ Códigos da disciplinas de Redes e Sistemas Internet e Projeto de Sistemas Distr
 
 Grupo: 
     Gustavo Magalhães,
-    Vinicius Acioly
+    Vinicius Acioly,
+    Robson Ugo Souza,
+    Blenda Guedes
