@@ -2,7 +2,7 @@ import pcap, dpkt
 
 nPkts=0
 
-for ts, pkt in pcap.pcap("web.pcappng"):
+for ts, pkt in pcap.pcap("web.pcap"):
 	nPkts += 1
 
 	print("Pacote puro #"+str(nPkts))
