@@ -1,4 +1,4 @@
-import pcap, dpkt
+import pcap, dpkt, socket
 
 nPkts=0
 
@@ -8,9 +8,8 @@ for ts, pkt in pcap.pcap("web.pcap"):
 	ip = eth.data
 	tcp = eth.data.data
 	
-	print("IP source e IP Dest")
-	print(repr(eth.src)+" "+repr(eth.dst))
-
+	print("IP src e IP Dst")
+	print(socket.inet_ntoa(ip.src)+" "+socket.inet_ntoa(ip.dst))
 	print("\n")
 
 	print("No., TCP origem, TCP destino , tamanho IP, tamanho TCP")
