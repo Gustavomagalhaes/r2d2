@@ -1,7 +1,7 @@
 import socket
 
 site = "www.ufrpe.br"
-site = "www.google.com.br"
+#site = "www.google.com.br"
 
 mysock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 mysock.connect((site,80))
