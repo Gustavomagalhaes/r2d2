@@ -7,7 +7,7 @@ for ts, pkt in pcap.pcap("web.pcap"):
 	eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
 	
 	print("No., TCP origem, TCP destino , tamanho HTTP")
-	print(str(nPkts)+" "+repr(eth.data.data.sport)+" "+repr(eth.data.data.dport)+" "+repr(eth.data.len)
+	print(str(nPkts)+" "+repr(eth.data.data.sport)+" "+repr(eth.data.data.dport)+" "+repr(eth.data.len))
 
 	#print("Pacote puro #"+str(nPkts))
 	#print(dpkt.hexdump(pkt))
