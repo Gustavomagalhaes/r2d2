@@ -9,6 +9,7 @@ class Client:
         self.__serverPort = serverPort
         self.__listaComandosValidos = {} #preencher previamente
         self.__clientSocket = socket(AF_INET, SOCK_DGRAM)
+	print "Rodando"
 
     def setServerName(self,serverName):
         self__serverName = serverName

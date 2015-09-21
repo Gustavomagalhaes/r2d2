@@ -37,13 +37,13 @@ class Colector:
                 print "Transport Layer = "+name
                 #self.__arq.write(...)
 
-    def abrirArquivoLog(self,instrucao="a"): #se nao houver nenhuma instrucao o default é adicionar
+    def abrirArquivoLog(self,instrucao="a"): #se nao houver nenhuma instrucao o default eh adicionar
         self.__arq = open(self.__arquivoLog,instrucao)
 
-    def fecharArquivoLog(self): #se nao houver nenhuma instrucao o default é adicionar
+    def fecharArquivoLog(self): #se nao houver nenhuma instrucao o default eh adicionar
         self.__arq.close()
 
-    def iniciarColeta(self,arquivo = None,timeMaximo = 45): #Se nao haver nenhum arquivo e nenhum tempo de funcionamento especificado o default é de 60 segundos
+    def iniciarColeta(self,arquivo = None,timeMaximo = 45): #Se nao haver nenhum arquivo e nenhum tempo de funcionamento especificado o default eh de 60 segundos
         try:
             self.abrirArquivoLog()
             ini = time.time()
