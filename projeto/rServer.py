@@ -2,7 +2,7 @@
 import socket, traceback
 
 serverHost = ""
-serverPort = 12000
+serverPort = 188
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -15,11 +15,11 @@ while 1:
         #Aguarda receber dados do socket
         messageClient, clientAddress = serverSocket.recvfrom(1024)
         if messageClient == "stop":
-            print "Client wants me to stop."
+            print "Client solicitou parada."
             break
         else:
-            print "%s from %s" % (messageClient, clientAddress)
-            messageServer = "Welcome %s!" % (clientAddress)
+            print "'%s' recebido de %s pelo server." % (messageClient, str(clientAddress))
+            messageServer = "Welcome"
             serverSocket.sendto(messageServer, clientAddress) 
     except (KeyboardInterrupt, SystemExit):
         raise
