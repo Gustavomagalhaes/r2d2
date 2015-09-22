@@ -1,27 +1,50 @@
 # -*- coding: cp1252 -*-
+# import socket, traceback
+
+# serverHost = ""
+# serverPort = 188
+# serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+# serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+# serverSocket.bind((serverHost, serverPort))
+
+# print "SERVER PRONTO. Ctrl+C para terminar."
+
+# while 1:
+#     try:
+#         #Aguarda receber dados do socket
+#         messageClient, clientAddress = serverSocket.recvfrom(1024)
+#         if messageClient == "stop":
+#             print "Client solicitou parada."
+#             break
+#         else:
+#             print "'%s' recebido de %s pelo server." % (messageClient, str(clientAddress))
+#             messageServer = "Welcome"
+#             serverSocket.sendto(messageServer, clientAddress) 
+#     except (KeyboardInterrupt, SystemExit):
+#         raise
+#     except:
+#         traceback.print_exc()
 import socket, traceback
 
-serverHost = ""
-serverPort = 188
-serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-serverSocket.bind((serverHost, serverPort))
+AMOUNT_BYTES = 1024
 
-print "SERVER PRONTO. Ctrl+C para terminar."
+BROADCAST_PORT_SEND = 9001      # Porta que o cliente estará escutando
+BROADCAST_PORT_RECV = 9000      # Porta que o cliente irá enviar mensagem
+BROADCAST_LISTEN = ''           # Interface que será utilizada, se você pôr 127.255.255.255, ele só responderá a chamadas locais
 
-while 1:
+bsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)   #UDP Protocol
+bsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+bsock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+bsock.bind((BROADCAST_LISTEN, BROADCAST_PORT_RECV))
+
+while True :
     try:
-        #Aguarda receber dados do socket
-        messageClient, clientAddress = serverSocket.recvfrom(1024)
-        if messageClient == "stop":
-            print "Client solicitou parada."
-            break
-        else:
-            print "'%s' recebido de %s pelo server." % (messageClient, str(clientAddress))
-            messageServer = "Welcome"
-            serverSocket.sendto(messageServer, clientAddress) 
+        message , address = bsock.recvfrom(AMOUNT_BYTES)
+        print("message '{0}' from : {1}".format(message, address))
+        if message == b'DISCOVER':
+            bsock.sendto(b"ACK", (address[0] ,BROADCAST_PORT_SEND))
     except (KeyboardInterrupt, SystemExit):
-        raise
+         raise
     except:
         traceback.print_exc()
