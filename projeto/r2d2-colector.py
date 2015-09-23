@@ -2,9 +2,9 @@ import socket, traceback
 
 AMOUNT_BYTES = 1024
 
-BROADCAST_PORT_SEND = 9001      # Porta que o cliente estará escutando
-BROADCAST_PORT_RECV = 9000      # Porta que o cliente irá enviar mensagem
-BROADCAST_LISTEN = ''           # Interface que será utilizada, se você pôr 127.255.255.255, ele só responderá a chamadas locais
+BROADCAST_PORT_SEND = 9001      # Porta que o cliente estara escutando
+BROADCAST_PORT_RECV = 9000      # Porta que o cliente ira enviar mensagem
+BROADCAST_LISTEN = ''           # Interface que será utilizada, se voce por 127.255.255.255, ele so respondera a chamadas locais
 
 bsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)   #UDP Protocol
 bsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
