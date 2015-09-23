@@ -11,7 +11,7 @@ channel.exchange_declare(exchange='topic_logs', type='topic')
 result = channel.queue_declare(exclusive=True)
 queue_name = result.method.queue
 
-binding_keys = ['bittorent', 'ssdp', 'http', 'ssl', 'dhcp', 'ssh', 'unknow', 'all']
+binding_keys = ['bittorent', 'ssdp', 'httpp', 'ssl', 'dhcp', 'ssh', 'unknow', 'all']
 if not binding_keys:
     print >> sys.stderr, "Usage: %s [binding_key]..." % (sys.argv[0],)
     sys.exit(1)
