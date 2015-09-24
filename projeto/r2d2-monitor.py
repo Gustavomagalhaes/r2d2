@@ -1,7 +1,7 @@
 # -*- coding: cp1252 -*-
 import os
 import sys
-from socket import *
+import socket
 
 class Monitor:
     
@@ -11,7 +11,6 @@ class Monitor:
         self.portaRecebeBroadcast = 9001
         self.hostBroadcast = ''
         self.envioBroadcast = '<broadcast>'
-        self.serverSocket = socket(AF_INET, SOCK_DGRAM)
         self.broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.iniciarMonitor()
         
@@ -19,10 +18,10 @@ class Monitor:
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.broadcastSocket.bind((self.hostBroadcast, self.portaRecebeBroadcast))
-    
-        self.broadcastSocket.sendto(b"DISCOVER", (envioBC, portaEnvioBC))
+        self.broadcastSocket.sendto(b"DISCOVER", (self.envioBroadcast, self.portaEnvioBroadcast))
+        
         while True :
-            mensagem , endereco = self.broadcastSocket.recvfrom(tamanhoPacote)
+            mensagem, endereco = self.broadcastSocket.recvfrom(self.tamanhoPacote)
             if messagem == b'ACK':
                 print("IP do coletor é {0}".format(endereco[0]))
     

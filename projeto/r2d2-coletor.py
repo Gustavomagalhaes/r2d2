@@ -11,7 +11,6 @@ class Coletor:
         self.hostBroadcast = ''
         # self.envioBroadcast = '<broadcast>'
         self.broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.abrirConexao()
         
     def abrirConexao(self):
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
