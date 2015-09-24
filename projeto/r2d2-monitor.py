@@ -1,7 +1,12 @@
 # -*- coding: cp1252 -*-
 import os
+import sys
+from socket import *
 
 class Monitor:
+    
+    def __init__(self):
+        self.serverSocket = socket(AF_INET, SOCK_DGRAM)
     
     def listaDeColetores(self):
         print 'R2D2: Listando coletores:'
