@@ -9,7 +9,7 @@ class Coletor:
         self.portaEnvioBroadcast = 9000
         self.portaRecebeBroadcast = 9001
         self.hostBroadcast = ''
-        self.envioBroadcast = '<broadcast>'
+        # self.envioBroadcast = '<broadcast>'
         self.broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.abrirConexao()
         
@@ -17,7 +17,7 @@ class Coletor:
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.broadcastSocket.bind((self.hostBroadcast, self.portaRecebeBroadcast))
-        self.broadcastSocket.sendto(b"DISCOVER", (self.envioBroadcast, self.portaEnvioBroadcast))
+        # self.broadcastSocket.sendto(b"DISCOVER", (self.envioBroadcast, self.portaEnvioBroadcast))
         
     def getBroadcastSocket(self):
         return self.broadcastSocket
@@ -25,23 +25,16 @@ class Coletor:
 if __name__ == '__main__':
     
     c3pO = Coletor()
+    c3pO.abrirConexao()
     broadcastSocket = c3pO.getBroadcastSocket()
     
-    ok, enderecoServidor = broadcastSocket.recvfrom(c3pO.tamanhoPacote)
-    print ok
-    wait, enderecoServidor = broadcastSocket.recvfrom(c3pO.tamanhoPacote)
-    print wait
-    
-    # while True:
-        
-    #     try:
-    #         mensagem, endereco = broadcastSocket.recvfrom(tamanhoPacote)
-    #         print "Recebido: '{0}' do IP: {1}".format(mensagem, endereco) 
-    #         if message == b'ACK':
-    #             print 'IP do server é {0}'.format(endereco[0])
-    #     except (KeyboardInterrupt, SystemExit):
-    #         u.stop()
-    #         os.system('clear')
-    #         break
-    #     except:
-    #         traceback.print_exc()
+    while True :
+        try:
+            messagem , endereco = broadcastSocket.recvfrom(c3pO.tamanhoPacote)
+            print("message '{0}' from : {1}".format(messagem, endereco))
+            if messagem == b'DISCOVER':
+                broadcastSocket.sendto(b"ACK", (endereco[0], c3pO.portaEnvioBroadcast))
+        except (KeyboardInterrupt, SystemExit):
+             raise
+        except:
+            traceback.print_exc()

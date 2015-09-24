@@ -6,7 +6,25 @@ from socket import *
 class Monitor:
     
     def __init__(self):
+        self.tamanhoPacote = 1024
+        self.portaEnvioBroadcast = 9000
+        self.portaRecebeBroadcast = 9001
+        self.hostBroadcast = ''
+        self.envioBroadcast = '<broadcast>'
         self.serverSocket = socket(AF_INET, SOCK_DGRAM)
+        self.broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.iniciarMonitor()
+        
+    def iniciarMonitor(self):
+        self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        self.broadcastSocket.bind((self.hostBroadcast, self.portaRecebeBroadcast))
+    
+        self.broadcastSocket.sendto(b"DISCOVER", (envioBC, portaEnvioBC))
+        while True :
+            mensagem , endereco = self.broadcastSocket.recvfrom(tamanhoPacote)
+            if messagem == b'ACK':
+                print("IP do coletor é {0}".format(endereco[0]))
     
     def listaDeColetores(self):
         print 'R2D2: Listando coletores:'
