@@ -130,4 +130,5 @@ class Monitor:
         
 if __name__ == '__main__':
     r2d2 = Monitor()
+    r2d2.iniciarMonitor()
     r2d2.menu()
