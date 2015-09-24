@@ -25,7 +25,7 @@ class Coletor:
 if __name__ == '__main__':
     
     c3pO = Coletor()
-    broadcastSocket = c3pO.getBroadcastSocket
+    broadcastSocket = c3pO.getBroadcastSocket()
     
     ok, enderecoServidor = broadcastSocket.recvfrom(c3pO.tamanhoPacote)
     print ok
