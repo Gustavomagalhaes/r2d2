@@ -18,6 +18,9 @@ class Coletor:
         
     def getBroadcastSocket(self):
         return self.broadcastSocket
+        
+    def getTamanhoPacote(self):
+        return self.tamanhoPacote
 
 if __name__ == '__main__':
     
@@ -28,7 +31,7 @@ if __name__ == '__main__':
     while True :
         print 'test'
         try:
-            mensagem , endereco = broadcastSocket.recvfrom(self.tamanhoPacote)
+            mensagem , endereco = broadcastSocket.recvfrom(c3pO.getTamanhoPacote())
             print("mensagem '{0}' de : {1}".format(mensagem, endereco))
             if mensagem == b'DISCOVER':
                 broadcastSocket.sendto(b"ACK", (endereco[0], self.portaEnvioBroadcast))
