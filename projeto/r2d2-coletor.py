@@ -24,15 +24,14 @@ if __name__ == '__main__':
     c3pO = Coletor()
     c3pO.abrirConexao()
     broadcastSocket = c3pO.getBroadcastSocket()
-    print broadcastSocket
     
     while True :
         print 'test'
         try:
-            mensagem , endereco = broadcastSocket.recvfrom(c3pO.tamanhoPacote)
-            print("message '{0}' from : {1}".format(mensagem, endereco))
+            mensagem , endereco = broadcastSocket.recvfrom(self.tamanhoPacote)
+            print("mensagem '{0}' de : {1}".format(mensagem, endereco))
             if mensagem == b'DISCOVER':
-                broadcastSocket.sendto(b"ACK", (endereco[0], c3pO.portaEnvioBroadcast))
+                broadcastSocket.sendto(b"ACK", (endereco[0], self.portaEnvioBroadcast))
         except (KeyboardInterrupt, SystemExit):
              raise
         except:
