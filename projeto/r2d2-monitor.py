@@ -12,6 +12,8 @@ class Monitor:
         self.hostBroadcast = ''
         self.envioBroadcast = '<broadcast>'
         self.broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
+    def iniciarMonitor(self):
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.broadcastSocket.bind((self.hostBroadcast, self.portaRecebeBroadcast))
@@ -20,7 +22,7 @@ class Monitor:
         
         while True:
             mensagem, endereco = self.broadcastSocket.recvfrom(self.tamanhoPacote)
-            if messagem == b'ACK':
+            if mensagem == b'ACK':
                 print("IP do coletor é {0}".format(endereco[0]))
                 print 'R2D2: Encontrei coletores na rede'
     
@@ -39,6 +41,7 @@ class Monitor:
             print '[1] LISTAR COLETORES'
             print '[0] SAIR'
             print '\n'
+            self.iniciarMonitor()
             keyboardInput = raw_input('>> ')
             os.system('clear')
             

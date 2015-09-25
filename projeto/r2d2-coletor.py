@@ -29,9 +29,9 @@ if __name__ == '__main__':
     while True :
         print 'test'
         try:
-            messagem , endereco = broadcastSocket.recvfrom(c3pO.tamanhoPacote)
-            print("message '{0}' from : {1}".format(messagem, endereco))
-            if messagem == b'DISCOVER':
+            mensagem , endereco = broadcastSocket.recvfrom(c3pO.tamanhoPacote)
+            print("message '{0}' from : {1}".format(mensagem, endereco))
+            if mensagem == b'DISCOVER':
                 broadcastSocket.sendto(b"ACK", (endereco[0], c3pO.portaEnvioBroadcast))
         except (KeyboardInterrupt, SystemExit):
              raise
