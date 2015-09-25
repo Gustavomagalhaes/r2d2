@@ -9,7 +9,6 @@ class Coletor:
         self.portaEnvioBroadcast = 9000
         self.portaRecebeBroadcast = 9001
         self.hostBroadcast = ''
-        # self.envioBroadcast = '<broadcast>'
         self.broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
     def abrirConexao(self):
@@ -25,8 +24,10 @@ if __name__ == '__main__':
     c3pO = Coletor()
     c3pO.abrirConexao()
     broadcastSocket = c3pO.getBroadcastSocket()
+    print broadcastSocket
     
     while True :
+        print 'test'
         try:
             messagem , endereco = broadcastSocket.recvfrom(c3pO.tamanhoPacote)
             print("message '{0}' from : {1}".format(messagem, endereco))
