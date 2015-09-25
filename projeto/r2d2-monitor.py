@@ -21,6 +21,7 @@ class Monitor:
         print 'R2D2: Monitor ligado!'
         
         while True:
+            print 'procurando coletor'
             mensagem, endereco = self.broadcastSocket.recvfrom(self.tamanhoPacote)
             if mensagem == b'ACK':
                 print("IP do coletor é {0}".format(endereco[0]))

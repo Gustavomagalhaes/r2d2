@@ -21,20 +21,23 @@ class Coletor:
         
     def getTamanhoPacote(self):
         return self.tamanhoPacote
+        
+    def getPortaEnvioBroadcast(self):
+        return self.portaEnvioBroadcast    
 
 if __name__ == '__main__':
     
     c3pO = Coletor()
     c3pO.abrirConexao()
-    broadcastSocket = c3pO.getBroadcastSocket()
     
     while True :
-        print 'test'
         try:
-            mensagem , endereco = broadcastSocket.recvfrom(c3pO.getTamanhoPacote())
+            print 'test 1'
+            mensagem, endereco = c3pO.getBroadcastSocket().recvfrom(c3pO.getTamanhoPacote())
+            print 'test 2'
             print("mensagem '{0}' de : {1}".format(mensagem, endereco))
             if mensagem == b'DISCOVER':
-                broadcastSocket.sendto(b"ACK", (endereco[0], self.portaEnvioBroadcast))
+                c3pO.getBroadcastSocket().sendto(b"ACK", (endereco[0], c3pO.getPortaEnvioBroadcast()))
         except (KeyboardInterrupt, SystemExit):
              raise
         except:
