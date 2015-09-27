@@ -1,5 +1,6 @@
 # -*- coding: cp1252 -*-
-import os, sys, socket, pika
+import os, sys, socket
+#import pika
 
 class Monitor:
     
@@ -22,32 +23,25 @@ class Monitor:
         self.status = "0"
         
     def conexaoRabbit(self):
-        self.credentials = pika.PlainCredentials('darth', 'vader')
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.206.157', 5672, '/', self.credentials))
-        self.channel = self.connection.channel()
+        print ""
+        #self.credentials = pika.PlainCredentials('darth', 'vader')
+        # self.connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.206.157', 5672, '/', self.credentials))
+        # self.channel = self.connection.channel()
         
-        self.result = self.channel.queue_declare(exclusive = True)
-        self.queue_name = self.result.method.queue
+        # self.result = self.channel.queue_declare(exclusive = True)
+        # self.queue_name = self.result.method.queue
         
-        self.binding_keys = ["http", "ssdp", "ssl", "dhcp", "ssh", "unknown", "all"]
+        # self.binding_keys = ["http", "ssdp", "ssl", "dhcp", "ssh", "unknown", "all"]
         
-        for binding_key in self.binding_keys:
-            self.result = self.channel.queue_declare(exclusive = True)
-            self.queue_name = self.result.method.queue
-            self.channel.queue_bind(exchange = "topic_logs", queue = self.queue_name, routing_key = binding_key)
+        # for binding_key in self.binding_keys:
+        #     self.result = self.channel.queue_declare(exclusive = True)
+        #     self.queue_name = self.result.method.queue
+        #     self.channel.queue_bind(exchange = "topic_logs", queue = self.queue_name, routing_key = binding_key)
     
     def iniciarMonitor(self):
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.broadcastSocket.bind((self.hostBroadcast, self.portaRecebeBroadcast))
-        
-        
-        while True:
-            print 'procurando coletor'
-            mensagem, endereco = self.broadcastSocket.recvfrom(self.tamanhoPacote)
-            if mensagem == b'ACK':
-                print("IP do coletor é {0}".format(endereco[0]))
-                print 'R2D2: Encontrei coletores na rede'
     
     def listaDeColetores(self):
         print 'R2D2: Listando coletores:'
@@ -93,14 +87,13 @@ class Monitor:
         return self.broadcastSocket
         
     def abrirConexoes(self):
-        while 1:
+        while True:
             try:
-                mensagemColetor, enderecoColetor = self.broadcastSocket.recvfrom(2048)
+                mensagemColetor, enderecoColetor = self.broadcastSocket.recvfrom(1024)
                 ip, porta = enderecoColetor
                 if not self.coletoresConectados.has_key(ip):
-                        self.coletoresConectados[ip] = enderecoColetor
-                        print ip, ' [ok]'
-
+                    self.coletoresConectados[ip] = enderecoColetor
+                    print ip, ' [ok]'
                 mensagemMonitor = 'Conectado'
                 self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
                 
@@ -120,7 +113,7 @@ if __name__ == '__main__':
     
     print 'R2D2: Monitor ligado!'
     
-    r2d2.abrirConexoes
+    r2d2.abrirConexoes()
     
     while True:
         print 'R2D2: Menu:'
@@ -139,7 +132,7 @@ if __name__ == '__main__':
             print '[0] SAIR'
             print '\n'
             keyboardInput = raw_input('>> ')
-            os.system('clear')
+            os.system("clear")
             endereco = r2d2.coletoresConectados[r2d2.getColetorAtual()]
             
             if keyboardInput == "1":
