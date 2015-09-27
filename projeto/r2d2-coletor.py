@@ -6,15 +6,20 @@ class Coletor:
     
     def __init__(self):
         self.tamanhoPacote = 1024
+        self.hostBroadcast = ''
         self.portaEnvioBroadcast = 9000
         self.portaRecebeBroadcast = 9001
-        self.hostBroadcast = ''
+        self.envioBroadcast = '<broadcast>'
         self.broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.status="0"
+        
+        self.abrirConexao()
         
     def abrirConexao(self):
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.broadcastSocket.bind((self.hostBroadcast, self.portaRecebeBroadcast))
+        self.broadcastSocket.sendto("DESCOBRIR", (self.envioBroadcast, self.portaEnvioBroadcast))
         
     def getBroadcastSocket(self):
         return self.broadcastSocket
@@ -23,22 +28,53 @@ class Coletor:
         return self.tamanhoPacote
         
     def getPortaEnvioBroadcast(self):
-        return self.portaEnvioBroadcast    
+        return self.portaEnvioBroadcast   
+        
+    def getStatus(self):
+        return self.status
+        
+    def setStatus(self, status):
+        self.status = status
+    
+    def trocaStatus(self, status):
+        if status=="0":
+            self.setStatus("1")
+        elif status=="1":
+            self.setStatus("0")
+        return self.getStatus()
 
 if __name__ == '__main__':
     
-    c3pO = Coletor()
-    c3pO.abrirConexao()
+    print("C3PO: Coletor iniciado")
+    
+    c3po = Coletor()
+    broadcastSocket = c3po.getBroadcastSocket()
+    
+    mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
+    print mensagemMonitor
+    
+    mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getBroadcastSocket())
+    print mensagemMonitor
+
     
     while True :
         try:
-            print 'test 1'
-            mensagem, endereco = c3pO.getBroadcastSocket().recvfrom(c3pO.getTamanhoPacote())
-            print 'test 2'
-            print("mensagem '{0}' de : {1}".format(mensagem, endereco))
-            if mensagem == b'DISCOVER':
-                c3pO.getBroadcastSocket().sendto(b"ACK", (endereco[0], c3pO.getPortaEnvioBroadcast()))
+            mensagemComando, endereco = broadcastSocket.recvfrom(1024)
+            
+            if mensagemComando == "CAPTURAR": #and u.getStatus() == None
+                broadcastSocket.sendto("C3PO: Capturando...", endereco)
+                print("C3PO: Capturando...")
+                #u.start()
+            
+            elif mensagemComando == "PAUSAR":
+                broadcastSocket.sendto("C3PO: Pausado", endereco)
+                #u.setStatus(True)
+            
+            elif mensagemComando == "CONTINUAR":
+                broadcastSocket.sendto("C3PO: Capturando...", endereco)
+                #u.setStatus(False)
+                
+                
         except (KeyboardInterrupt, SystemExit):
-             raise
-        except:
-            traceback.print_exc()
+             os.system('clear')
+             break
