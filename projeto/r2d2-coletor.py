@@ -1,4 +1,5 @@
 # -*- coding: cp1252 -*-
+#PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f r2d2-coletor.py
 import os
 import socket, traceback
 
@@ -61,8 +62,8 @@ if __name__ == '__main__':
     c3po.abrirConexao()
     broadcastSocket = c3po.getBroadcastSocket()
     
-    #mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
-    #print mensagemMonitor
+    mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
+    print mensagemMonitor
     
     mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getBroadcastSocket())
     print mensagemMonitor

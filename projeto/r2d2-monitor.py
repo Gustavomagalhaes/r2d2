@@ -6,8 +6,8 @@ class Monitor:
     
     def __init__(self):
         self.tamanhoPacote = 1024
-        self.portaEnvioBroadcast = 9000
-        self.portaRecebeBroadcast = 9001
+        self.portaEnvioBroadcast = 9001
+        self.portaRecebeBroadcast = 9000
         self.hostBroadcast = ''
         self.broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
@@ -24,7 +24,7 @@ class Monitor:
         
     def conexaoRabbit(self):
         self.credentials = pika.PlainCredentials('darth', 'vader')
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.206.157', 5672, '/', self.credentials))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', 5672, '/', self.credentials))
         self.channel = self.connection.channel()
         
         self.result = self.channel.queue_declare(exclusive = True)
