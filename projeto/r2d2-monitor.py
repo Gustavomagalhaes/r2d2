@@ -1,6 +1,5 @@
 # -*- coding: cp1252 -*-
-import os, sys, socket
-import pika
+import os, sys, socket, pika
 
 class Monitor:
     
@@ -41,6 +40,9 @@ class Monitor:
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.broadcastSocket.bind((self.hostBroadcast, self.portaRecebeBroadcast))
+        
+    def getTamanhoPacote(self):
+        return self.tamanhoPacote
     
     def listaDeColetores(self):
         print 'R2D2: Listando coletores:'
@@ -89,7 +91,7 @@ class Monitor:
         while True:
             try:
                 print ("R2D2: Aguardando...")
-                mensagemColetor, enderecoColetor = self.broadcastSocket.recvfrom(2048)
+                mensagemColetor, enderecoColetor = self.broadcastSocket.recvfrom(self.getTamanhoPacote())
                 if mensagemColetor == "DESCOBRIR":
                     print("R2D2: Descoberto por coletor ") + str(enderecoColetor)
                     ip, porta = enderecoColetor

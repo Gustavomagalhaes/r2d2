@@ -17,7 +17,7 @@ class Coletor:
     def abrirConexao(self):
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        self.broadcastSocket.settimeout(50)
+        self.broadcastSocket.settimeout(20)
         self.broadcastSocket.bind((self.hostBroadcast, self.portaRecebeBroadcast))
         
         while True:
@@ -65,13 +65,10 @@ if __name__ == '__main__':
     mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
     print mensagemMonitor
     
-    mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getBroadcastSocket())
-    print mensagemMonitor
-
     
     while True :
         try:
-            mensagemComando, endereco = broadcastSocket.recvfrom(1024)
+            mensagemComando, endereco = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
             
             if mensagemComando == "CAPTURAR": #and u.getStatus() == None
                 broadcastSocket.sendto("C3PO: Capturando...", endereco)
