@@ -1,6 +1,6 @@
 # -*- coding: cp1252 -*-
 import os, sys, socket
-#import pika
+import pika
 
 class Monitor:
     
@@ -23,20 +23,19 @@ class Monitor:
         self.status = "0"
         
     def conexaoRabbit(self):
-        print ""
-        #self.credentials = pika.PlainCredentials('darth', 'vader')
-        # self.connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.206.157', 5672, '/', self.credentials))
-        # self.channel = self.connection.channel()
+        self.credentials = pika.PlainCredentials('darth', 'vader')
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.206.157', 5672, '/', self.credentials))
+        self.channel = self.connection.channel()
         
-        # self.result = self.channel.queue_declare(exclusive = True)
-        # self.queue_name = self.result.method.queue
+        self.result = self.channel.queue_declare(exclusive = True)
+        self.queue_name = self.result.method.queue
         
-        # self.binding_keys = ["http", "ssdp", "ssl", "dhcp", "ssh", "unknown", "all"]
+        self.binding_keys = ["http", "ssdp", "ssl", "dhcp", "ssh", "unknown", "all"]
         
-        # for binding_key in self.binding_keys:
-        #     self.result = self.channel.queue_declare(exclusive = True)
-        #     self.queue_name = self.result.method.queue
-        #     self.channel.queue_bind(exchange = "topic_logs", queue = self.queue_name, routing_key = binding_key)
+        for binding_key in self.binding_keys:
+            self.result = self.channel.queue_declare(exclusive = True)
+            self.queue_name = self.result.method.queue
+            self.channel.queue_bind(exchange = "topic_logs", queue = self.queue_name, routing_key = binding_key)
     
     def iniciarMonitor(self):
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -89,13 +88,16 @@ class Monitor:
     def abrirConexoes(self):
         while True:
             try:
-                mensagemColetor, enderecoColetor = self.broadcastSocket.recvfrom(1024)
-                ip, porta = enderecoColetor
-                if not self.coletoresConectados.has_key(ip):
-                    self.coletoresConectados[ip] = enderecoColetor
-                    print ip, ' [ok]'
-                mensagemMonitor = 'Conectado'
-                self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
+                print ("R2D2: Aguardando...")
+                mensagemColetor, enderecoColetor = self.broadcastSocket.recvfrom(2048)
+                if mensagemColetor == "DESCOBRIR":
+                    print("R2D2: Descoberto por coletor ") + str(enderecoColetor)
+                    ip, porta = enderecoColetor
+                    if not self.coletoresConectados.has_key(ip):
+                        self.coletoresConectados[ip] = enderecoColetor
+                        print ip, ' [ok]'
+                    mensagemMonitor = 'DESCOBERTO'
+                    self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
                 
                 mensagemMonitor = 'R2D2: Aguardando comando...'
                 self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
