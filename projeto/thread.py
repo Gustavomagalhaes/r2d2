@@ -6,6 +6,7 @@ class Thread(threading.Thread):
     
     
     def __init__(self):
+        self.logErros = open("log.txt", "w")
         threading.Thread.__init__(self)
         self.status = None
         self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
@@ -34,23 +35,16 @@ class Thread(threading.Thread):
                 
             return protocolos
 
-    def descobrirProtocolo(self, transp):
-        if isinstance(transp,dpkt.udp.UDP):
-            retorno = "TCP"
-        elif isinstance(transp,dpkt.tcp.TCP):
-            retorno = "UDP"
-        else:
-            retorno = "Nenhum"
-        return retorno
-
     def extrairPacotes(self):
         protocolos = self.listarProtocolos()
         for ts, pkt in pcap.pcap("test.pcap"):
+            print "TAMANHO: " + str(len(pkt)) + " | TIMESTAMP: " + str(ts)
             eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
+                    self.contProtocolos["all"] += 1
                     app = transp.data.lower()
                     found = False
                     for p in protocolos.items():
@@ -61,6 +55,8 @@ class Thread(threading.Thread):
         					
                         if (not found):
                             self.contProtocolos["unknown"] += 1
+                else:
+                    self.logErros.writelines("#captura_pacotes: ", transp, " \n")
             else:
                 self.contProtocolos["nonIp"] += 1
         
