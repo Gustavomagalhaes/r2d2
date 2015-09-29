@@ -2,7 +2,7 @@
 import os, time, socket, threading, Queue, pika, datetime
 import pcap, dpkt, re
 
-class thread(threading.Thread):
+class Thread(threading.Thread):
     
     
     def __init__(self):
@@ -66,3 +66,7 @@ class thread(threading.Thread):
         for p in self.contProtocolos.items():
         	print(p[0]+" Pkts:"+str(p[1]))
         print("Non IP Pkts:"+str(self.cNonIP))
+        
+if __name__ == '__main__':
+    thread = Thread()
+    thread.extrairPacotes()
