@@ -12,24 +12,25 @@ class Thread(threading.Thread):
         self.cNonIP = 0
         
     def listarProtocolos(self):
-            diretorio = os.listdir(os.getcwd()+'//l7-pat')
-            protocolos = {}
+            # diretorio = os.listdir(os.getcwd()+'//l7-pat')
+            # protocolos = {}
     
-            for arquivo in diretorio:
-                arquivo = './/l7-pat//'+ arquivo 
+            # for arquivo in diretorio:
+            #     arquivo = './/l7-pat//'+ arquivo 
     
-                file = open(arquivo, 'r')
-                linha = file.readline()
+            #     file = open(arquivo, 'r')
+            #     linha = file.readline()
                 
-                while linha != "":        
-                    if linha[0] != "#":
-                        if linha[0] != "^" and linha[:5] != "http/" and linha[0] != "\n":
-                            chave = str(linha.replace("\n",""))
-                        elif  (linha[0] == "^" or linha[:5] == "http/") and linha[0] != "\n":
-                            valor = (str(linha).lstrip()).rstrip()
-                    linha = file.readline()
+            #     while linha != "":        
+            #         if linha[0] != "#":
+            #             if linha[0] != "^" and linha[:5] != "http/" and linha[0] != "\n":
+            #                 chave = str(linha.replace("\n",""))
+            #             elif  (linha[0] == "^" or linha[:5] == "http/") and linha[0] != "\n":
+            #                 valor = (str(linha).lstrip()).rstrip()
+            #         linha = file.readline()
                     
-                protocolos[chave] = re.compile(valor)
+            #     protocolos[chave] = re.compile(valor)
+            protocolos = {"dropbox":"^\x7b\x22\x68\x6f","nbns":"\x01\x10\x00\x01","dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc","http":"[\x09-\x0d -~]*"}
                 
             return protocolos
 
