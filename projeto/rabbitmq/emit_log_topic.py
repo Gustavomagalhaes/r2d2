@@ -3,7 +3,7 @@ import pika
 import sys
 
 credentials = pika.PlainCredentials('darth', 'vader')
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', 5672, '/', credentials))
+connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.206.250', 5672, 'starwars', credentials))
 channel = connection.channel()
 
 channel.exchange_declare(exchange='topic_logs', type='topic')

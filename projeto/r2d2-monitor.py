@@ -1,5 +1,6 @@
 # -*- coding: cp1252 -*-
-import os, sys, socket, pika
+import os, sys, socket, pika, logging
+logging.basicConfig()
 
 class Monitor:
     
@@ -16,14 +17,14 @@ class Monitor:
         self.iniciarMonitor()
         
         self.channelRabbit = None
-        self.conexaoRabbit()
-        self.protocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0}
+        #self.conexaoRabbit()
+        #self.protocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0}
         
         self.status = "0"
         
     def conexaoRabbit(self):
-        self.credentials = pika.PlainCredentials('darth', 'vader')
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', 5672, '/', self.credentials))
+        self.credentials = pika.PlainCredentials('darth', 'vader') #criar user no CONSUMIDOR (receive) e permissoes no vhost
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters('IP', 5672, 'starwars', self.credentials)) #criar o vhost
         self.channel = self.connection.channel()
         
         self.result = self.channel.queue_declare(exclusive = True)
@@ -31,6 +32,7 @@ class Monitor:
         
         self.binding_keys = ["http", "ssdp", "ssl", "dhcp", "ssh", "unknown", "all"]
         
+        #CHECAR O FOR QUE TA DANDO ERRO!
         for binding_key in self.binding_keys:
             self.result = self.channel.queue_declare(exclusive = True)
             self.queue_name = self.result.method.queue
@@ -103,6 +105,7 @@ class Monitor:
                 
                 mensagemMonitor = 'R2D2: Aguardando comando...'
                 self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
+                return False
             
             except (KeyboardInterrupt, SystemExit):
                 os.system('clear')
