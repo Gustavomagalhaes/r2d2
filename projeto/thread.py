@@ -56,7 +56,6 @@ class Thread(threading.Thread):
                     for p in protocolos.items():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
-                            print str(p[1])
                             self.contProtocolos[p[0]] += 1
                             found = True
         					
