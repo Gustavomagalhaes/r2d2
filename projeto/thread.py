@@ -8,7 +8,7 @@ class Thread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.status = None
-        self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0}
+        self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
         self.cNonIP = 0
         
     def listarProtocolos(self):
@@ -51,22 +51,22 @@ class Thread(threading.Thread):
             if isinstance(ip,dpkt.ip.IP):
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
-                    self.contProtocolos["all"] += 1
                     app = transp.data.lower()
                     found = False
                     for p in protocolos.items():
-                        if p[1].search(app):
+                        expressao = re.compile(p[1])
+                        if expressao.search(app):
+                            print str(p[1])
                             self.contProtocolos[p[0]] += 1
                             found = True
         					
                         if (not found):
                             self.contProtocolos["unknown"] += 1
             else:
-                self.cNonIP += 1
+                self.contProtocolos["nonIp"] += 1
         
         for p in self.contProtocolos.items():
         	print(p[0]+" Pkts:"+str(p[1]))
-        print("Non IP Pkts:"+str(self.cNonIP))
         
 if __name__ == '__main__':
     thread = Thread()
