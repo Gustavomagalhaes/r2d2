@@ -30,7 +30,7 @@ class Thread(threading.Thread):
             #         linha = file.readline()
                     
             #     protocolos[chave] = re.compile(valor)
-            protocolos = {"dropbox":"^\x7b\x22\x68\x6f","nbns":"\x01\x10\x00\x01","dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc","http":"[\x09-\x0d -~]*"}
+            protocolos = {"dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc","http":"[\x09-\x0d -~]*"}
                 
             return protocolos
 
