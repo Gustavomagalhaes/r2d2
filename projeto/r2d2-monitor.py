@@ -1,6 +1,6 @@
 # -*- coding: cp1252 -*-
 import os, sys, socket, logging
-#import pika
+import pika
 logging.basicConfig()
 
 class Monitor:
@@ -23,21 +23,22 @@ class Monitor:
         
         self.status = "0"
         
-    # def conexaoRabbit(self):
-    #     self.credentials = pika.PlainCredentials('skywalker', 'luke') #criar user no CONSUMIDOR (receive) e permissoes no vhost
-    #     self.connection = pika.BlockingConnection(pika.ConnectionParameters('IP', 5672, '/starwars', self.credentials)) #criar o vhost
-    #     self.channel = self.connection.channel()
+    def conexaoRabbit(self):
+        self.credentials = pika.PlainCredentials('skywalker', 'luke') #criar user no CONSUMIDOR (receive) e permissoes no vhost
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.207.255', 5672, '/starwars', self.credentials)) #criar o vhost
+        self.channel = self.connection.channel()
         
-    #     self.result = self.channel.queue_declare(exclusive = True)
-    #     self.queue_name = self.result.method.queue
+        self.result = self.channel.queue_declare(exclusive = True)
+        self.queue_name = self.result.method.queue
         
-    #     self.binding_keys = ["http", "ssdp", "ssl", "dhcp", "ssh", "unknown", "all"]
+        self.binding_keys = ["http", "ssdp", "ssl", "dhcp", "ssh", "unknown", "all"]
         
-    #     #CHECAR O FOR QUE TA DANDO ERRO!
-    #     for binding_key in self.binding_keys:
-    #         self.result = self.channel.queue_declare(exclusive = True)
-    #         self.queue_name = self.result.method.queue
-    #         self.channel.queue_bind(exchange = "topic_logs", queue = self.queue_name, routing_key = binding_key)
+        #CHECAR O FOR QUE TA DANDO ERRO!
+        for binding_key in self.binding_keys:
+            
+            self.result = self.channel.queue_declare(exclusive = True)
+            self.queue_name = self.result.method.queue
+            self.channel.queue_bind(exchange = "topic_logs", queue = self.queue_name, routing_key = binding_key)
     
     def iniciarMonitor(self):
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -130,9 +131,10 @@ if __name__ == '__main__':
                     keyboardInput = raw_input(">> ")
                     if keyboardInput == "1":
                         r2d2.broadcastSocket.sendto("CAPTURAR", (enderecoColetor, r2d2.getPortaEnvioBroadcast()))
+                        r2d2.conexaoRabbit()
                         #print "Foi"
                     elif keyboardInput == "2":
-                        print "Suspender"
+                        r2d2.broadcastSocket.sendto("SUSPENDER", (enderecoColetor, r2d2.getPortaEnvioBroadcast()))
                     elif keyboardInput == "0":
                         os.system("clear")
                         break

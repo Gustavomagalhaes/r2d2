@@ -85,8 +85,9 @@ if __name__ == '__main__':
                 broadcastSocket.sendto("C3PO: Capturando...", endereco)
                 #thread.setStatus(False)
             
-            elif mensagemComando == "PAUSAR":
-                broadcastSocket.sendto("C3PO: Pausado", endereco)
+            elif mensagemComando == "SUSPENDER":
+                broadcastSocket.sendto("C3PO: Suspenso", endereco)
+                print("C3PO: Supenso")
                 #thread.setStatus(True)
             
             elif mensagemComando == "CONTINUAR":
