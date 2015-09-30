@@ -2,20 +2,31 @@
 import os, time, socket, threading, Queue, datetime
 import pcap, dpkt, re
 import pika
+import time
 
 class Thread(threading.Thread):
     
     
     def __init__(self):
         self.logErros = open("log.txt", "w")
+        self.histograma = open("histograma.txt", "w")
         threading.Thread.__init__(self)
         self.status = None
         self.pacotes = {}
-        self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
         self.cNonIP = 0
-        
         self.stoprequest = threading.Event()
         self.pauserequest = threading.Event() 
+        
+        
+        self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
+        self.percentualPctTotal = 0
+        self.tamanhoProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
+        self.tamanhoProtcTotal = 0
+        
+        #tempos
+        self.inicioCaptura=time.time()
+        self.fimCaptura=time.time()
+        
         
     def setStatus(self,status):
         self.status= status
@@ -78,6 +89,7 @@ class Thread(threading.Thread):
                     self.contProtocolos["all"] += 1
                     app = transp.data.lower()
                     found = False
+                    self.inicioCaptura=time.time()
                     for p in protocolos.items():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
@@ -86,6 +98,7 @@ class Thread(threading.Thread):
                             self.emit_topic(p[0],mensagem)
                             self.emit_topic("all",mensagem)
                             self.contProtocolos[p[0]] += 1
+                            self.tamanhoProtocolos[p[0]] +=str(len(pkt))
                             found = True
         					
                         if (not found):
@@ -93,10 +106,49 @@ class Thread(threading.Thread):
                             print mensagem
                             self.emit_topic("unknown",mensagem)
                             self.contProtocolos["unknown"] += 1
+                            self.tamanhoProtocolos["unknown"] +=str(len(pkt))
+                        self.tamanhoPctTotal = self.tamanhoPctTotal+1
+                        self.tamanhoProtcTotal +=str(len(pkt))
+                    self.fimCaptura=time.time()
                 else:
                     self.logErros.writelines("#captura_pacotes: ", transp, " \n")
             else:
                 self.contProtocolos["nonIp"] += 1
+            
+        #Print dos dados consumidos
+        
+        #Vazão
+        tempoTotal = self.fimCaptura-self.inicioCaptura
+        print("Vasão de captura dos pacotes: ",len(protocolos)/tempoTotal)
+        self.histograma.writelines("Vasão de captura dos pacotes: ",len(protocolos)/tempoTotal)
+        
+        
+        #Tamanho de percentual de dados por aplicação
+        print ("Percentual de dados por aplicação")
+        for a in self.tamanhoProtocolos:
+            print (a[0],a[1]/self.tamanhoProtcTotal)
+            self.histograma.writelines (a[1]/self.tamanhoProtcTotal)
+        
+        #Tamanho médio de pacotes por tempo de aplicação
+        print("Tamanho médio de pacotes por tempo de aplicação: ",self.tamanhoProtcTotal/tempoTotal)
+        
+        #Histograma
+        self.histograma.writelines("http",self.contProtocolos["http"]/self.percentualPctTotal)
+        print ("http",self.contProtocolos["http"]/self.percentualPctTotal)
+        self.histograma.writelines("ssdp",self.contProtocolos["ssdp"]/self.percentualPctTotal)
+        print ("ssdp",self.contProtocolos["ssdp"]/self.percentualPctTotal)
+        self.histograma.writelines("ssl",self.contProtocolos["ssl"]/self.percentualPctTotal)
+        print ("ssl",self.contProtocolos["ssl"]/self.percentualPctTotal)
+        self.histograma.writelines("dhcp",self.contProtocolos["dhcp"]/self.percentualPctTotal)
+        print ("dhcp",self.contProtocolos["dhcp"]/self.percentualPctTotal)
+        self.histograma.writelines("ssh",self.contProtocolos["ssh"]/self.percentualPctTotal)
+        print ("ssh",self.contProtocolos["ssh"]/self.percentualPctTotal)
+        self.histograma.writelines("unknown",self.contProtocolos["unknown"]/self.percentualPctTotal)
+        print ("unknown",self.contProtocolos["unknown"]/self.percentualPctTotal)
+        self.histograma.writelines("all",self.contProtocolos["all"]/self.percentualPctTotal)
+        print ("all",self.contProtocolos["all"]/self.percentualPctTotal)
+        self.histograma.writelines("nonIp",self.contProtocolos["nonIp"]/self.percentualPctTotal)
+        print ("nonIp",self.contProtocolos["nonIp"]/self.percentualPctTotal)
         
         #for p in self.contProtocolos.items():
         #	print(p[0]+" Pkts:"+str(p[1]))
