@@ -47,35 +47,9 @@ class Monitor:
     def getTamanhoPacote(self):
         return self.tamanhoPacote
     
-    def listaDeColetores(self):
-        print 'R2D2: Listando coletores:'
-        if self.coletoresConectados == {}:
-            print "R2D2: Nenhum coletor conectado.\n"
-            raw_input("<Enter> para sair")
-            os.system("clear")
-        else:
-            keys = self.coletoresConectados.keys()
-            while True:
-                try:
-                    for n, coletor in enumerate(keys):
-                        print "(%d) - coletor %s \n" % (n+1, coletor)
-                    escolha = raw_input("R2D2: Selecione o número do coletor: ")
-                    if escolha > len(self.coletoresConectados):
-                        print("R2D2: Coletor inválido[2].")
-                        continue
-                    else:
-                        break
-                    return False
-                except:
-                    print("R2D2: Coletor inválido[1].\n")
-                    raw_input("R2D2: <Enter> para sair")
-                    os.system("clear")
-            coletorAtual = keys[escolha-1]
-            self.setColetorAtual(coletorAtual)
+    def getColetoresConectados(self):
+        return self.coletoresConectados
             
-           
-            
-    
     def getColetorAtual(self):
         return self.coletorAtual
         
@@ -114,56 +88,43 @@ if __name__ == '__main__':
     r2d2 = Monitor()
     broadcastSocket = r2d2.getBroadcastSocket()
     
-    print 'R2D2: Monitor ligado!'
+    print 'R2D2: Monitor ligado.'
     
     while True:
         print 'R2D2: Menu:'
         print '\n'
-        print '[1] LISTAR COLETORES'
+        print '[1] REVELAR-SE'
+        print '[2] LISTAR COLETORES'
         print '[0] SAIR'
         print '\n'
         keyboardInput = raw_input('>> ')
         
-        if keyboardInput == '1':
+        if keyboardInput == "1":
             r2d2.abrirConexoes()
-            r2d2.listaDeColetores()
-            print("Coletor" + r2d2.getColetorAtual())
-            print '\n'
-            print '[1] INICIAR'
-            print '[2] PAUSAR'
-            print '[0] SAIR'
-            print '\n'
-            keyboardInput = raw_input('>> ')
-            os.system("clear")
-            endereco = r2d2.coletoresConectados[r2d2.getColetorAtual()]
+            #os.system("clear")
+            continue
             
-            if keyboardInput == "1":
-                #r2d2.iniciarColeta(endereco)
-                print("Coleta iniciada")
-                opcao=raw_input(">> ")
-                os.system('clear')      
-                continue
-                
-            #restante...
-            elif keyboardInput == "2":
-                print("Coleta pausada")
-                
-            elif keyboardInput == "0":
+        elif keyboardInput == "2":
+            coletores = r2d2.getColetoresConectados()
+            print 'R2D2: Listando coletores:'
+            if coletores == {}:
+                print "R2D2: Nenhum coletor conectado.\n"
                 os.system("clear")
                 continue
-                
             else:
-                raw_input("R2D2: Opção inválida.")
-                os.system("clear")
+                keys = coletores.keys()
+                for n, coletor in enumerate(keys):
+                    print "(%d) - coletor %s \n" % (n+1, coletor)
                 continue
+        
         elif keyboardInput == "0":
             os.system("clear")
             break
-        
         else:
-            raw_input("R2D2: Opção inválida.")
-            os.system("clear")
+            print("R2D2: Opção inválida")
             continue
+        
+                
         
     broadcastSocket.close()
     print "R2D2 encerrado."

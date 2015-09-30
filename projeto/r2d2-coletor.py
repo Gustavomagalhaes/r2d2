@@ -2,6 +2,7 @@
 #PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f r2d2-coletor.py
 import os
 import socket, traceback
+from thread import *
 
 class Coletor:
     
@@ -66,23 +67,31 @@ if __name__ == '__main__':
     mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
     print mensagemMonitor
     
+    thread = Thread()
     
     while True :
         try:
             mensagemComando, endereco = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
             
-            if mensagemComando == "CAPTURAR": #and u.getStatus() == None
+            if mensagemComando == "CAPTURAR" and thread.getStatus() == None:
                 broadcastSocket.sendto("C3PO: Capturando...", endereco)
                 print("C3PO: Capturando...")
-                #u.start()
+                thread.start()
+                
+            elif mensagemComando == "CAPTURAR" and thread.getStatus() == False:
+                broadcastSocket.sendto("C3PO: Capturando...", endereco)
+                
+            elif mensagemComando == "CAPTURAR" and thread.getStatus() == True:
+                broadcastSocket.sendto("C3PO: Capturando...", endereco)
+                thread.setStatus(False)
             
             elif mensagemComando == "PAUSAR":
                 broadcastSocket.sendto("C3PO: Pausado", endereco)
-                #u.setStatus(True)
+                thread.setStatus(True)
             
             elif mensagemComando == "CONTINUAR":
                 broadcastSocket.sendto("C3PO: Capturando...", endereco)
-                #u.setStatus(False)
+                thread.setStatus(False)
                 
                 
         except (KeyboardInterrupt, SystemExit):
