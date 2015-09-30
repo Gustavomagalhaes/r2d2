@@ -23,9 +23,9 @@ class Monitor:
         
         self.status = "0"
         
-    def conexaoRabbit(self):
+    def conexaoRabbit(self, ipcoletor):
         self.credentials = pika.PlainCredentials('skywalker', 'luke') #criar user no CONSUMIDOR (receive) e permissoes no vhost
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.207.255', 5672, '/starwars', self.credentials)) #criar o vhost
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(str(ipcoletor), 5672, '/starwars', self.credentials)) #criar o vhost
         self.channel = self.connection.channel()
         
         self.result = self.channel.queue_declare(exclusive = True)
@@ -131,7 +131,8 @@ if __name__ == '__main__':
                     keyboardInput = raw_input(">> ")
                     if keyboardInput == "1":
                         r2d2.broadcastSocket.sendto("CAPTURAR", (enderecoColetor, r2d2.getPortaEnvioBroadcast()))
-                        r2d2.conexaoRabbit()
+                        ipcoletor, porta = enderecoColetor
+                        r2d2.conexaoRabbit(ipcoletor)
                         #print "Foi"
                     elif keyboardInput == "2":
                         r2d2.broadcastSocket.sendto("SUSPENDER", (enderecoColetor, r2d2.getPortaEnvioBroadcast()))
