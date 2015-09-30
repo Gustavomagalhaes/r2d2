@@ -60,16 +60,16 @@ class Monitor:
                     for n, coletor in enumerate(keys):
                         print "(%d) - coletor %s \n" % (n+1, coletor)
                     escolha = raw_input("R2D2: Selecione o número do coletor: ")
+                    if escolha > len(self.coletoresConectados):
+                        print("R2D2: Coletor inválido[2].")
+                        continue
+                    else:
+                        break
+                    return False
                 except:
                     print("R2D2: Coletor inválido[1].\n")
                     raw_input("R2D2: <Enter> para sair")
                     os.system("clear")
-                    
-                else:
-                    if escolha > len(self.coletoresConectados):
-                        print("R2D2: Coletor inválido[2].")
-                    else:
-                        break
             coletorAtual = keys[escolha-1]
             self.setColetorAtual(coletorAtual)
             
@@ -95,11 +95,11 @@ class Monitor:
                     ip, porta = enderecoColetor
                     if not self.coletoresConectados.has_key(ip):
                         self.coletoresConectados[ip] = enderecoColetor
-                        print ip, ' [ok]'
+                        print "R2D2: " +ip+" adicionado à lista de coletores."
                     mensagemMonitor = 'DESCOBERTO'
                     self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
                 
-                mensagemMonitor = 'R2D2: Aguardando comando...'
+                mensagemMonitor = 'R2D2: Aguardando comando...' #primeira msg recebida pelo coletor quando o comando for passado
                 self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
                 return False
             

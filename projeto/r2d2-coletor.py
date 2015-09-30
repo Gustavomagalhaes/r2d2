@@ -64,7 +64,7 @@ if __name__ == '__main__':
     broadcastSocket = c3po.getBroadcastSocket()
     
     mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
-    #print mensagemMonitor
+    print mensagemMonitor
     
     
     while True :
