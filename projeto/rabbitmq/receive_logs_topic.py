@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import pika
 
-credentials = pika.PlainCredentials('darth', 'vader')
-connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.206.250', 5672, 'starwars', credentials))
+credentials = pika.PlainCredentials('skywalker', 'luke')
+connection = pika.BlockingConnection(pika.ConnectionParameters('172.16.206.250', 5672, '/starwars', credentials))
 channel = connection.channel()
         
 result = channel.queue_declare(exclusive = True)

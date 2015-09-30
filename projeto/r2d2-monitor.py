@@ -23,8 +23,8 @@ class Monitor:
         self.status = "0"
         
     def conexaoRabbit(self):
-        self.credentials = pika.PlainCredentials('darth', 'vader') #criar user no CONSUMIDOR (receive) e permissoes no vhost
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('IP', 5672, 'starwars', self.credentials)) #criar o vhost
+        self.credentials = pika.PlainCredentials('skywalker', 'luke') #criar user no CONSUMIDOR (receive) e permissoes no vhost
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters('IP', 5672, '/starwars', self.credentials)) #criar o vhost
         self.channel = self.connection.channel()
         
         self.result = self.channel.queue_declare(exclusive = True)
@@ -48,7 +48,6 @@ class Monitor:
     
     def listaDeColetores(self):
         print 'R2D2: Listando coletores:'
-        #Implementar lista de coletores
         if self.coletoresConectados != {}:
             keys = self.coletoresConectados.keys()
             while True:
@@ -94,18 +93,17 @@ class Monitor:
             try:
                 print ("R2D2: Aguardando...")
                 mensagemColetor, enderecoColetor = self.broadcastSocket.recvfrom(self.getTamanhoPacote())
-                if mensagemColetor == "DESCOBRIR":
-                    print("R2D2: Descoberto por coletor ") + str(enderecoColetor)
-                    ip, porta = enderecoColetor
-                    if not self.coletoresConectados.has_key(ip):
+                ip, porta = enderecoColetor
+                if not self.coletoresConectados.has_key(ip):
                         self.coletoresConectados[ip] = enderecoColetor
-                        print ip, ' [ok]'
-                    mensagemMonitor = 'DESCOBERTO'
-                    self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
-                
+                        print ip
+                mensagemMonitor = 'R2D2: Conexao Estabelecida'
+                self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
                 mensagemMonitor = 'R2D2: Aguardando comando...'
                 self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
-                return False
+                
+                
+                
             
             except (KeyboardInterrupt, SystemExit):
                 os.system('clear')
@@ -119,8 +117,6 @@ if __name__ == '__main__':
     broadcastSocket = r2d2.getBroadcastSocket()
     
     print 'R2D2: Monitor ligado!'
-    
-    r2d2.abrirConexoes()
     
     while True:
         print 'R2D2: Menu:'
