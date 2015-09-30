@@ -1,5 +1,6 @@
 # -*- coding: cp1252 -*-
-import os, sys, socket, pika, logging
+import os, sys, socket, logging
+#import pika
 logging.basicConfig()
 
 class Monitor:
@@ -22,21 +23,21 @@ class Monitor:
         
         self.status = "0"
         
-    def conexaoRabbit(self):
-        self.credentials = pika.PlainCredentials('skywalker', 'luke') #criar user no CONSUMIDOR (receive) e permissoes no vhost
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('IP', 5672, '/starwars', self.credentials)) #criar o vhost
-        self.channel = self.connection.channel()
+    # def conexaoRabbit(self):
+    #     self.credentials = pika.PlainCredentials('skywalker', 'luke') #criar user no CONSUMIDOR (receive) e permissoes no vhost
+    #     self.connection = pika.BlockingConnection(pika.ConnectionParameters('IP', 5672, '/starwars', self.credentials)) #criar o vhost
+    #     self.channel = self.connection.channel()
         
-        self.result = self.channel.queue_declare(exclusive = True)
-        self.queue_name = self.result.method.queue
+    #     self.result = self.channel.queue_declare(exclusive = True)
+    #     self.queue_name = self.result.method.queue
         
-        self.binding_keys = ["http", "ssdp", "ssl", "dhcp", "ssh", "unknown", "all"]
+    #     self.binding_keys = ["http", "ssdp", "ssl", "dhcp", "ssh", "unknown", "all"]
         
-        #CHECAR O FOR QUE TA DANDO ERRO!
-        for binding_key in self.binding_keys:
-            self.result = self.channel.queue_declare(exclusive = True)
-            self.queue_name = self.result.method.queue
-            self.channel.queue_bind(exchange = "topic_logs", queue = self.queue_name, routing_key = binding_key)
+    #     #CHECAR O FOR QUE TA DANDO ERRO!
+    #     for binding_key in self.binding_keys:
+    #         self.result = self.channel.queue_declare(exclusive = True)
+    #         self.queue_name = self.result.method.queue
+    #         self.channel.queue_bind(exchange = "topic_logs", queue = self.queue_name, routing_key = binding_key)
     
     def iniciarMonitor(self):
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -48,36 +49,32 @@ class Monitor:
     
     def listaDeColetores(self):
         print 'R2D2: Listando coletores:'
-        if self.coletoresConectados != {}:
+        if self.coletoresConectados == {}:
+            print "R2D2: Nenhum coletor conectado.\n"
+            raw_input("<Enter> para sair")
+            os.system("clear")
+        else:
             keys = self.coletoresConectados.keys()
             while True:
                 try:
                     for n, coletor in enumerate(keys):
-                        print "(" + n+1 + ")" + " - " + coletor + "\n"
-                        escolha = raw_input("R2D2: Selecione o número do coletor: ")
-                #acho que esse except pode ser mudado por um while depois do raw_input acima, checando se é inteiro ou não ou um coletor válido.
-                #Assim, o usuário pode selecionar quantas vezes quiser errado e ele vai continuar podendo listar um correto depois
+                        print "(%d) - coletor %s \n" % (n+1, coletor)
+                    escolha = raw_input("R2D2: Selecione o número do coletor: ")
                 except:
-                    print("R2D2: Coletor inválido.\n")
+                    print("R2D2: Coletor inválido[1].\n")
                     raw_input("R2D2: <Enter> para sair")
                     os.system("clear")
                     
                 else:
                     if escolha > len(self.coletoresConectados):
-                        print("R2D2: Coletor inválido.")
+                        print("R2D2: Coletor inválido[2].")
                     else:
                         break
-                coletorAtual = keys[escolha-1]
-                self.setColetorAtual(coletorAtual)
-                        
+            coletorAtual = keys[escolha-1]
+            self.setColetorAtual(coletorAtual)
             
-        
-        else:
-            print "R2D2: Nenhum coletor conectado.\n"
-            raw_input("<Enter> para sair")
-            os.system("clear")
+           
             
-        
     
     def getColetorAtual(self):
         return self.coletorAtual
@@ -93,17 +90,18 @@ class Monitor:
             try:
                 print ("R2D2: Aguardando...")
                 mensagemColetor, enderecoColetor = self.broadcastSocket.recvfrom(self.getTamanhoPacote())
-                ip, porta = enderecoColetor
-                if not self.coletoresConectados.has_key(ip):
+                if mensagemColetor == "DESCOBRIR":
+                    print("R2D2: Descoberto por coletor ") + str(enderecoColetor)
+                    ip, porta = enderecoColetor
+                    if not self.coletoresConectados.has_key(ip):
                         self.coletoresConectados[ip] = enderecoColetor
-                        print ip
-                mensagemMonitor = 'R2D2: Conexao Estabelecida'
-                self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
+                        print ip, ' [ok]'
+                    mensagemMonitor = 'DESCOBERTO'
+                    self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
+                
                 mensagemMonitor = 'R2D2: Aguardando comando...'
                 self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
-                
-                
-                
+                return False
             
             except (KeyboardInterrupt, SystemExit):
                 os.system('clear')
@@ -127,6 +125,7 @@ if __name__ == '__main__':
         keyboardInput = raw_input('>> ')
         
         if keyboardInput == '1':
+            r2d2.abrirConexoes()
             r2d2.listaDeColetores()
             print("Coletor" + r2d2.getColetorAtual())
             print '\n'

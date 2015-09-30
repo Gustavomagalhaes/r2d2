@@ -17,7 +17,7 @@ class Coletor:
     def abrirConexao(self):
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        #self.broadcastSocket.settimeout(20)
+        self.broadcastSocket.settimeout(10)
         self.broadcastSocket.bind((self.hostBroadcast, self.portaRecebeBroadcast))
         
         while True:
@@ -28,6 +28,7 @@ class Coletor:
                 mensagem, endereco = self.broadcastSocket.recvfrom(2048)
                 if str(mensagem) == "DESCOBERTO":
                     print "CP3O: Descoberto monitor " + str(endereco)
+                    self.broadcastSocket.settimeout(None)
                     return False
             except Exception:
                 continue
@@ -63,9 +64,6 @@ if __name__ == '__main__':
     broadcastSocket = c3po.getBroadcastSocket()
     
     mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
-    print mensagemMonitor
-    mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
-    print mensagemMonitor
     #print mensagemMonitor
     
     
