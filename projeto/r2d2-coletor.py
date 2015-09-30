@@ -30,6 +30,8 @@ class Coletor:
                 if str(mensagem) == "DESCOBERTO":
                     print "CP3O: Descoberto monitor " + str(endereco)
                     self.broadcastSocket.settimeout(None)
+                    mensagemMonitor = 'C3PO: Aguardando comando...' #primeira msg recebida pelo coletor quando o comando for passado
+                    self.broadcastSocket.sendto(mensagemMonitor, endereco)
                     return False
             except Exception:
                 continue
@@ -64,34 +66,32 @@ if __name__ == '__main__':
     c3po.abrirConexao()
     broadcastSocket = c3po.getBroadcastSocket()
     
-    mensagemMonitor, enderecoMonitor = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
-    print mensagemMonitor
     
-    thread = Thread()
+    #thread = Thread()
     
     while True :
         try:
             mensagemComando, endereco = broadcastSocket.recvfrom(c3po.getTamanhoPacote())
             
-            if mensagemComando == "CAPTURAR" and thread.getStatus() == None:
+            if mensagemComando == "CAPTURAR": # and thread.getStatus() == None:
                 broadcastSocket.sendto("C3PO: Capturando...", endereco)
                 print("C3PO: Capturando...")
-                thread.start()
+                #thread.start()
                 
-            elif mensagemComando == "CAPTURAR" and thread.getStatus() == False:
+            elif mensagemComando == "CAPTURAR": # and thread.getStatus() == False:
                 broadcastSocket.sendto("C3PO: Capturando...", endereco)
                 
-            elif mensagemComando == "CAPTURAR" and thread.getStatus() == True:
+            elif mensagemComando == "CAPTURAR": # and thread.getStatus() == True:
                 broadcastSocket.sendto("C3PO: Capturando...", endereco)
-                thread.setStatus(False)
+                #thread.setStatus(False)
             
             elif mensagemComando == "PAUSAR":
                 broadcastSocket.sendto("C3PO: Pausado", endereco)
-                thread.setStatus(True)
+                #thread.setStatus(True)
             
             elif mensagemComando == "CONTINUAR":
                 broadcastSocket.sendto("C3PO: Capturando...", endereco)
-                thread.setStatus(False)
+                #thread.setStatus(False)
                 
                 
         except (KeyboardInterrupt, SystemExit):

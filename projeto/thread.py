@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import os, time, socket, threading, Queue, pika, datetime
+import os, time, socket, threading, Queue, datetime
 import pcap, dpkt, re
+import pika
 
 class Thread(threading.Thread):
     

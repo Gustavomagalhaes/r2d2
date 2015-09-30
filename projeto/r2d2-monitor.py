@@ -58,6 +58,9 @@ class Monitor:
         
     def getBroadcastSocket(self):
         return self.broadcastSocket
+    
+    def getPortaEnvioBroadcast(self):
+        return self.portaEnvioBroadcast
         
     def abrirConexoes(self):
         while True:
@@ -72,9 +75,6 @@ class Monitor:
                         print "R2D2: " +ip+" adicionado à lista de coletores."
                     mensagemMonitor = 'DESCOBERTO'
                     self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
-                
-                mensagemMonitor = 'R2D2: Aguardando comando...' #primeira msg recebida pelo coletor quando o comando for passado
-                self.broadcastSocket.sendto(mensagemMonitor, enderecoColetor)
                 return False
             
             except (KeyboardInterrupt, SystemExit):
@@ -101,21 +101,46 @@ if __name__ == '__main__':
         
         if keyboardInput == "1":
             r2d2.abrirConexoes()
-            #os.system("clear")
+            os.system("clear")
+            mensagemMonitor, enderecoColetor = broadcastSocket.recvfrom(r2d2.getTamanhoPacote())
+            print mensagemMonitor
             continue
             
         elif keyboardInput == "2":
+            os.system("clear")
             coletores = r2d2.getColetoresConectados()
-            print 'R2D2: Listando coletores:'
+            print 'R2D2: Listando coletores:\n'
             if coletores == {}:
                 print "R2D2: Nenhum coletor conectado.\n"
-                os.system("clear")
                 continue
             else:
                 keys = coletores.keys()
+                listaColetores={}
                 for n, coletor in enumerate(keys):
                     print "(%d) - coletor %s \n" % (n+1, coletor)
-                continue
+                    listaColetores[n+1] = coletor
+                print("R2D2: Selecione o coletor:\n")
+                keyboardInput = input(">> ")
+                os.system("clear")
+                if keyboardInput in listaColetores:
+                    enderecoColetor = listaColetores[keyboardInput]
+                    print '[1] CAPTURAR'
+                    print '[2] SUSPENDER'
+                    print '[0] SAIR'
+                    keyboardInput = raw_input(">> ")
+                    if keyboardInput == "1":
+                        r2d2.broadcastSocket.sendto("CAPTURAR", (enderecoColetor, r2d2.getPortaEnvioBroadcast()))
+                        #print "Foi"
+                    elif keyboardInput == "2":
+                        print "Suspender"
+                    elif keyboardInput == "0":
+                        os.system("clear")
+                        break
+                    else:
+                        print("R2D2: Opção inválida")
+                        continue
+                else:
+                    print("R2D2: Coletor inválido")
         
         elif keyboardInput == "0":
             os.system("clear")
