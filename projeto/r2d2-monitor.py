@@ -32,6 +32,27 @@ class Monitor:
             except (KeyboardInterrupt, SystemExit):
                 self.broadcastSocket.close()
                 
+    def sethostBroadcast(self, hostBroadcast):
+        self.hostBroadcast = hostBroadcast
+    
+    def enviarUnicast(self, escolha):
+        if self.hostBroadcast == "":
+            self.sethostBroadcast(raw_input('Digite um IP válido: '))
+
+        self.broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        mensage = ""
+        while mensage != "OK":
+            print "Aguardando...",
+            try:
+                self.broadcastSocket.sendto(escolha,(self.hostBroadcast, self.portaRecebeBroadcast))
+                self.sethostBroadcast("")             
+                mensage, serverAddress = self.broadcastSocket.recvfrom(2048)
+                break
+            
+            except:
+                print "...",
+                continue            
+                
     def receberComando(self):
         comandos = {"LISTAR": "Lista coletores conectados", "CONTINUAR": "Continua a coleta em um coletor parado", "PARAR": "Para a coleta de um coletor"}
         print("Lista de comandos:")
@@ -45,7 +66,7 @@ class Monitor:
                 escolha = raw_input("Escolha um comando da lista de comandos: ")
 
             if escolha !="LISTAR":
-                print"LISTAR"
+                self.enviarUnicast(escolha)
             else:
                 self.listarColetores()
         
