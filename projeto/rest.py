@@ -53,7 +53,7 @@ class TaskListAPI(Resource):
                                    location='json')
         self.reqparse.add_argument('tamanho', type=str, default="",
                                    location='json')
-        super(TaskListAPI, self).__init__()
+        #super(TaskListAPI, self).__init__()
 
     def get(self):
         return {'filas': [marshal(filas, filas_campos) for fila in filas]}
@@ -78,7 +78,7 @@ class TaskAPI(Resource):
         self.reqparse.add_argument('title', type=str, location='json')
         self.reqparse.add_argument('description', type=str, location='json')
         self.reqparse.add_argument('done', type=bool, location='json')
-        super(TaskAPI, self).__init__()
+        #super(TaskAPI, self).__init__()
 
     def get(self, id):
         fila = [fila for fila in filas if fila['id'] == id]
