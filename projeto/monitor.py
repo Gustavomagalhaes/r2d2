@@ -50,7 +50,7 @@ class Monitor:
                 print "R2D2: Coletor adicionado a lista de coletores."
             #self.getClientSocket().close()
             self.clientSocket.settimeout(0)
-            break
+            continue
         
     def listarColetores(self):
         print "Lista de coletores:\n"
