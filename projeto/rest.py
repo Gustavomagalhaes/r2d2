@@ -110,4 +110,4 @@ api.add_resource(TaskAPI, '/r2d2/api/v1.0/filas/<int:id>', endpoint='fila')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='http://172.16.204.135', port=500)
