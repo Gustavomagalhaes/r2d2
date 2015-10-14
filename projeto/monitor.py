@@ -67,8 +67,9 @@ class Monitor:
         while mensagem != "OK":
             print "Aguardando..."
             try:
+                print "entrou no try"
+                print self.getColetorAtual()
                 self.getClientSocket().sendto(comando, (self.getColetorAtual(), 5000))
-                print "Enviou"
                 self.setColetorAtual("")
                 mensagem, endereco = self.getClientSocket().recvfrom(2048)
                 break
