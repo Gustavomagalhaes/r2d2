@@ -9,7 +9,7 @@ class Coletor:
     def __init__(self):
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.serverSocket.timeout(20)
+        self.serverSocket.settimeout(20)
         
         self.localizarMonitor()
         
@@ -33,7 +33,7 @@ class Coletor:
                     serverSocket.sendto("C3PO: Aguardando comandos.", endereco)
                     print "C3PO: Aguardando..."
                     #self.getServerSocket().close()
-                    self.serverSocket.timeout(0)
+                    self.serverSocket.settimeout(0)
                     break
                 else:
                     continue
