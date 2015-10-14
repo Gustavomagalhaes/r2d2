@@ -12,7 +12,6 @@ class Various(Thread):
         self.pacotes = {}
         self.contProtocolos = self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
         
-        self.iniciarColeta("test.pcap",10000)
         
     def getStatus(self):
         return self.status
@@ -23,7 +22,7 @@ class Various(Thread):
     def run(self):
         while not self.stopRequest.isSet():
             if not self.pauseRequest.isSet():
-                self.iniciarColeta()
+                self.iniciarColeta("test.pcap",10000)
             else:
                 time.sleep(5)
         time.sleep(5)

@@ -6,6 +6,7 @@ class Monitor:
         
         self.destino = ('<broadcast>', 5000)
         self.clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.clientSocket.timeout(20)
         self.coletores = {}
         self.coletorAtual = ""
         
@@ -48,6 +49,7 @@ class Monitor:
                 self.setColetor(endereco[0])
                 print "R2D2: Coletor adicionado a lista de coletores."
             #self.getClientSocket().close()
+            self.clientSocket.timeout(0)
             break
         
     def listarColetores(self):
