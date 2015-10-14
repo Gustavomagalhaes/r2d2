@@ -49,7 +49,7 @@ class Monitor:
                 self.setColetor(endereco[0])
                 print "R2D2: Coletor adicionado a lista de coletores."
             #self.getClientSocket().close()
-            continue
+            break
         
     def listarColetores(self):
         print "Lista de coletores:\n"
