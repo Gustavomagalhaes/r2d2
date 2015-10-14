@@ -54,16 +54,16 @@ class Coletor:
             try:
                 
                 mensagem, endereco = self.getServerSocket().recvfrom(8192)
-                if mensagem == "CAPTURAR" and yoda.getStatus() == None:
+                if mensagem == "COLETAR" and yoda.getStatus() == None:
                     self.getServerSocket().sendto("C3PO: Capturando...", endereco)
                     print "C3PO: Capturando"
                     yoda.start()
                     
-                elif mensagem == "CAPTURAR" and yoda.getStatus() == False:
+                elif mensagem == "COLETAR" and yoda.getStatus() == False:
                     self.getServerSocket().sendto("C3PO: Capturando...", endereco)
                     yoda.setStatus(True)
                 
-                elif mensagem == "CAPTURAR" and yoda.getStatus() == True:
+                elif mensagem == "COLETAR" and yoda.getStatus() == True:
                     self.getServerSocket().sendto("C3PO: Capturando...", endereco)
                     
                 elif mensagem == "SUSPENDER":
