@@ -6,7 +6,7 @@ class Monitor:
         
         self.destino = ('<broadcast>', 5000)
         self.clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.clientSocket.settimeout(20)
+        #self.clientSocket.settimeout(20)
         self.coletores = {}
         self.coletorAtual = ""
         
