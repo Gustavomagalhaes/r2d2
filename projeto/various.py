@@ -22,7 +22,7 @@ class Various(Thread):
     def run(self):
         while not self.stopRequest.isSet():
             if not self.pauseRequest.isSet():
-                self.iniciarColeta("test.pcap",10000)
+                self.iniciarColeta("files/test.pcap",10000)
             else:
                 time.sleep(5)
         time.sleep(5)
