@@ -1,4 +1,4 @@
-import socket, sys
+import socket, sys, os
 
 class Monitor:
 
@@ -40,22 +40,65 @@ class Monitor:
         
         print "R2D2: Aguardando respostas; pressione 'Ctrl+C' para parar."
         
-        while 1:
-            mensagem, endereco = clientSocket.recvfrom(2048)
-            if not len(mensagem):
-                break
-            print "R2D2: Coletor %s localizado: %s" % (str(endereco), mensagem)
-            if endereco[0] not in coletores.keys():
-                self.setColetor(endereco[0])
-                print "R2D2: Coletor adicionado a lista de coletores."
-            #self.getClientSocket().close()
-            break
+        # while 1:
+        #     mensagem, endereco = clientSocket.recvfrom(2048)
+        #     if not len(mensagem):
+        #         break
+        #     print "R2D2: Coletor %s localizado: %s" % (str(endereco), mensagem)
+        #     if endereco[0] not in coletores.keys():
+        #         self.setColetor(endereco[0])
+        #         print "R2D2: Coletor adicionado a lista de coletores."
+        #     #self.getClientSocket().close()
+        #     break
+    
+    def printCharacters(self):
+        print "                                     "
+        print "   (C3PO)                            "            
+        print "         \  .-.                      "            
+        print "           /_ _\                     "             
+        print "           |o^o|                     "              
+        print "           \ _ /                     "               
+        print "          .-'-'-.                    "
+        print "        /`)  .  (`\            (R2D2)"
+        print "       / /|.-'-.|\ \         /       "          
+        print "       \ \| (_) |/ /  .-''-.         "          
+        print "        \_\ -.- /_/  /[] _ _\        "          
+        print "        /_/ \_/ \_\ _|_o_LII|_       "          
+        print "          |'._.'|  / | ==== | \      "          
+        print "          |  |  |  |_| ==== |_|      "          
+        print "           \_|_/    ||' ||  ||       "          
+        print "           |-|-|    ||LI  o ||       "          
+        print "           |_|_|    ||'----'||       "          
+        print "          /_/ \_\  /__|    |__\      "  
+    
+    def ask(self):
+        comando = raw_input("R2D2: Insira um comando >")
+        return comando
         
     def listarColetores(self):
+        os.system('clear')
         print "Lista de coletores:\n"
         for coletor, status in self.getColetores().iteritems():
             print str(coletor) + ": " + status
+            
+        comando = self.ask()
     
+    def suspenderColetores(self):
+        os.system('clear')
+        self.listarColetores()
+        print "Escolha o coletor que deseja suspender:\n"
+        comando = self.ask()
+        
+    def continuarColetando(self):
+        os.system('clear')
+        print "CONTINUANDO"
+        comando = self.ask()
+        
+    def iniciarColeta(self):
+        os.system('clear')
+        print "COLETANDO"
+        comando = self.ask()
+        
     def enviarComando(self, comando):
         self.listarColetores()
         if self.getColetorAtual() == "":
@@ -78,15 +121,24 @@ class Monitor:
                 continue
     
     def inserirComando(self):
-        print "Comandos: LISTAR | COLETAR | SUSPENDER | CONTINUAR"
-        
         while True:
             comando = ""
-            listadecomandos = {"LISTAR":"", "SUSPENDER":"", "CONTINUAR":"", "COLETAR":""}
+            listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":""}
             while comando not in listadecomandos.keys():
-                comando = raw_input("Insira um comando valido:")
+                os.system('clear')
+                self.printCharacters()
+                print ""
+                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR |"
+                print ""
+                comando = self.ask().upper()
             if comando == "LISTAR":
                 self.listarColetores()
+            elif comando == "SUSPENDER":
+                self.suspenderColetores()
+            elif comando == "CONTINUAR":
+                self.continuarColetando()
+            elif comando == "COLETAR":
+                self.iniciarColeta()
             else:
                 self.enviarComando(comando)
                 
