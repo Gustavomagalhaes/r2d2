@@ -40,16 +40,16 @@ class Monitor:
         
         print "R2D2: Aguardando respostas; pressione 'Ctrl+C' para parar."
         
-        # while 1:
-        #     mensagem, endereco = clientSocket.recvfrom(2048)
-        #     if not len(mensagem):
-        #         break
-        #     print "R2D2: Coletor %s localizado: %s" % (str(endereco), mensagem)
-        #     if endereco[0] not in coletores.keys():
-        #         self.setColetor(endereco[0])
-        #         print "R2D2: Coletor adicionado a lista de coletores."
-        #     #self.getClientSocket().close()
-        #     break
+        while 1:
+            mensagem, endereco = clientSocket.recvfrom(2048)
+            if not len(mensagem):
+                break
+            print "R2D2: Coletor %s localizado: %s" % (str(endereco), mensagem)
+            if endereco[0] not in coletores.keys():
+                self.setColetor(endereco[0])
+                print "R2D2: Coletor adicionado a lista de coletores."
+                #self.getClientSocket().close()
+            break
     
     def printCharacters(self):
         os.system('clear')
