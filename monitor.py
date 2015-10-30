@@ -52,55 +52,60 @@ class Monitor:
         #     break
     
     def printCharacters(self):
-        print "                                     "
-        print "   (C3PO)                            "            
-        print "         \  .-.                      "            
-        print "           /_ _\                     "             
-        print "           |o^o|                     "              
-        print "           \ _ /                     "               
-        print "          .-'-'-.                    "
-        print "        /`)  .  (`\            (R2D2)"
-        print "       / /|.-'-.|\ \         /       "          
-        print "       \ \| (_) |/ /  .-''-.         "          
-        print "        \_\ -.- /_/  /[] _ _\        "          
-        print "        /_/ \_/ \_\ _|_o_LII|_       "          
-        print "          |'._.'|  / | ==== | \      "          
-        print "          |  |  |  |_| ==== |_|      "          
-        print "           \_|_/    ||' ||  ||       "          
-        print "           |-|-|    ||LI  o ||       "          
-        print "           |_|_|    ||'----'||       "          
-        print "          /_/ \_\  /__|    |__\      "  
+        os.system('clear')
+        print "                                         "
+        print "   (C3PO)                                "            
+        print "         \  .-.                          "            
+        print "           /_ _\                         "             
+        print "           |o^o|                         "              
+        print "           \ _ /                         "               
+        print "          .-'-'-.                        "
+        print "        /`)  .  (`\            (R2D2)    "
+        print "       / /|.-'-.|\ \         /           "          
+        print "       \ \| (_) |/ /  .-''-.             "          
+        print "        \_\ -.- /_/  /[] _ _\            "          
+        print "        /_/ \_/ \_\ _|_o_LII|_           "          
+        print "          |'._.'|  / | ==== | \          "          
+        print "          |  |  |  |_| ==== |_|          "          
+        print "           \_|_/    ||' ||  ||           "          
+        print "           |-|-|    ||LI  o ||           "          
+        print "           |_|_|    ||'----'||           "          
+        print "__________/_/_\_\__/__|____|__\__________"
+        print "                                         "
     
     def ask(self):
-        comando = raw_input("R2D2: Insira um comando >")
+        comando = raw_input("R2D2: Insira um comando > ")
         return comando
+    
+    def stopPoing(self):
+        comando = raw_input("> ")
         
-    def listarColetores(self):
-        os.system('clear')
+    def listaDeColetores(self):
+        self.printCharacters()
         print "Lista de coletores:\n"
         for coletor, status in self.getColetores().iteritems():
             print str(coletor) + ": " + status
             
-        comando = self.ask()
-    
     def suspenderColetores(self):
-        os.system('clear')
-        self.listarColetores()
+        self.printCharacters()
+        self.listaDeColetores()
         print "Escolha o coletor que deseja suspender:\n"
         comando = self.ask()
         
     def continuarColetando(self):
-        os.system('clear')
-        print "CONTINUANDO"
+        self.printCharacters()
+        self.listaDeColetores()
+        print "Escolha o coletor que deseja continuar:\n"
         comando = self.ask()
         
     def iniciarColeta(self):
-        os.system('clear')
-        print "COLETANDO"
+        self.printCharacters()
+        self.listaDeColetores()
+        print "Escolha o coletor que deseja coletar:\n"
         comando = self.ask()
         
     def enviarComando(self, comando):
-        self.listarColetores()
+        self.listaDeColetores()
         if self.getColetorAtual() == "":
             self.setColetorAtual(raw_input("Insira o IP de um coletor valido:"))
         
@@ -132,7 +137,8 @@ class Monitor:
                 print ""
                 comando = self.ask().upper()
             if comando == "LISTAR":
-                self.listarColetores()
+                self.listaDeColetores()
+                self.stopPoing()
             elif comando == "SUSPENDER":
                 self.suspenderColetores()
             elif comando == "CONTINUAR":
@@ -142,9 +148,6 @@ class Monitor:
             else:
                 self.enviarComando(comando)
                 
-            
-            
-        
 if __name__ == '__main__':
     
     monitor = Monitor()
