@@ -1,5 +1,5 @@
 # -*- coding: cp1252 -*-
-#PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f r2d2-coletor.py
+#PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f coletor.py
 import os, socket, traceback, sys
 from various import Various
 
