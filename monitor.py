@@ -1,5 +1,4 @@
-import socket, sys, os
-#Teste
+import socket, sys, os, threading
 
 class Monitor:
 
@@ -10,8 +9,8 @@ class Monitor:
         #self.clientSocket.settimeout(20)
         self.coletores = {}
         self.coletorAtual = ""
-        
-        self.iniciarMonitor()
+
+        # self.iniciarMonitor()
         
     def getColetores(self):
         return self.coletores
@@ -30,18 +29,16 @@ class Monitor:
         
     def getDestino(self):
         return self.destino
-    
-    def iniciarMonitor(self):
         
+    def start(self):
+        # Inicia o monitor para que esse seja percebido pelos coletores
         clientSocket = self.getClientSocket()
         coletores = self.getColetores()
-        
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         clientSocket.sendto("MONITOR", self.getDestino())
         
-        print "R2D2: Aguardando respostas; pressione 'Ctrl+C' para parar."
-        
         while 1:
+            print "teste de thread" 
             mensagem, endereco = clientSocket.recvfrom(2048)
             if not len(mensagem):
                 break
@@ -152,4 +149,6 @@ class Monitor:
 if __name__ == '__main__':
     
     monitor = Monitor()
+    monitorThread = threading.Thread(target=monitor.start, args=())
+    monitorThread.start()
     monitor.inserirComando()
