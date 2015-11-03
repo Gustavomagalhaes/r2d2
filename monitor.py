@@ -9,8 +9,6 @@ class Monitor:
         #self.clientSocket.settimeout(20)
         self.coletores = {}
         self.coletorAtual = ""
-
-        # self.iniciarMonitor()
         
     def getColetores(self):
         return self.coletores
