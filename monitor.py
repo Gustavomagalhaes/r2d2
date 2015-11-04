@@ -128,12 +128,12 @@ class Monitor:
     def inserirComando(self):
         while True:
             comando = ""
-            listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":""}
+            listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "SAIR":""}
             while comando not in listadecomandos.keys():
                 os.system('clear')
                 self.printCharacters()
                 print ""
-                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR |"
+                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR | SAIR |"
                 print ""
                 comando = self.ask().upper()
             if comando == "LISTAR":
@@ -145,6 +145,8 @@ class Monitor:
                 self.continuarColetando()
             elif comando == "COLETAR":
                 self.iniciarColeta()
+            elif comando == "SAIR":
+                break
             else:
                 self.enviarComando(comando, '')
                 
