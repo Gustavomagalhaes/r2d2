@@ -40,10 +40,10 @@ class Monitor:
             mensagem, endereco = clientSocket.recvfrom(2048)
             if not len(mensagem):
                 break
-            print "R2D2: Coletor %s localizado: %s" % (str(endereco), mensagem)
+            print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
             if endereco[0] not in coletores.keys():
                 self.setColetor(endereco[0])
-                print "R2D2: Coletor adicionado a lista de coletores."
+                print "[R2D2] Coletor adicionado a lista de coletores."
                 #self.getClientSocket().close()
             break
     
@@ -70,7 +70,7 @@ class Monitor:
         print "                                         "
     
     def ask(self):
-        comando = raw_input("R2D2: Insira um comando > ")
+        comando = raw_input("[R2D2] Insira um comando > ")
         return comando
     
     def stopPoing(self):
@@ -99,12 +99,12 @@ class Monitor:
         self.listaDeColetores()
         print "Escolha o coletor que deseja coletar:\n"
         comando = self.ask()
+        self.enviarComando(comando)
         
     def enviarComando(self, comando):
-        self.listaDeColetores()
-        if self.getColetorAtual() == "":
-            self.setColetorAtual(raw_input("Insira o IP de um coletor valido:"))
-        
+        #self.listaDeColetores()
+        #if self.getColetorAtual() == "":
+        #    self.setColetorAtual(raw_input("Insira o IP de um coletor valido:"))
         self.getClientSocket().setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         mensagem = ""
         while mensagem != "OK":
