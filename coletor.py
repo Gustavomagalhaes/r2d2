@@ -32,10 +32,10 @@ class Coletor:
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
                     serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
                     print "[C3PO] Aguardando..."
-                    self.receberComando()
+                    self.run()
                     #self.getServerSocket().close()
                     self.serverSocket.settimeout(0)
-                    break
+                    #break
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
@@ -44,7 +44,7 @@ class Coletor:
                 #traceback.print_exc()
                 print "[C3PO] Procurando monitor..."
     
-    def receberComando(self):
+    def run(self):
         
         #yoda = Various()
         
