@@ -28,7 +28,11 @@ class Monitor:
     def getDestino(self):
         return self.destino
         
-    def start(self):
+    def run(self):
+        monitor = threading.Thread(target=self.iniciarMonitor)
+        monitor.start()
+        
+    def iniciarMonitor(self):
         # Inicia o monitor para que esse seja percebido pelos coletores
         clientSocket = self.getClientSocket()
         coletores = self.getColetores()
@@ -98,24 +102,20 @@ class Monitor:
         self.printCharacters()
         self.listaDeColetores()
         print "Escolha o coletor que deseja coletar:\n"
-        comando = self.ask()
-        self.enviarComando(comando)
+        coletor = self.ask()
+        self.enviarComando("COLETAR", coletor)
         
-    def enviarComando(self, comando):
-        #self.listaDeColetores()
-        #if self.getColetorAtual() == "":
-        #    self.setColetorAtual(raw_input("Insira o IP de um coletor valido:"))
-        self.getClientSocket().setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    def enviarComando(self, comando, coletor):
+        clientSocket = self.getClientSocket()
+        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         mensagem = ""
         while mensagem != "OK":
             print "Aguardando..."
             try:
                 print "entrou no try"
-                #print self.getColetorAtual()
-                clientSocket = self.getClientSocket()
-                clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-                clientSocket.sendto(comando, (self.getColetorAtual(), 5000))
-                mensagem, endereco = self.getClientSocket().recvfrom(2048)
+                clientSocket.sendto(comando, (coletor, 5000))
+                mensagem, endereco = clientSocket.recvfrom(2048)
                 
                 break
             

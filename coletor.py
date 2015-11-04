@@ -4,19 +4,28 @@ import os, socket, traceback, sys, threading
 from various import Various
 
 
-class Coletor:
+class Coletor(threading.Thread):
     
-    def __init__(self):
+    def __init__(self, threadID, name, counter):
+        
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.settimeout(20)
         
         #self.localizarMonitor()
+    
+    def run(self):
+        coletor = threading.Thread(target=self.localizarMonitor)
+        coletor.start()
         
     def getServerSocket(self):
         return self.serverSocket
 
-    def start(self):
+    def localizarMonitor(self):
         serverSocket = self.getServerSocket()
         
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -33,6 +42,8 @@ class Coletor:
                     serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
                     print "[C3PO] Aguardando..."
                     #self.getServerSocket().close()
+                    comando = threading.Thread(target=self.receberComando)
+                    comando.start()
                     self.serverSocket.settimeout(0)
                     break
                 else:
@@ -43,16 +54,16 @@ class Coletor:
                 #traceback.print_exc()
                 print "[C3PO] Procurando monitor..."
     
-    def run(self):
-        
-        #yoda = Various()
+    def receberComando(self):
         
         serverSocket = self.getServerSocket()
         
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         serverSocket.bind(('', 5000))
-       
+        
+        print "[C3PO] Procurando monitor..."
+    
         while 1:
             try:
                 
@@ -86,7 +97,7 @@ class Coletor:
 
 if __name__ == '__main__':
     
-    coletor = Coletor()
-    coletorThread = threading.Thread(target=coletor.start, args=())
-    coletorThread.start()
-    comandoThread = threading.Thread(target=coletor.run, args=())
+    
+    #coletorThread = threading.Thread(target=coletor.start, args=())
+    #coletorThread.start()
+    #comandoThread = threading.Thread(target=coletor.run, args=())
