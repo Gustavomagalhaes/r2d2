@@ -23,15 +23,15 @@ class Coletor:
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         serverSocket.bind(('', 5000))
         
-        print "C3PO - Procurando monitor..."
+        print "[C3PO] Procurando monitor..."
     
         while 1:
             try:
                 mensagem, endereco = serverSocket.recvfrom(8192)
                 if mensagem == "MONITOR":
-                    print "C3PO: Monitor %s localizado" % (str(endereco))
-                    serverSocket.sendto("C3PO: Aguardando comandos.", endereco)
-                    print "C3PO: Aguardando..."
+                    print "[C3PO] Monitor %s localizado" % (str(endereco))
+                    serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
+                    print "[C3PO] Aguardando..."
                     #self.getServerSocket().close()
                     self.serverSocket.settimeout(0)
                     break
@@ -40,7 +40,8 @@ class Coletor:
             except (KeyboardInterrupt, SystemExit):
                 raise
             except:
-                traceback.print_exc()
+                #traceback.print_exc()
+                print "[C3PO] Reconectando..."
     
     def receberComando(self):
         
@@ -57,23 +58,23 @@ class Coletor:
                 
                 mensagem, endereco = self.getServerSocket().recvfrom(8192)
                 if mensagem == "COLETAR":# and yoda.getStatus() == None:
-                    self.getServerSocket().sendto("C3PO: Capturando...", endereco)
-                    print "C3PO: Capturando"
+                    self.getServerSocket().sendto("[C3PO] Capturando...", endereco)
+                    print "[C3PO] Capturando"
                     yoda.start()
                     
                 elif mensagem == "COLETAR":# and yoda.getStatus() == False:
-                    self.getServerSocket().sendto("C3PO: Capturando...", endereco)
+                    self.getServerSocket().sendto("[C3PO] Capturando...", endereco)
                     yoda.setStatus(True)
                 
                 elif mensagem == "COLETAR":# and yoda.getStatus() == True:
-                    self.getServerSocket().sendto("C3PO: Capturando...", endereco)
+                    self.getServerSocket().sendto("[C3PO] Capturando...", endereco)
                     
                 elif mensagem == "SUSPENDER":
-                    self.getServerSocket().sendto("C3PO: Coleta suspensa.", endereco)
+                    self.getServerSocket().sendto("[C3PO] Coleta suspensa.", endereco)
                     yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR":
-                    self.getServerSocket().sendto("C3PO: Coleta retomada.", endereco)
+                    self.getServerSocket().sendto("[C3PO] Coleta retomada.", endereco)
                     yoda.setStatus(True)
                     
                 print "OK"
