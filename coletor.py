@@ -50,13 +50,14 @@ class Coletor():
             except:
                 #traceback.print_exc()
                 print "[C3PO] Ainda procurando monitor..."
+        serverSocket.close()
     
     def receberComando(self):
         
         serverSocket = self.getServerSocket()
-        # serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        # serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        # serverSocket.bind(('', 5000))
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        serverSocket.bind(('', 5000))
         
         print "[C3PO] Aguardando comando do monitor..."
     
@@ -64,6 +65,8 @@ class Coletor():
             try:
                 
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
+                print mensagem
+                print endereco
                 if mensagem == "COLETAR":# and yoda.getStatus() == None:
                     self.serverSocket.sendto("[C3PO] Capturando...", endereco)
                     print "[C3PO] Capturando"
