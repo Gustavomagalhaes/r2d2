@@ -4,14 +4,9 @@ import os, socket, traceback, sys, threading
 from various import Various
 
 
-class Coletor(threading.Thread):
+class Coletor():
     
-    def __init__(self, threadID, name, counter):
-        
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-        self.counter = counter
+    def __init__(self):
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.settimeout(20)
@@ -97,7 +92,7 @@ class Coletor(threading.Thread):
 
 if __name__ == '__main__':
     
-    
-    #coletorThread = threading.Thread(target=coletor.start, args=())
+    coletor = Coletor()
+    #coletorThread = threading.Thread(target=coletor.start)
     #coletorThread.start()
     #comandoThread = threading.Thread(target=coletor.run, args=())
