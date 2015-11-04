@@ -38,7 +38,7 @@ class Coletor():
                     serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
                     #print "[C3PO] Aguardando..."
                     #self.getServerSocket().close()
-                    comando = threading.Thread(target=self.receberComando)
+                    comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
                     comando.join()
                     self.serverSocket.settimeout(0)
@@ -52,12 +52,12 @@ class Coletor():
                 print "[C3PO] Ainda procurando monitor..."
         serverSocket.close()
     
-    def receberComando(self):
+    def receberComando(self, monitor):
         
         serverSocket = self.getServerSocket()
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        serverSocket.bind(('', 5000))
+        serverSocket.bind(monitor)
         
         print "[C3PO] Aguardando comando do monitor..."
     
