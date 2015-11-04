@@ -111,10 +111,12 @@ class Monitor:
             print "Aguardando..."
             try:
                 print "entrou no try"
-                print self.getColetorAtual()
-                self.getClientSocket().sendto(comando, (self.getColetorAtual(), 5000))
-                self.setColetorAtual("")
+                #print self.getColetorAtual()
+                clientSocket = self.getClientSocket()
+                clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+                clientSocket.sendto(comando, (self.getColetorAtual(), 5000))
                 mensagem, endereco = self.getClientSocket().recvfrom(2048)
+                
                 break
             
             except:
