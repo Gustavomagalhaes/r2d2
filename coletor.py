@@ -40,7 +40,7 @@ class Coletor():
                     #self.getServerSocket().close()
                     self.monitorUnicast(endereco)
                     self.serverSocket.settimeout(0)
-                    break
+                    #break
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):

@@ -15,7 +15,7 @@ class Monitor:
         return self.coletores
         
     def setColetor(self, coletor):
-        self.coletores[(coletor)] = "Coletando"
+        self.coletores[(coletor)] = "[Não iniciado]"
         
     def setColetorAtual(self, coletor):
         self.coletorAtual = coletor
