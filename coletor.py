@@ -45,7 +45,7 @@ class Coletor:
     
     def receberComando(self):
         
-        yoda = Various()
+        #yoda = Various()
         
         try:
             self.getServerSocket().bind(('',5000))
@@ -60,28 +60,28 @@ class Coletor:
                 if mensagem == "COLETAR":# and yoda.getStatus() == None:
                     self.getServerSocket().sendto("[C3PO] Capturando...", endereco)
                     print "[C3PO] Capturando"
-                    yoda.start()
+                   # yoda.start()
                     
                 elif mensagem == "COLETAR":# and yoda.getStatus() == False:
                     self.getServerSocket().sendto("[C3PO] Capturando...", endereco)
-                    yoda.setStatus(True)
+                  #  yoda.setStatus(True)
                 
                 elif mensagem == "COLETAR":# and yoda.getStatus() == True:
                     self.getServerSocket().sendto("[C3PO] Capturando...", endereco)
                     
                 elif mensagem == "SUSPENDER":
                     self.getServerSocket().sendto("[C3PO] Coleta suspensa.", endereco)
-                    yoda.setStatus(False)
+                  #  yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR":
                     self.getServerSocket().sendto("[C3PO] Coleta retomada.", endereco)
-                    yoda.setStatus(True)
+                  #  yoda.setStatus(True)
                     
                 print "OK"
                 
                 self.getServerSocket().sendto("OK", endereco)
             except (KeyboardInterrupt, SystemExit):
-                yoda.stop()
+              #  yoda.stop()
                 break
 
 if __name__ == '__main__':
@@ -89,3 +89,4 @@ if __name__ == '__main__':
     coletor = Coletor()
     coletorThread = threading.Thread(target=coletor.start, args=())
     coletorThread.start()
+    coletor.receberComando()
