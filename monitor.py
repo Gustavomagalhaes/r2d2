@@ -146,6 +146,7 @@ class Monitor:
             elif comando == "COLETAR":
                 self.iniciarColeta()
             elif comando == "SAIR":
+                os.system('clear')
                 break
             else:
                 self.enviarComando(comando, '')
