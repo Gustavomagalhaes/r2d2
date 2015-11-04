@@ -144,11 +144,11 @@ class Monitor:
             elif comando == "COLETAR":
                 self.iniciarColeta()
             else:
-                self.enviarComando(comando)
+                self.enviarComando(comando, '')
                 
 if __name__ == '__main__':
     
     monitor = Monitor()
-    monitorThread = threading.Thread(target=monitor.start, args=())
-    monitorThread.start()
-    monitor.inserirComando()
+    #monitorThread = threading.Thread(target=monitor.start, args=())
+    #monitorThread.start()
+    #monitor.inserirComando()
