@@ -38,9 +38,7 @@ class Coletor():
                     serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
                     #print "[C3PO] Aguardando..."
                     #self.getServerSocket().close()
-                    comando = threading.Thread(target=self.receberComando(endereco))
-                    comando.start()
-                    comando.join()
+                    self.monitorUnicast(endereco)
                     self.serverSocket.settimeout(0)
                     break
                 else:
@@ -50,13 +48,16 @@ class Coletor():
             except:
                 #traceback.print_exc()
                 print "[C3PO] Ainda procurando monitor..."
-        serverSocket.close()
+
+    def monitorUnicast(self, endereco):
+        comando = threading.Thread(target=self.receberComando(endereco))
+        comando.start()
     
     def receberComando(self, monitor):
         
         serverSocket = self.getServerSocket()
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        #serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        #serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         serverSocket.bind(monitor)
         
         print "[C3PO] Aguardando comando do monitor..."
