@@ -49,6 +49,7 @@ class Monitor:
             if endereco[0] not in coletores.keys():
                 self.setColetor(endereco[0])
                 print "[R2D2] Coletor adicionado a lista de coletores."
+                self.inserirComando()
                 #self.getClientSocket().close()
             break
     
