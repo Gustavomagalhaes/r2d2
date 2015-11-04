@@ -41,7 +41,7 @@ class Coletor:
                 raise
             except:
                 #traceback.print_exc()
-                print "[C3PO] Reconectando..."
+                print "[C3PO] Procurando monitor..."
     
     def receberComando(self):
         
