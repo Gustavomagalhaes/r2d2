@@ -32,10 +32,9 @@ class Coletor:
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
                     serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
                     print "[C3PO] Aguardando..."
-                    self.run()
                     #self.getServerSocket().close()
                     self.serverSocket.settimeout(0)
-                    #break
+                    break
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
@@ -90,3 +89,4 @@ if __name__ == '__main__':
     coletor = Coletor()
     coletorThread = threading.Thread(target=coletor.start, args=())
     coletorThread.start()
+    comandoThread = threading.Thread(target=coletor.run, args=())
