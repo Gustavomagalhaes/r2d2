@@ -41,7 +41,7 @@ class Monitor:
         clientSocket.sendto("MONITOR", self.getDestino())
         
         while 1:
-            print "teste de thread" 
+            #print "teste de thread" 
             mensagem, endereco = clientSocket.recvfrom(2048)
             if not len(mensagem):
                 break

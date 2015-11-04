@@ -40,6 +40,7 @@ class Coletor():
                     #self.getServerSocket().close()
                     comando = threading.Thread(target=self.receberComando)
                     comando.start()
+                    comando.join()
                     self.serverSocket.settimeout(0)
                     break
                 else:
