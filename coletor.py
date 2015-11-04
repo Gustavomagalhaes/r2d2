@@ -1,6 +1,6 @@
 # -*- coding: cp1252 -*-
 #PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f coletor.py
-import os, socket, traceback, sys
+import os, socket, traceback, sys, threading
 from various import Various
 
 
@@ -11,12 +11,12 @@ class Coletor:
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.settimeout(20)
         
-        self.localizarMonitor()
+        #self.localizarMonitor()
         
     def getServerSocket(self):
         return self.serverSocket
 
-    def localizarMonitor(self):
+    def start(self):
         serverSocket = self.getServerSocket()
         
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -86,4 +86,6 @@ class Coletor:
 
 if __name__ == '__main__':
     
-    c3po = Coletor()
+    coletor = Coletor()
+    coletorThread = threading.Thread(target=coletor.start, args=())
+    coletorThread.start()
