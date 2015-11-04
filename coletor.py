@@ -10,6 +10,7 @@ class Coletor():
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.settimeout(20)
+        self.run()
         
         #self.localizarMonitor()
     
