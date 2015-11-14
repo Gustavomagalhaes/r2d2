@@ -42,7 +42,7 @@ class Coletor():
                     print 'passou do monitorUnicast()'
                     self.serverSocket.settimeout(0)
                     print 'passou do settimeout(0)'
-                    return False
+                    #return False
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
