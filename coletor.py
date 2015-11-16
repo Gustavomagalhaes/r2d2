@@ -30,7 +30,7 @@ class Coletor():
         
         print "[C3PO] Procurando monitor..."
     
-        while True:
+        while 1:
             try:
                 mensagem, endereco = serverSocket.recvfrom(8192)
                 if mensagem == "MONITOR":
@@ -42,7 +42,7 @@ class Coletor():
                     print 'passou do monitorUnicast()'
                     self.serverSocket.settimeout(0)
                     print 'passou do settimeout(0)'
-                    #return False
+                    return 0
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
