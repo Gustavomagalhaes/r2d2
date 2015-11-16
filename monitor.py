@@ -117,7 +117,7 @@ class Monitor:
             try:
                 print "entrou no try"
                 clientSocket.sendto(comando, (coletor, 5000))
-                print 'enviou'
+                print 'enviou para coletor ' + coletor
                 mensagem, endereco = clientSocket.recvfrom(2048)
                 print 'recebeu '+mensagem
                 

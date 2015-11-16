@@ -26,7 +26,7 @@ class Coletor():
         
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        serverSocket.bind(('', 5000))
+        serverSocket.bind(('<broadcast>', 5000))
         
         print "[C3PO] Procurando monitor..."
     
