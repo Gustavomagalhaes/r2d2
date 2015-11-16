@@ -45,12 +45,12 @@ class Monitor:
             mensagem, endereco = clientSocket.recvfrom(2048)
             if not len(mensagem):
                 break
-            #print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
+            print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
             if endereco[0] not in coletores.keys():
                 self.setColetor(endereco[0])
-                #print "[R2D2] Coletor adicionado a lista de coletores."
+                print "[R2D2] Coletor adicionado a lista de coletores."
                 self.inserirComando()
-                #self.getClientSocket().close()
+                self.getClientSocket().close()
             break
     
     def printCharacters(self):
