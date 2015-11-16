@@ -26,7 +26,7 @@ class Coletor():
         
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        serverSocket.bind(('<broadcast>', 5000))
+        serverSocket.bind(('', 5000))
         
         print "[C3PO] Procurando monitor..."
     
@@ -36,12 +36,13 @@ class Coletor():
                 if mensagem == "MONITOR":
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
                     serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
+                    print 'enviou aguardo do comando para '+ str(endereco)
                     #print "[C3PO] Aguardando..."
                     #self.getServerSocket().close()
-                    self.monitorUnicast(endereco)
-                    print 'passou do monitorUnicast()'
-                    self.serverSocket.settimeout(0)
-                    print 'passou do settimeout(0)'
+                    ##self.monitorUnicast(endereco)
+                    ##print 'passou do monitorUnicast()'
+                    ##self.serverSocket.settimeout(0)
+                    ##print 'passou do settimeout(0)'
                     return 0
                 else:
                     continue
