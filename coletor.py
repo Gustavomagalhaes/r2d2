@@ -35,8 +35,9 @@ class Coletor():
                 mensagem, endereco = serverSocket.recvfrom(8192)
                 if mensagem == "MONITOR":
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
-                    serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
-                    print 'enviou aguardo do comando para '+ str(endereco)
+                    self.serverSocket().close()
+                    #serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
+                    #print 'enviou aguardo do comando para '+ str(endereco)
                     #print "[C3PO] Aguardando..."
                     #self.getServerSocket().close()
                     ##self.monitorUnicast(endereco)
