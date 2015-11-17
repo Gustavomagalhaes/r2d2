@@ -30,16 +30,17 @@ class Coletor():
         
         print "[C3PO] Procurando monitor..."
     
-        while 1:
+        while True:
             try:
                 mensagem, endereco = serverSocket.recvfrom(8192)
                 if mensagem == "MONITOR":
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
                     serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
+                    self.serverSocket.settimeout(0)
                     #print "[C3PO] Aguardando..."
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
-                    break
+                    return False
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
@@ -47,7 +48,7 @@ class Coletor():
             except:
                 traceback.print_exc()
                 #print "[C3PO] Ainda procurando monitor..."
-        serverSocket.close()
+        #serverSocket.close()
     
     def receberComando(self, monitor):
         
