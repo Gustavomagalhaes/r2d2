@@ -37,30 +37,27 @@ class Coletor():
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
                     serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
                     #print "[C3PO] Aguardando..."
-                    self.getServerSocket().close()
-                    self.monitorUnicast(endereco)
-                    print 'passou do monitorUnicast()'
+                    #self.getServerSocket().close()
+                    comando = threading.Thread(target=self.receberComando(endereco))
+                    comando.start()
+                    comando.join()
                     self.serverSocket.settimeout(0)
-                    print 'passou do settimeout(0)'
                     break
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
                 raise
             except:
-                traceback.print_exc()
+                #traceback.print_exc()
                 print "[C3PO] Ainda procurando monitor..."
-
-    def monitorUnicast(self, endereco):
-        comando = threading.Thread(target=self.receberComando(endereco))
-        comando.start()
+        serverSocket.close()
     
     def receberComando(self, monitor):
         
         serverSocket = self.getServerSocket()
-        #serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        serverSocket.bind(('',5000))
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        serverSocket.bind(monitor)
         
         print "[C3PO] Aguardando comando do monitor..."
     
