@@ -30,7 +30,7 @@ class Coletor():
         
         print "[C3PO] Procurando monitor..."
     
-        while True:
+        while 1:
             try:
                 mensagem, endereco = serverSocket.recvfrom(8192)
                 if mensagem == "MONITOR":
@@ -40,7 +40,7 @@ class Coletor():
                     #print "[C3PO] Aguardando..."
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
-                    return False
+                    break
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
