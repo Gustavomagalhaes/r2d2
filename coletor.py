@@ -48,8 +48,8 @@ class Coletor():
             except (KeyboardInterrupt, SystemExit):
                 raise
             except:
-                #traceback.print_exc()
-                print "[C3PO] Ainda procurando monitor..."
+                traceback.print_exc()
+                #print "[C3PO] Ainda procurando monitor..."
         serverSocket.close()
     
     def receberComando(self, monitor):
