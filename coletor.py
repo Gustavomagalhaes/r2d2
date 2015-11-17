@@ -48,7 +48,7 @@ class Coletor():
             except:
                 traceback.print_exc()
                 #print "[C3PO] Ainda procurando monitor..."
-        #serverSocket.close()
+        serverSocket.close()
     
     def receberComando(self, monitor):
         
