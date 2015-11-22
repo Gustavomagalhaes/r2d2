@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <title>R2D2</title>
+
+    <script src="web/Chart.min.js"></script>
+    <script type="text/javascript" src="web/bootstrap.js"></script>
+	<link rel="stylesheet" href="web/bootstrap.css" type="text/css">
+	
+	<style type="text/css">
+
+    .box {
+        margin: 0px auto;
+        width: 70%;
+    }
+
+    .box-chart {
+        width: 100%;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    </style> 
+    
+    <script type="text/javascript">
+        var randomnb = function(){ return Math.round(Math.random()*300)};
+    </script>  
+
+</head>
+
+<body>    
+
+    <div class="box">
+
+        <h1>R2D2 Rest API</h1>
+        <h4>Gráficos</h4>
+        
+        <div class="box-chart">
+
+            <canvas id="GraficoPizza" style="width:100%;"></canvas>
+
+            <script type="text/javascript">
+
+                var options = {
+                    responsive:true
+                };
+
+                var data = [
+                    {
+                        // value: randomnb(),
+                        value: 50,
+                        color:"#F7464A",
+                        highlight: "#FF5A5E",
+                        label: "Elephant"
+                    },
+                    {
+                        // value: randomnb(),
+                        value: 50,
+                        color: "#46BFBD",
+                        highlight: "#5AD3D1",
+                        label: "Verde", 
+                        link="http://www.globo.com"
+                    },
+                    {
+                        // value: randomnb(),
+                        value: 50,
+                        color: "#FDB45C",
+                        highlight: "#FFC870",
+                        label: "Amarelo"
+                    }
+                ]
+                
+                window.onload = function(){
+
+                    var ctx = document.getElementById("GraficoPizza").getContext("2d");
+                    var PizzaChart = new Chart(ctx).Pie(data, options);
+                }  
+            </script>           
+        </div>
+    </div>
+</body>
+</html>

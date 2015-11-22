@@ -43,4 +43,4 @@ api.add_resource(FilaAPI, '/r2d2/api/v1.0/filas/s<string:fluxo>', endpoint='fila
 
 
 if __name__ == '__main__':
-    app.run(host='http://172.16.204.135', port=500)
+    app.run(host='http://172.17.25.80', port=500)
