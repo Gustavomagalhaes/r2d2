@@ -86,12 +86,13 @@ class Coletor():
                 continue
                 
                 #self.serverSocket.sendto("OK", endereco)
-            except (KeyboardInterrupt, SystemExit):
+            #except (KeyboardInterrupt, SystemExit):
               #  yoda.stop()
-                raise
+              #  raise
             except:
                 traceback.print_exc()
                 print "excepto"
+        
         print "SAI DESSA PORRA DE WHILE"
 
 if __name__ == '__main__':
