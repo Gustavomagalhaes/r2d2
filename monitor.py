@@ -48,7 +48,7 @@ class Monitor:
         while 1:
             #print "teste de thread" 
             mensagem, endereco = clientSocket.recvfrom(2048)
-            if mensagem != "COLETOR":
+            if not len(mensagem):
                 break
             #print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
             if endereco[0] not in coletores.keys():
