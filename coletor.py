@@ -26,7 +26,7 @@ class Coletor():
         
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        serverSocket.bind(('', 5000))
+        serverSocket.bind(('', 6000))
         
         print "[C3PO] Procurando monitor..."
     
@@ -35,7 +35,7 @@ class Coletor():
                 mensagem, endereco = serverSocket.recvfrom(8192)
                 if mensagem == "MONITOR":
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
-                    serverSocket.sendto("[C3PO] Aguardando comandos.", endereco)
+                    serverSocket.sendto("COLETOR", endereco)
                     serverSocket.settimeout(None)
                     #print "[C3PO] Aguardando..."
                     comando = threading.Thread(target=self.receberComando(endereco))
@@ -87,7 +87,9 @@ class Coletor():
                 self.serverSocket.sendto("OK", endereco)
             except (KeyboardInterrupt, SystemExit):
               #  yoda.stop()
-                break
+                raise
+            except:
+                traceback.print_exc()
 
 if __name__ == '__main__':
     
