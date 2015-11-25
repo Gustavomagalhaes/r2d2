@@ -83,6 +83,7 @@ class Coletor():
                   #  yoda.setStatus(True)
                     
                 print "OK"
+                serverSocket.close()
                 self.receberComando(monitor)
                 
                 #self.serverSocket.sendto("OK", endereco)
