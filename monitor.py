@@ -134,7 +134,7 @@ class Monitor:
             comando = ""
             listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "SAIR":""}
             while comando not in listadecomandos.keys():
-                os.system('clear')
+                #os.system('clear')
                 self.printCharacters()
                 print ""
                 print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR | SAIR |"
