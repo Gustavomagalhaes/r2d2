@@ -39,7 +39,6 @@ class Monitor:
         coletores = self.getColetores()
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         clientSocket.sendto("MONITOR", self.getDestino())
-        self.inserirComando()
         
         while 1:
             #print "teste de thread" 
@@ -52,6 +51,8 @@ class Monitor:
                 #print "[R2D2] Coletor adicionado a lista de coletores."
                 #self.getClientSocket().close()
             break
+        
+        self.inserirComando()
     
     def printCharacters(self):
 #        os.system('clear')
