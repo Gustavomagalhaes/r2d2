@@ -50,7 +50,7 @@ class Coletor():
                 #print "[C3PO] Ainda procurando monitor..."
         serverSocket.close()
     
-    def receberComando(self):
+    def receberComando(self, monitor):
         
         serverSocket = self.getServerSocket()
         
@@ -83,7 +83,7 @@ class Coletor():
                   #  yoda.setStatus(True)
                     
                 print "OK"
-                self.receberComando()
+                self.receberComando(monitor)
                 
                 #self.serverSocket.sendto("OK", endereco)
             #except (KeyboardInterrupt, SystemExit):
