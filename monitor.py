@@ -14,8 +14,8 @@ class Monitor:
     def getColetores(self):
         return self.coletores
         
-    def setColetor(self, coletor):
-        self.coletores[(coletor)] = "[Nao iniciado]"
+    def setColetor(self, coletor, status):
+        self.coletores[(coletor)] = status
         
     def setColetorAtual(self, coletor):
         self.coletorAtual = coletor
@@ -47,7 +47,7 @@ class Monitor:
                 break
             print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
             if endereco[0] not in coletores.keys():
-                self.setColetor(endereco[0])
+                self.setColetor(endereco[0], "[INATIVO]")
                 #print "[R2D2] Coletor adicionado a lista de coletores."
                 #self.getClientSocket().close()
             break
@@ -113,7 +113,7 @@ class Monitor:
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         mensagem = ""
-        while mensagem != "CAPTURANDO":
+        while (mensagem != "CAPTURANDO") or (mensagem != "SUSPENSO"):
             print "Aguardando..."
             try:
                 print "entrou no try"
@@ -121,13 +121,16 @@ class Monitor:
                 print 'enviou'
                 mensagem, endereco = clientSocket.recvfrom(2048)
                 print 'recebeu '+mensagem
+                if mensagem == "CAPTURANDO":
+                    self.setColetor(endereco[0], "[COLETANDO]")
+                elif mensagem == "SUSPENSO":
+                    self.setColetor(endereco[0], "[SUSPENSO]")
                 
                 break
             
             except:
                 print "..."
                 continue
-        print "Recebeu status CAPTURANDO"
     
     def inserirComando(self):
         while True:

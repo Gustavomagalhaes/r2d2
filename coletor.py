@@ -72,11 +72,11 @@ class Coletor():
                   #  yoda.setStatus(True)
                     
                 elif mensagem == "SUSPENDER":
-                    self.serverSocket.sendto("[C3PO] Coleta suspensa.", endereco)
+                    self.serverSocket.sendto("SUSPENSO", endereco)
                   #  yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR":
-                    self.serverSocket.sendto("[C3PO] Coleta retomada.", endereco)
+                    self.serverSocket.sendto("CAPTURANDO", endereco)
                   #  yoda.setStatus(True)
                     
                 print "OK"
