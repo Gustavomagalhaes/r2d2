@@ -39,6 +39,7 @@ class Monitor:
         coletores = self.getColetores()
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         clientSocket.sendto("MONITOR", self.getDestino())
+        self.inserirComando()
         
         while 1:
             #print "teste de thread" 
@@ -49,7 +50,6 @@ class Monitor:
             if endereco[0] not in coletores.keys():
                 self.setColetor(endereco[0])
                 #print "[R2D2] Coletor adicionado a lista de coletores."
-                self.inserirComando()
                 #self.getClientSocket().close()
             break
     
@@ -112,7 +112,7 @@ class Monitor:
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         mensagem = ""
-        while mensagem != "OK":
+        while mensagem != "CAPTURANDO":
             print "Aguardando..."
             try:
                 print "entrou no try"
@@ -126,6 +126,7 @@ class Monitor:
             except:
                 print "..."
                 continue
+        print "Recebeu status CAPTURANDO"
     
     def inserirComando(self):
         while True:

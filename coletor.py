@@ -63,16 +63,13 @@ class Coletor():
                 print mensagem
                 print endereco
                 if mensagem == "COLETAR":# and yoda.getStatus() == None:
-                    self.serverSocket.sendto("[C3PO] Capturando...", endereco)
+                    self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
                    # yoda.start()
                     
                 elif mensagem == "COLETAR":# and yoda.getStatus() == False:
-                    self.serverSocket.sendto("[C3PO] Capturando...", endereco)
+                    self.serverSocket.sendto("CAPTURANDO", endereco)
                   #  yoda.setStatus(True)
-                
-                elif mensagem == "COLETAR":# and yoda.getStatus() == True:
-                    self.serverSocket.sendto("[C3PO] Capturando...", endereco)
                     
                 elif mensagem == "SUSPENDER":
                     self.serverSocket.sendto("[C3PO] Coleta suspensa.", endereco)
@@ -84,7 +81,7 @@ class Coletor():
                     
                 print "OK"
                 
-                self.serverSocket.sendto("OK", endereco)
+                #self.serverSocket.sendto("OK", endereco)
             except (KeyboardInterrupt, SystemExit):
               #  yoda.stop()
                 raise
