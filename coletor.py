@@ -69,14 +69,17 @@ class Coletor():
                     
                 elif mensagem == "COLETAR":# and yoda.getStatus() == False:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
+                    print "[C3PO] Capturando"
                   #  yoda.setStatus(True)
                     
                 elif mensagem == "SUSPENDER":
                     self.serverSocket.sendto("SUSPENSO", endereco)
+                    print "[C3PO] Suspenso"
                   #  yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR":
                     self.serverSocket.sendto("CAPTURANDO", endereco)
+                    print "[C3PO] Capturando"
                   #  yoda.setStatus(True)
                     
                 print "OK"
@@ -88,6 +91,8 @@ class Coletor():
                 raise
             except:
                 traceback.print_exc()
+                print "excepto"
+        print "SAI DESSA PORRA DE WHILE"
 
 if __name__ == '__main__':
     
