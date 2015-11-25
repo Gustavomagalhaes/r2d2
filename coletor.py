@@ -80,6 +80,7 @@ class Coletor():
                   #  yoda.setStatus(True)
                     
                 print "OK"
+                continue
                 
                 #self.serverSocket.sendto("OK", endereco)
             except (KeyboardInterrupt, SystemExit):
