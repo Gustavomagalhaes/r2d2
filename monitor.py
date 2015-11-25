@@ -4,16 +4,12 @@ class Monitor:
 
     def __init__(self):
         
-        self.porta = 6000
-        self.destino = ('<broadcast>', self.porta)
+        self.destino = ('<broadcast>', 6000)
         self.clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         #self.clientSocket.settimeout(20)
         self.coletores = {}
         self.coletorAtual = ""
         self.run()
-        
-    def getPort(self):
-        return self.porta
         
     def getColetores(self):
         return self.coletores
@@ -43,22 +39,22 @@ class Monitor:
         coletores = self.getColetores()
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         clientSocket.sendto("MONITOR", self.getDestino())
-        self.inserirComando()
         
         while 1:
             #print "teste de thread" 
             mensagem, endereco = clientSocket.recvfrom(2048)
             if not len(mensagem):
                 break
-            #print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
+            print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
             if endereco[0] not in coletores.keys():
                 self.setColetor(endereco[0])
                 #print "[R2D2] Coletor adicionado a lista de coletores."
+                self.inserirComando()
                 #self.getClientSocket().close()
             break
     
     def printCharacters(self):
-        os.system('clear')
+#        os.system('clear')
         print "                                         "
         print "   (C3PO)                                "            
         print "         \  .-.                          "            
@@ -120,7 +116,7 @@ class Monitor:
             print "Aguardando..."
             try:
                 print "entrou no try"
-                clientSocket.sendto(comando, (coletor, self.getPort))
+                clientSocket.sendto(comando, (coletor, 6000))
                 print 'enviou'
                 mensagem, endereco = clientSocket.recvfrom(2048)
                 print 'recebeu '+mensagem
