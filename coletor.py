@@ -21,7 +21,7 @@ class Coletor():
     def getServerSocket(self):
         return self.serverSocket
 
-    def localizarMonitor(self):
+    def localizarMonitor(self, mensagem = "", endereco = ()):
         serverSocket = self.getServerSocket()
         
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -81,6 +81,10 @@ class Coletor():
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
                   #  yoda.setStatus(True)
+                 
+                elif mensagem == "MONITOR":
+                    self.localizarMonitor(mensagem, endereco)
+                    
                     
                 print "OK"
                 self.receberComando(monitor)
