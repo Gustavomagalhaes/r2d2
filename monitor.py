@@ -43,6 +43,8 @@ class Monitor:
         coletores = self.getColetores()
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         
+        comandoStatus = False
+        
         while 1:
             comando = threading.Thread(target=self.inserirComando)
             clientSocket.sendto("MONITOR", self.getDestino())
@@ -56,8 +58,9 @@ class Monitor:
                     self.setColetor(endereco[0], "[INATIVO]")
                     #print "[R2D2] Coletor adicionado a lista de coletores."
                     #self.getClientSocket().close()
-                if not comando.isAlive():
+                if comandoStatus == False:
                     comando.start()
+                    comandoStatus = True
                 else:
                     continue
     
