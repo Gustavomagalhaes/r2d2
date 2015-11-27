@@ -44,6 +44,7 @@ class Monitor:
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         
         while 1:
+            comando = threading.Thread(target=self.inserirComando)
             clientSocket.sendto("MONITOR", self.getDestino())
             #print "teste de thread" 
             mensagem, endereco = clientSocket.recvfrom(2048)
@@ -55,9 +56,10 @@ class Monitor:
                     self.setColetor(endereco[0], "[INATIVO]")
                     #print "[R2D2] Coletor adicionado a lista de coletores."
                     #self.getClientSocket().close()
-
-        comando = threading.Thread(target=self.inserirComando)
-        comando.start()
+                if not comando.isAlive():
+                    comando.start()
+                else:
+                    continue
     
     def printCharacters(self):
         os.system('clear')
