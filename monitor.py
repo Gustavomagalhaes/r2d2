@@ -9,7 +9,7 @@ class Monitor:
         #self.clientSocket.settimeout(20)
         self.coletores = {}
         self.coletorAtual = ""
-        listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "SAIR":""}
+        self.listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "SAIR":""}
         self.run()
         
     def getListaComandos(self):
