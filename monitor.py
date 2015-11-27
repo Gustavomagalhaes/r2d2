@@ -94,12 +94,14 @@ class Monitor:
         self.listaDeColetores()
         print "\nEscolha o coletor que deseja suspender:\n"
         comando = self.ask()
+        self.enviarComando("SUSPENDER", coletor)
         
     def continuarColetando(self):
         self.printCharacters()
         self.listaDeColetores()
         print "\nEscolha o coletor que deseja continuar:\n"
         comando = self.ask()
+        self.enviarComando("CONTINUAR", coletor)
         
     def iniciarColeta(self):
         self.printCharacters()
