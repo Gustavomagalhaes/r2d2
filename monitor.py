@@ -144,7 +144,7 @@ class Monitor:
     def inserirComando(self):
         while True:
             comando = ""
-            listadecomandos = self.getListaComandos
+            listadecomandos = self.getListaComandos()
             while comando not in listadecomandos.keys():
                 #os.system('clear')
                 self.printCharacters()
