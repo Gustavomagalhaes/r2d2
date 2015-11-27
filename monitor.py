@@ -9,7 +9,11 @@ class Monitor:
         #self.clientSocket.settimeout(20)
         self.coletores = {}
         self.coletorAtual = ""
+        listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "SAIR":""}
         self.run()
+        
+    def getListaComandos(self):
+        return self.listadecomandos
         
     def getColetores(self):
         return self.coletores
@@ -55,7 +59,7 @@ class Monitor:
         self.inserirComando()
     
     def printCharacters(self):
-#        os.system('clear')
+        os.system('clear')
         print "                                         "
         print "   (C3PO)                                "            
         print "         \  .-.                          "            
@@ -115,6 +119,9 @@ class Monitor:
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         mensagem = ""
+        listadecomandos = self.getListaComandos()
+        if comando not in listadecomandos.keys():
+            self.inserirComando()
         while (mensagem != "CAPTURANDO") or (mensagem != "SUSPENSO"):
             print "Aguardando..."
             try:
@@ -137,7 +144,7 @@ class Monitor:
     def inserirComando(self):
         while True:
             comando = ""
-            listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "SAIR":""}
+            listadecomandos = self.getListaComandos
             while comando not in listadecomandos.keys():
                 #os.system('clear')
                 self.printCharacters()
