@@ -42,9 +42,9 @@ class Monitor:
         clientSocket = self.getClientSocket()
         coletores = self.getColetores()
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        clientSocket.sendto("MONITOR", self.getDestino())
         
         while 1:
+            clientSocket.sendto("MONITOR", self.getDestino())
             #print "teste de thread" 
             mensagem, endereco = clientSocket.recvfrom(2048)
             if not len(mensagem):
@@ -122,24 +122,25 @@ class Monitor:
         listadecomandos = self.getListaComandos()
         if comando not in listadecomandos.keys():
             self.inserirComando()
-        while (mensagem != "CAPTURANDO") or (mensagem != "SUSPENSO"):
-            print "Aguardando..."
-            try:
-                print "entrou no try"
-                clientSocket.sendto(comando, (coletor, 6000))
-                print 'enviou'
-                mensagem, endereco = clientSocket.recvfrom(2048)
-                print 'recebeu '+mensagem
-                if mensagem == "CAPTURANDO":
-                    self.setColetor(endereco[0], "[COLETANDO]")
-                elif mensagem == "SUSPENSO":
-                    self.setColetor(endereco[0], "[SUSPENSO]")
+        else:
+            while (mensagem != "CAPTURANDO") or (mensagem != "SUSPENSO"):
+                print "Aguardando..."
+                try:
+                    print "entrou no try"
+                    clientSocket.sendto(comando, (coletor, 6000))
+                    print 'enviou'
+                    mensagem, endereco = clientSocket.recvfrom(2048)
+                    print 'recebeu '+mensagem
+                    if mensagem == "CAPTURANDO":
+                        self.setColetor(endereco[0], "[COLETANDO]")
+                    elif mensagem == "SUSPENSO":
+                        self.setColetor(endereco[0], "[SUSPENSO]")
+                    
+                    break
                 
-                break
-            
-            except:
-                print "..."
-                continue
+                except:
+                    print "..."
+                    continue
     
     def inserirComando(self):
         while True:

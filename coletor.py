@@ -83,7 +83,7 @@ class Coletor():
                   #  yoda.setStatus(True)
                  
                 elif mensagem == "MONITOR":
-                    self.localizarMonitor(mensagem, endereco)
+                    continue
                     
                     
                 print "OK"
