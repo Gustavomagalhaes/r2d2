@@ -6,12 +6,9 @@ class Various():
     def __init__(self):
         
         self.status = None
-        self.stopRequest = threading.Event()
-        self.pauseRequest = threading.Event()
         self.pacotes = {}
         self.contProtocolos = self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
         self.run()
-        
         
     def getStatus(self):
         return self.status
@@ -20,26 +17,8 @@ class Various():
         self.status = status
         
     def run(self):
-        while not self.stopRequest.isSet():
-            if not self.pauseRequest.isSet():
-                self.iniciarColeta("files/test.pcap",10000)
-            else:
-                time.sleep(5)
-                print "time..."
-        time.sleep(5)
-        print "Yoda: Parado isto."
-        #yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",10000))
-        #yoda.start()
-        
-    def stop(self, timeout = None):
-        self.stopRequest.set()
-        super(Various, self).join(timeout)
-        
-    def pause(self, timeout = None):
-        self.pauseRequest.set()
-
-    def resume(self, timeout = None):
-        self.pauseRequest.clear()
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",10000))
+        yoda.start()
     
     def listarProtocolos(self):
             diretorio = os.listdir(os.getcwd()+'/l7-pat')
@@ -140,10 +119,12 @@ class Various():
                 except:
                     print""
             elif self.getStatus() == False:
-                self.pause()
+                #self.pause()
+                print "pausa"
                 while self.getStatus() == False:
                     time.sleep(3)
-                self.resume()
+                #self.resume()
+                print "retorna"
             else:
                 time.sleep(1)
 
