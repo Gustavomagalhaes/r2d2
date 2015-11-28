@@ -54,7 +54,7 @@ class Various():
             
     def classificarProtocolo(self, protocolo):
         print self.listarProtocolos()
-        for nome, p in self.listarProtocolos():
+        for nome, p in self.listarProtocolos().iteritems():
             p = re.compile(p)
             if p.search(protocolo):            
                 return nome
