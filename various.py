@@ -11,6 +11,7 @@ class Various(Thread):
         self.pauseRequest = threading.Event()
         self.pacotes = {}
         self.contProtocolos = self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
+        self.run()
         
         
     def getStatus(self):
@@ -143,5 +144,8 @@ class Various(Thread):
                 self.resume()
             else:
                 time.sleep(1)
+
+if __name__ == '__main__':
     
+    yoda = Various()
     
