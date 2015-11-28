@@ -1,6 +1,6 @@
 import socket, sys, os, threading
 
-class Monitor:
+class Monitor():
 
     def __init__(self):
         

@@ -58,7 +58,7 @@ class Thread(threading.Thread):
             
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
-                mensagem = "Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                mensagem = "Rede: IP.\tTamanho: "+str(len(pkt))+".\tTimestamp: "+str(ts)
                 print mensagem
                 #self.emit_topic("ip",mensagem)
                 #self.emit_topic("all",mensagem)
@@ -70,7 +70,7 @@ class Thread(threading.Thread):
                     elif isinstance(transp,dpkt.udp.UDP):
                         transporte = "UDP"
                     
-                    mensagem = "Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                    mensagem = "Transporte: "+transporte+".\tRede: IP.\tTamanho: "+str(len(pkt))+".\tTimestamp: "+str(ts)
                     print mensagem
                     #self.emit_topic(transporte,mensagem)
                     #self.emit_topic("all",mensagem)
@@ -81,7 +81,7 @@ class Thread(threading.Thread):
                     for p in protocolos.items():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
-                            mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                            mensagem = "App: "+p[0]+".\tTransporte: "+transporte+".\tRede: IP.\tTamanho: "+str(len(pkt))+".\tTimestamp: "+str(ts)
                             print mensagem
                             #self.emit_topic(p[0],mensagem)
                             #self.emit_topic("all",mensagem)
@@ -89,7 +89,7 @@ class Thread(threading.Thread):
                             found = True
         					
                         if (not found):
-                            mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                            mensagem = "App: "+p[0]+".\tTransporte: "+transporte+".\tRede: IP.\tTamanho: "+str(len(pkt))+".\tTimestamp: "+str(ts)
                             print mensagem
                             #self.emit_topic("unknown",mensagem)
                             self.contProtocolos["unknown"] += 1
