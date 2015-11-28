@@ -58,7 +58,7 @@ class Various():
             p = re.compile(p)
             if p.search(protocolo):            
                 return nome
-        #return "DESCONHECIDO"
+        return "DESCONHECIDO"
             
     def enviarFila(self, routing_key, mensagem):
         connection = pika.BlockingConnection(pika.ConnectionParameters(
