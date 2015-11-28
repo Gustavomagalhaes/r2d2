@@ -57,10 +57,9 @@ class Various():
     
     def iniciarColeta(self, file="", tempo = 60):
         print "Coletando..."
-        cont = 0
+        contPkt = 0
         timeIni = time.time()
         protocolos = self.listarProtocolos()
-        print protocolos
         self.setStatus(True)
         
         for ts, pkt in pcap.pcap(file):
@@ -68,57 +67,54 @@ class Various():
                 time.sleep(1)
                 
                 try:
-                    cont += 1
-                    timeAtual = time.time()
-                    if timeAtual - timeIni > tempo:
-                        break
+                    contPkt+=1
+                    eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
+                    protRede = ""
+                    protTransporte = ""
+                    protApp = ""
                     
-                    enl = dpkt.ethernet.Ethernet(pkt)
-                    layerRede = "NA"
-                    layerTrans = "NA"
-                    layerApp = "NA"
-                    print("Pacote " + cont + " da camada de enlace - Ethernet")
-                    rede = enl.data
-                    
-                    #rede
-                    if type(rede) != (""):
-                        if (rede == dpkt.ip.IP):
-                            layerRede = "IP"
-                        elif (rede == dpkt.arp.ARP):
-                            layerRede = "ARP"
-                        else:
-                            layerRede = "UNKNOWN"
-                        msgRede = ("Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt)))
-                        #emitir(layerRede, msgRede)
-                        trns = rede.data
+                    ip = eth.data
+                    if isinstance(ip,dpkt.ip.IP):
+                        mensagem = "Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                        print mensagem
+                        #self.emit_topic("ip",mensagem)
+                        #self.emit_topic("all",mensagem)
                         
-                        #transporte
-                        if type(trns) != (""):
-                            if (trns == dpkt.tcp.TCP):
-                                layerTrans = "TCP"
-                            elif (trns == dpkt.udp.UDP):
-                                layerTrans = "UDP"
-                            else:
-                                layerTrans = "UNKNOWN"
-                            msgTrans = ("Transporte: " + layerTrans+ " | Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt)))
-                            #emitir(layerTrans, msgTrans)
-                            app = trns.data.lower()
-                            found = False
+                        transp = ip.data
+                        if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
+                            if isinstance(transp,dpkt.tcp.TCP):
+                                transporte = "TCP"
+                            elif isinstance(transp,dpkt.udp.UDP):
+                                transporte = "UDP"
                             
-                            #aplicação
+                            mensagem = "Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                            print mensagem
+                            #self.emit_topic(transporte,mensagem)
+                            #self.emit_topic("all",mensagem)
+                            
+                            self.contProtocolos["all"] += 1
+                            app = transp.data.lower()
+                            found = False
                             for p in protocolos.items():
                                 expressao = re.compile(p[1])
                                 if expressao.search(app):
-                                    msgTrans = ("Aplicação: " + p[0] + " | Transporte: " + layerTrans+ " | Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt)))
-                                    #emitir(layerApp, msgApp)
+                                    mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                                    print mensagem
+                                    #self.emit_topic(p[0],mensagem)
+                                    #self.emit_topic("all",mensagem)
+                                    self.contProtocolos[p[0]] += 1
                                     found = True
                 					
                                 if (not found):
-                                    msgTrans = ("Aplicação: " + str(app) + " | Transporte: " + layerTrans+ " | Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt)))
-                    
-                    msg = "Aplicação: " + str(app) + " | Transporte: " + layerTrans+ " | Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt))
-                    print msg
-                    #emititr
+                                    mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                                    print mensagem
+                                    #self.emit_topic("unknown",mensagem)
+                                    self.contProtocolos["unknown"] += 1
+                        else:
+                            #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
+                            print 'log'
+                    else:
+                        self.contProtocolos["nonIp"] += 1
                 
                 except:
                     print""
