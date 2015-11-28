@@ -97,7 +97,7 @@ class Various():
                     found = False
                     for p in protocolos.items():
                         expressao = re.compile(p[1])
-                        print "Capturada: " + str(expressao) + " | Original: " + str(p[1])
+                        print "Capturada: " + str(expressao) + " | Original: " + str(p[1]) + " | App: " + str(app)
                         if expressao.search(app):
                             mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
                             print mensagem
