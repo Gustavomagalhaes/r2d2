@@ -17,4 +17,4 @@ for ts, pkt in pcap.pcap("files/test.pcap"):
             if isinstance(app,parametro):
                 print p
     else:
-        print "Nao é IP"
+        print "Nao eh IP"
