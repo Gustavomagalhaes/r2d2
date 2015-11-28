@@ -53,6 +53,7 @@ class Various():
             return protocolos
             
     def classificarProtocolo(self, protocolo):
+        print self.listarProtocolos()
         for nome, p in self.listarProtocolos():
             p = re.compile(p)
             if p.search(protocolo):            
