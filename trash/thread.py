@@ -59,7 +59,7 @@ class Thread(threading.Thread):
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "Rede: IP.\tTamanho: "+str(len(pkt))+".\tTimestamp: "+str(ts)
-                print mensagem
+                print mensagem+"\n"
                 #self.emit_topic("ip",mensagem)
                 #self.emit_topic("all",mensagem)
                 
@@ -71,7 +71,7 @@ class Thread(threading.Thread):
                         transporte = "UDP"
                     
                     mensagem = "Transporte: "+transporte+".\tRede: IP.\tTamanho: "+str(len(pkt))+".\tTimestamp: "+str(ts)
-                    print mensagem
+                    print mensagem+"\n"
                     #self.emit_topic(transporte,mensagem)
                     #self.emit_topic("all",mensagem)
                     
@@ -82,7 +82,7 @@ class Thread(threading.Thread):
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             mensagem = "App: "+p[0]+".\tTransporte: "+transporte+".\tRede: IP.\tTamanho: "+str(len(pkt))+".\tTimestamp: "+str(ts)
-                            print mensagem
+                            print mensagem+"\n"
                             #self.emit_topic(p[0],mensagem)
                             #self.emit_topic("all",mensagem)
                             self.contProtocolos[p[0]] += 1
@@ -90,7 +90,7 @@ class Thread(threading.Thread):
         					
                         if (not found):
                             mensagem = "App: "+p[0]+".\tTransporte: "+transporte+".\tRede: IP.\tTamanho: "+str(len(pkt))+".\tTimestamp: "+str(ts)
-                            print mensagem
+                            print mensagem+"\n"
                             #self.emit_topic("unknown",mensagem)
                             self.contProtocolos["unknown"] += 1
                 else:
