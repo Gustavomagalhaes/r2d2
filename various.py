@@ -17,6 +17,7 @@ class Various():
         self.status = status
         
     def run(self):
+        print "Tá no run"
         yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",10000))
         yoda.start()
     
@@ -55,6 +56,7 @@ class Various():
         connection.close()
     
     def iniciarColeta(self, file="", tempo = 60):
+        print "Coletando..."
         cont = 0
         timeIni = time.time()
         protocolos = self.listarProtocolos()
@@ -131,5 +133,4 @@ class Various():
 if __name__ == '__main__':
     
     various = Various()
-    various.iniciarColeta("files/test.pcap",10000)
     
