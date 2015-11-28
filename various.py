@@ -60,6 +60,8 @@ class Various():
         cont = 0
         timeIni = time.time()
         protocolos = self.listarProtocolos()
+        print protocolos
+        self.setStatus(True)
         
         for ts, pkt in pcap.pcap(file):
             if self.getStatus() == True:
