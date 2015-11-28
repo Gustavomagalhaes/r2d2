@@ -26,6 +26,7 @@ class Various(Thread):
                 self.iniciarColeta("files/test.pcap",10000)
             else:
                 time.sleep(5)
+                print "time..."
         time.sleep(5)
         print "Yoda: Parado isto."
         
