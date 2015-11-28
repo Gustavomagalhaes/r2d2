@@ -53,8 +53,8 @@ class Various():
             return protocolos
             
     def classificarProtocolo(self, protocolo):
-        for p in self.listarProtocolos():
-            print p
+        for p, n in self.listarProtocolos():
+            print p + " - " + n
             #if p.search(protocolo):            
             #    return p[0]
         #return "DESCONHECIDO"
