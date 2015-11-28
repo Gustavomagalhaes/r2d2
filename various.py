@@ -50,6 +50,12 @@ class Various():
                 
             return protocolos
             
+    def classificarProtocolo(self, protocolo):
+        for nome,p in self.listarProtocolos():
+            if p.search(protocolo):            
+                return nome
+        return "DESCONHECIDO"
+            
     def enviarFila(self, routing_key, mensagem):
         connection = pika.BlockingConnection(pika.ConnectionParameters(
                "", 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
@@ -95,22 +101,10 @@ class Various():
                     self.contProtocolos["all"] += 1
                     app = transp.data.lower()
                     found = False
-                    for p in protocolos.items():
-                        expressao = re.compile(p[1])
-                        print "Capturada: " + str(expressao) + " | Original: " + str(p[1]) + " | App: " + str(app)
-                        if expressao.search(app):
-                            mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                            print mensagem
-                            #self.emit_topic(p[0],mensagem)
-                            #self.emit_topic("all",mensagem)
-                            self.contProtocolos[p[0]] += 1
-                            found = True
-        					
-                        if (not found):
-                            mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                            print mensagem
-                            #self.emit_topic("unknown",mensagem)
-                            self.contProtocolos["unknown"] += 1
+                    tagCamadaApp = self.classificarProtocolo(app)
+                    mensagem = "App: "+tagCamadaApp+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                    print mensagem
+                    self.contProtocolos[tagCamadaApp] += 1
                 else:
                     #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
                     print 'erro'
