@@ -131,4 +131,5 @@ class Various():
 if __name__ == '__main__':
     
     various = Various()
+    various.iniciarColeta("files/test.pcap",10000)
     
