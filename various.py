@@ -63,7 +63,7 @@ class Various():
     
     def iniciarColeta(self, file="", tempo = 60):
         print "Coletando..."
-        for ts, pkt in pcap.pcap('test-capture.pcap'):
+        for ts, pkt in pcap.pcap(file):
 
             eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
             ip = eth.data
