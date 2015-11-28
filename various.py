@@ -21,14 +21,16 @@ class Various(Thread):
         self.status = status
         
     def run(self):
-        while not self.stopRequest.isSet():
-            if not self.pauseRequest.isSet():
-                self.iniciarColeta("files/test.pcap",10000)
-            else:
-                time.sleep(5)
-                print "time..."
-        time.sleep(5)
-        print "Yoda: Parado isto."
+        #while not self.stopRequest.isSet():
+        #    if not self.pauseRequest.isSet():
+        #        self.iniciarColeta("files/test.pcap",10000)
+        #    else:
+        #        time.sleep(5)
+        #        print "time..."
+        #time.sleep(5)
+        #print "Yoda: Parado isto."
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",10000))
+        yoda.start()
         
     def stop(self, timeout = None):
         self.stopRequest.set()
@@ -148,5 +150,5 @@ class Various(Thread):
 
 if __name__ == '__main__':
     
-    yoda = Various()
+    various = Various()
     
