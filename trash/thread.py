@@ -49,7 +49,7 @@ class Thread(threading.Thread):
     def extrairPacotes(self):
         protocolos = self.listarProtocolos()
         contPkt = 0
-        for ts, pkt in pcap.pcap("test.pcap"):
+        for ts, pkt in pcap.pcap("./files/test.pcap"):
             contPkt+=1
             eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
             protRede = ""
