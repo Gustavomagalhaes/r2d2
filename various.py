@@ -10,6 +10,12 @@ class Various():
         self.contProtocolos = self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
         self.run()
         
+    def getPacotes(self):
+        return self.pacotes
+        
+    def setPacote(self, chave, conteudo):
+        self.pacotes[(chave)] = conteudo
+        
     def getStatus(self):
         return self.status
         
@@ -57,60 +63,29 @@ class Various():
     
     def iniciarColeta(self, file="", tempo = 60):
         print "Coletando..."
-        protocolos = self.listarProtocolos()
-        contPkt = 0
-        for ts, pkt in pcap.pcap("./files/test.pcap"):
-            contPkt+=1
+        for ts, pkt in pcap.pcap('test-capture.pcap'):
+
             eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
-            protRede = ""
-            protTransporte = ""
-            protApp = ""
-            
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
-                mensagem = "Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                print mensagem
-                #self.emit_topic("ip",mensagem)
-                #self.emit_topic("all",mensagem)
-                
-                transp = ip.data
-                if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
-                    if isinstance(transp,dpkt.tcp.TCP):
-                        transporte = "TCP"
-                    elif isinstance(transp,dpkt.udp.UDP):
-                        transporte = "UDP"
-                    
-                    mensagem = "Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                    print mensagem
-                    #self.emit_topic(transporte,mensagem)
-                    #self.emit_topic("all",mensagem)
-                    
-                    self.contProtocolos["all"] += 1
-                    app = transp.data.lower()
-                    found = False
-                    for p in protocolos.items():
-                        expressao = re.compile(p[1])
-                        if expressao.search(app):
-                            mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                            print mensagem
-                            #self.emit_topic(p[0],mensagem)
-                            #self.emit_topic("all",mensagem)
-                            self.contProtocolos[p[0]] += 1
-                            found = True
-        					
-                        if (not found):
-                            mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                            print mensagem
-                            #self.emit_topic("unknown",mensagem)
-                            self.contProtocolos["unknown"] += 1
-                else:
-                   # self.logErros.writelines("#captura_pacotes: ", transp, " \n")
-                   print 'log'
-            else:
-                self.contProtocolos["nonIp"] += 1
-        
-        #for p in self.contProtocolos.items():
-        #	print(p[0]+" Pkts:"+str(p[1]))
+                endOri = socket.inet_ntop(socket.AF_INET, ip.src)
+                endDest = socket.inet_ntop(socket.AF_INET, ip.dst)        
+                protocolo = ip.p # Se for 6 é TCP e 17 é UDP, o proto será um número
+
+                if ip.p == dpkt.ip.IP_PROTO_TCP or ip.p == dpkt.ip.IP_PROTO_UDP:
+                    sport = ip.data.sport
+                    dport = ip.data.dport
+                    chave = (endOri, endDest, protocolo, sport, dport)
+
+                    print chave
+                    pacotes = self.getPacotes()
+                    if chave in pacotes:
+                        pacotes[chave].append((ts,eth))
+                        #self.setTimer(chave)
+
+                    else:
+                        pacotes[chave] = [(ts,eth)]
+                        #self.setTimer(chave)
 
 if __name__ == '__main__':
     
