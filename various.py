@@ -51,9 +51,9 @@ class Various():
             return protocolos
             
     def classificarProtocolo(self, protocolo):
-        for nome,p in self.listarProtocolos():
+        for p in self.listarProtocolos():
             if p.search(protocolo):            
-                return nome
+                return p[0]
         return "DESCONHECIDO"
             
     def enviarFila(self, routing_key, mensagem):
