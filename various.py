@@ -46,19 +46,16 @@ class Various():
                     linha = file.readline()
                                 
                 #protocolos[chave] = re.compile(valor)
-                print valor
-                valor = re.compile(valor)
-                print str(valor)
+                #valor = re.compile(valor)
                 protocolos[chave] = valor
             #protocolos = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc","http":"[\x09-\x0d -~]*"}
                 
             return protocolos
             
     def classificarProtocolo(self, protocolo):
-        for p, n in self.listarProtocolos():
-            print p + " - " + n
-            #if p.search(protocolo):            
-            #    return p[0]
+        for p in self.listarProtocolos():
+            if p.search(protocolo):            
+                return p[0]
         #return "DESCONHECIDO"
             
     def enviarFila(self, routing_key, mensagem):
