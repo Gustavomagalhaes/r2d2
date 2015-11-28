@@ -53,9 +53,10 @@ class Various():
             return protocolos
             
     def classificarProtocolo(self, protocolo):
-        for p in self.listarProtocolos():
+        for nome, p in self.listarProtocolos():
+            p = re.compile(p)
             if p.search(protocolo):            
-                return p[0]
+                return nome
         #return "DESCONHECIDO"
             
     def enviarFila(self, routing_key, mensagem):
@@ -72,49 +73,48 @@ class Various():
     def iniciarColeta(self, file="", tempo = 60):
         print "Coletando..."
         protocolos = self.listarProtocolos()
-        print protocolos
         contPkt = 0
-        # for ts, pkt in pcap.pcap(file):
-        #     contPkt+=1
-        #     eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
-        #     protRede = ""
-        #     protTransporte = ""
-        #     protApp = ""
+        for ts, pkt in pcap.pcap(file):
+            contPkt+=1
+            eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
+            protRede = ""
+            protTransporte = ""
+            protApp = ""
             
-        #     ip = eth.data
-        #     if isinstance(ip,dpkt.ip.IP):
-        #         mensagem = "Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-        #         print mensagem
-        #         #self.emit_topic("ip",mensagem)
-        #         #self.emit_topic("all",mensagem)
+            ip = eth.data
+            if isinstance(ip,dpkt.ip.IP):
+                mensagem = "Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                print mensagem
+                #self.emit_topic("ip",mensagem)
+                #self.emit_topic("all",mensagem)
                 
-        #         transp = ip.data
-        #         if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
-        #             if isinstance(transp,dpkt.tcp.TCP):
-        #                 transporte = "TCP"
-        #             elif isinstance(transp,dpkt.udp.UDP):
-        #                 transporte = "UDP"
+                transp = ip.data
+                if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
+                    if isinstance(transp,dpkt.tcp.TCP):
+                        transporte = "TCP"
+                    elif isinstance(transp,dpkt.udp.UDP):
+                        transporte = "UDP"
                     
-        #             mensagem = "Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-        #             print mensagem
-        #             #self.emit_topic(transporte,mensagem)
-        #             #self.emit_topic("all",mensagem)
+                    mensagem = "Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                    print mensagem
+                    #self.emit_topic(transporte,mensagem)
+                    #self.emit_topic("all",mensagem)
                     
-        #             self.contProtocolos["all"] += 1
-        #             app = transp.data.lower()
-        #             found = False
-        #             tagCamadaApp = self.classificarProtocolo(app)
-        #             mensagem = "App: "+tagCamadaApp+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-        #             print mensagem
-        #             self.contProtocolos[tagCamadaApp] += 1
-        #         else:
-        #             #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
-        #             print 'erro'
-        #     else:
-        #         self.contProtocolos["nonIp"] += 1
+                    self.contProtocolos["all"] += 1
+                    app = transp.data.lower()
+                    found = False
+                    tagCamadaApp = self.classificarProtocolo(app)
+                    mensagem = "App: "+tagCamadaApp+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                    print mensagem
+                    self.contProtocolos[tagCamadaApp] += 1
+                else:
+                    #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
+                    print 'erro'
+            else:
+                self.contProtocolos["nonIp"] += 1
         
-        # for p in self.contProtocolos.items():
-        # 	print(p[0]+" Pkts:"+str(p[1]))
+        for p in self.contProtocolos.items():
+        	print(p[0]+" Pkts:"+str(p[1]))
 
 if __name__ == '__main__':
     
