@@ -129,7 +129,7 @@ class Monitor():
         if comando not in listadecomandos.keys():
             self.inserirComando()
         else:
-            while (mensagem != "CAPTURANDO") or (mensagem != "SUSPENSO"):
+            while mensagem != "CAPTURANDO":
                 print "Aguardando..."
                 try:
                     print "entrou no try"

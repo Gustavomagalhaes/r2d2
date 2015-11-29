@@ -86,6 +86,7 @@ class Coletor():
                 yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
+                    print str(endereco)
                     print "[C3PO] Capturando"
                     yoda.start()
                     
