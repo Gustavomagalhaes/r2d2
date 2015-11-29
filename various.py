@@ -109,6 +109,6 @@ class Various():
 if __name__ == '__main__':
     
     various = Various()
-    for n, p in various.listarProtocolos():
+    for n, p in various.listarProtocolos().iteritems:
         print n + "-" + p
     
