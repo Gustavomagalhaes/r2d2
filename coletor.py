@@ -83,7 +83,7 @@ class Coletor():
                   #  yoda.setStatus(True)
                     
                 print "OK"
-                self.receberComando(monitor)
+                #self.receberComando(monitor)
                 
                 #self.serverSocket.sendto("OK", endereco)
             #except (KeyboardInterrupt, SystemExit):
