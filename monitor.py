@@ -1,21 +1,25 @@
-import socket, sys, os, threading
+import socket, sys, os, threading, time, traceback
 
-class Monitor:
+class Monitor():
 
     def __init__(self):
         
-        self.destino = ('<broadcast>', 5000)
+        self.destino = ('<broadcast>', 6000)
         self.clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         #self.clientSocket.settimeout(20)
         self.coletores = {}
         self.coletorAtual = ""
+        self.listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "SAIR":""}
         self.run()
+        
+    def getListaComandos(self):
+        return self.listadecomandos
         
     def getColetores(self):
         return self.coletores
         
-    def setColetor(self, coletor):
-        self.coletores[(coletor)] = "Coletando"
+    def setColetor(self, coletor, status):
+        self.coletores[(coletor)] = status
         
     def setColetorAtual(self, coletor):
         self.coletorAtual = coletor
@@ -38,23 +42,30 @@ class Monitor:
         clientSocket = self.getClientSocket()
         coletores = self.getColetores()
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        clientSocket.sendto("MONITOR", self.getDestino())
+        
+        comandoStatus = False
         
         while 1:
+            comando = threading.Thread(target=self.inserirComando)
+            clientSocket.sendto("MONITOR", self.getDestino())
             #print "teste de thread" 
             mensagem, endereco = clientSocket.recvfrom(2048)
-            if not len(mensagem):
+            if mensagem != "COLETOR":
                 break
-            print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
-            if endereco[0] not in coletores.keys():
-                self.setColetor(endereco[0])
-                print "[R2D2] Coletor adicionado a lista de coletores."
-                self.inserirComando()
-                #self.getClientSocket().close()
-            break
+            else:
+                print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
+                if endereco[0] not in coletores.keys():
+                    self.setColetor(endereco[0], "[INATIVO]")
+                    #print "[R2D2] Coletor adicionado a lista de coletores."
+                    #self.getClientSocket().close()
+                if comandoStatus == False:
+                    comando.start()
+                    comandoStatus = True
+                else:
+                    continue
     
     def printCharacters(self):
-        os.system('clear')
+        #os.system('clear')
         print "                                         "
         print "   (C3PO)                                "            
         print "         \  .-.                          "            
@@ -91,19 +102,21 @@ class Monitor:
     def suspenderColetores(self):
         self.printCharacters()
         self.listaDeColetores()
-        print "Escolha o coletor que deseja suspender:\n"
-        comando = self.ask()
+        print "\nEscolha o coletor que deseja suspender:\n"
+        coletor = self.ask()
+        self.enviarComando("SUSPENDER", coletor)
         
     def continuarColetando(self):
         self.printCharacters()
         self.listaDeColetores()
-        print "Escolha o coletor que deseja continuar:\n"
-        comando = self.ask()
+        print "\nEscolha o coletor que deseja continuar:\n"
+        coletor = self.ask()
+        self.enviarComando("CONTINUAR", coletor)
         
     def iniciarColeta(self):
         self.printCharacters()
         self.listaDeColetores()
-        print "Escolha o coletor que deseja coletar:\n"
+        print "\nEscolha o coletor que deseja coletar:\n"
         coletor = self.ask()
         self.enviarComando("COLETAR", coletor)
         
@@ -112,28 +125,41 @@ class Monitor:
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         mensagem = ""
-        while mensagem != "OK":
-            print "Aguardando..."
-            try:
-                print "entrou no try"
-                clientSocket.sendto(comando, (coletor, 5000))
-                mensagem, endereco = clientSocket.recvfrom(2048)
+        listadecomandos = self.getListaComandos()
+        if comando not in listadecomandos.keys():
+            self.inserirComando()
+        else:
+            while mensagem != "CAPTURANDO":
+                print "Aguardando..."
+                try:
+                    print "entrou no try"
+                    clientSocket.sendto(comando, (coletor, 6000))
+                    print str((comando, (coletor, 6000)))
+                    print 'enviou'
+                    time.sleep(2)
+                    mensagem, endereco = clientSocket.recvfrom(2048)
+                    print 'recebeu '+mensagem
+                    if mensagem == "CAPTURANDO":
+                        self.setColetor(endereco[0], "[COLETANDO]")
+                    elif mensagem == "SUSPENSO":
+                        self.setColetor(endereco[0], "[SUSPENSO]")
+                    
+                    break
                 
-                break
-            
-            except:
-                print "..."
-                continue
+                except:
+                    print "..."
+                    traceback.print_exc()
+                    continue
     
     def inserirComando(self):
         while True:
             comando = ""
-            listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":""}
+            listadecomandos = self.getListaComandos()
             while comando not in listadecomandos.keys():
-                os.system('clear')
+                #os.system('clear')
                 self.printCharacters()
                 print ""
-                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR |"
+                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR | SAIR |"
                 print ""
                 comando = self.ask().upper()
             if comando == "LISTAR":
@@ -145,6 +171,9 @@ class Monitor:
                 self.continuarColetando()
             elif comando == "COLETAR":
                 self.iniciarColeta()
+            elif comando == "SAIR":
+                os.system('clear')
+                break
             else:
                 self.enviarComando(comando, '')
                 

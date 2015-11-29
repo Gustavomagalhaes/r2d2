@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <title>R2D2</title>
+
+    <script src="Chart.min.js"></script>
+    <script type="text/javascript" src="bootstrap.js"></script>
+	<link rel="stylesheet" href="bootstrap.css" type="text/css">
+	
+	<style type="text/css">
+
+    .box {
+        margin: 0px auto;
+        width: 70%;
+    }
+
+    .box-chart {
+        width: 100%;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    </style> 
+    
+    <script type="text/javascript">
+        var randomnb = function(){ return Math.round(Math.random()*300)};
+    </script>  
+
+</head>
+
+<body>    
+
+    <div class="box">
+
+        <h1>R2D2 Rest API</h1>
+        <h4>Gráficos</h4>
+        
+        <div class="box-chart">
+
+            <canvas id="GraficoPizza" style="width:100%;"></canvas>
+
+            <script type="text/javascript">
+
+                var options = {
+                    responsive:true
+                };
+
+                var data = [
+                    {
+                        // value: randomnb(),
+                        value: 50,
+                        color: "rgba(255, 0, 0, 1)",
+                        highlight: "rgba(255, 0, 0, 0.5)",
+                        label: "Elephant"
+                    },
+                    {
+                        // value: randomnb(),
+                        value: 50,
+                        color: "rgba(255, 255, 0, 1)",
+                        highlight: "rgba(255, 255, 0, 0.5)",
+                        label: "Amarelo"
+                    },
+                    {
+                        // value: randomnb(),
+                        value: 50,
+                        color: "rgba(0, 255, 0, 1)",
+                        highlight: "rgba(0, 255, 0, 0.5)",
+                        label: "Verde"
+                    }
+                ]
+                
+                window.onload = function(){
+
+                    var ctx = document.getElementById("GraficoPizza").getContext("2d");
+                    var PizzaChart = new Chart(ctx).Pie(data, options);
+                }  
+            </script>           
+        </div>
+    </div>
+</body>
+</html>

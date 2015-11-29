@@ -12,8 +12,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
 channel = connection.channel()
 
 #exchange - onde os produtores publicam suas mensagens
-channel.exchange_declare(exchange='topic_logs',
-                         type='topic')
+channel.exchange_declare(exchange='topic_logs', type='topic')
 
 result = channel.queue_declare(exclusive=True)
 queue_name = result.method.queue
@@ -28,7 +27,7 @@ dadosRate = []
 for binding_key in binding_keys:
     channel.queue_bind(exchange = "topic_logs", queue = queue_name, routing_key = binding_key)
     
-print("[*] Waitinf for logs. To exit press CTRL+C")
+print("Aguardando. CTRL+C para sair")
 
 
 def calculoRates():

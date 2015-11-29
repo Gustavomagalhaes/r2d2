@@ -1,42 +1,33 @@
 # -*- coding: utf-8 -*-
 import os, socket, re, time, pcap, dpkt, threading, pika
-from threading import Thread
 
-class Various(Thread):
+class Various():
     
     def __init__(self):
-        self.status = None
-        Thread.__init__(self)
-        self.stopRequest = threading.Event()
-        self.pauseRequest = threading.Event()
+        
+        self.statusColeta = None
         self.pacotes = {}
-        self.contProtocolos = self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
+        self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "nbns":0, "dropbox":0, "unknown":0, "all":0, "nonIp":0}
+        self.run()
         
+    def getPacotes(self):
+        return self.pacotes
         
-    def getStatus(self):
-        return self.status
+    def setPacote(self, chave, conteudo):
+        self.pacotes[(chave)] = conteudo
         
-    def setStatus(self, status):
-        self.status = status
+    def getstatusColeta(self):
+        return self.statusColeta
+        
+    def setstatusColeta(self, statusColeta):
+        self.statusColeta = statusColeta
+        
+    def getcontProtocolos(self):
+        return self.contProtocolos
         
     def run(self):
-        while not self.stopRequest.isSet():
-            if not self.pauseRequest.isSet():
-                self.iniciarColeta("files/test.pcap",10000)
-            else:
-                time.sleep(5)
-        time.sleep(5)
-        print "Yoda: Parado isto."
-        
-    def stop(self, timeout = None):
-        self.stopRequest.set()
-        super(Various, self).join(timeout)
-        
-    def pause(self, timeout = None):
-        self.pauseRequest.set()
-
-    def resume(self, timeout = None):
-        self.pauseRequest.clear()
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",10000))
+        yoda.start()
     
     def listarProtocolos(self):
             diretorio = os.listdir(os.getcwd()+'/l7-pat')
@@ -56,10 +47,27 @@ class Various(Thread):
                             valor = (str(linha).lstrip()).rstrip()
                     linha = file.readline()
                                 
-                protocolos[chave] = re.compile(valor)
-            #protocolos = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc","http":"[\x09-\x0d -~]*"}
+                #protocolos[chave] = re.compile(valor)
+                #valor = re.compile(valor)
+                proto = {}
+                arq = open("protocolos.txt","r")
+                listaLinhas = arq.readlines()
+                for linha in listaLinhas:
+                    linha = linha.split(":")
+                    expr = linha[1].replace("\n","")
+                    nome= linha[0]
+                    proto[nome] = expr
+                protocolos[chave] = valor
+            #protocolos = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc", "http":"[\x09-\x0d -~]*"}
                 
-            return protocolos
+            return proto
+            
+    def classificarProtocolo(self, protocolo):
+        for nome, p in self.listarProtocolos().iteritems():
+            p = re.compile(p)
+            if p.search(protocolo):            
+                return nome
+        return "unknown"
             
     def enviarFila(self, routing_key, mensagem):
         connection = pika.BlockingConnection(pika.ConnectionParameters(
@@ -73,75 +81,61 @@ class Various(Thread):
         connection.close()
     
     def iniciarColeta(self, file="", tempo = 60):
-        cont = 0
-        timeIni = time.time()
         protocolos = self.listarProtocolos()
-        
+        contPkt = 0
         for ts, pkt in pcap.pcap(file):
-            if self.getStatus() == True:
-                time.sleep(1)
+            contPkt+=1
+            eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
+            protRede = ""
+            protTransporte = ""
+            protApp = ""
+            
+            ip = eth.data
+            if isinstance(ip,dpkt.ip.IP):
+                mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
+                print mensagem
+                #self.emit_topic("ip",mensagem)
+                #self.emit_topic("all",mensagem)
                 
-                try:
-                    cont += 1
-                    timeAtual = time.time()
-                    if timeAtual - timeIni > tempo:
-                        break
+                transp = ip.data
+                if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
+                    if isinstance(transp,dpkt.tcp.TCP):
+                        transporte = "TCP"
+                    elif isinstance(transp,dpkt.udp.UDP):
+                        transporte = "UDP"
                     
-                    enl = dpkt.ethernet.Ethernet(pkt)
-                    layerRede = "NA"
-                    layerTrans = "NA"
-                    layerApp = "NA"
-                    print("Pacote " + cont + " da camada de enlace - Ethernet")
-                    rede = enl.data
+                    mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                    print mensagem
+                    #self.emit_topic(transporte,mensagem)
+                    #self.emit_topic("all",mensagem)
                     
-                    #rede
-                    if type(rede) != (""):
-                        if (rede == dpkt.ip.IP):
-                            layerRede = "IP"
-                        elif (rede == dpkt.arp.ARP):
-                            layerRede = "ARP"
-                        else:
-                            layerRede = "UNKNOWN"
-                        msgRede = ("Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt)))
-                        #emitir(layerRede, msgRede)
-                        trns = rede.data
-                        
-                        #transporte
-                        if type(trns) != (""):
-                            if (trns == dpkt.tcp.TCP):
-                                layerTrans = "TCP"
-                            elif (trns == dpkt.udp.UDP):
-                                layerTrans = "UDP"
-                            else:
-                                layerTrans = "UNKNOWN"
-                            msgTrans = ("Transporte: " + layerTrans+ " | Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt)))
-                            #emitir(layerTrans, msgTrans)
-                            app = trns.data.lower()
-                            found = False
-                            
-                            #aplicação
-                            for p in protocolos.items():
-                                expressao = re.compile(p[1])
-                                if expressao.search(app):
-                                    msgTrans = ("Aplicação: " + p[0] + " | Transporte: " + layerTrans+ " | Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt)))
-                                    #emitir(layerApp, msgApp)
-                                    found = True
-                					
-                                if (not found):
-                                    msgTrans = ("Aplicação: " + str(app) + " | Transporte: " + layerTrans+ " | Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt)))
-                    
-                    msg = "Aplicação: " + str(app) + " | Transporte: " + layerTrans+ " | Rede: " + layerRede + " | Timestamp: " +str(ts)+ " Tamanho: " + str(len(pkt))
-                    print msg
-                    #emititr
-                
-                except:
-                    print""
-            elif self.getStatus() == False:
-                self.pause()
-                while self.getStatus() == False:
-                    time.sleep(3)
-                self.resume()
+                    self.contProtocolos["all"] += 1
+                    app = transp.data.lower()
+                    found = False
+                    for p in protocolos.items():
+                        expressao = re.compile(p[1])
+                        if expressao.search(app):
+                            mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                            print mensagem
+                            #self.emit_topic(p[0],mensagem)
+                            #self.emit_topic("all",mensagem)
+                            self.contProtocolos[p[0]] += 1
+                            found = True
+        					
+                        if (not found):
+                            mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                            print mensagem
+                            #self.emit_topic("unknown",mensagem)
+                            self.contProtocolos["unknown"] += 1
+                else:
+                    #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
+                    print 'log'
             else:
-                time.sleep(1)
+                self.contProtocolos["nonIp"] += 1
+        
+        #for p in self.contProtocolos.items():
+        #	print(p[0]+" Pkts:"+str(p[1]))
+if __name__ == '__main__':
     
+    various = Various()
     
