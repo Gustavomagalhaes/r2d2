@@ -57,11 +57,11 @@ class Various():
                     linha = linha.split(":")
                     expr = linha[1].replace("\n","")
                     nome= linha[0]
-                    proto[nome] = re.compile(expr)
+                    proto[nome] = expr
                 for p in proto.iteritems():
                     if chave == p[0]:
                         print chave + "\t" + str(p[0])
-                        print "ARQUIVO:\t" + str(re.compile(valor))
+                        print "ARQUIVO:\t" + str(valor)
                         print "DICIONARIO:\t" + str(p[1])
                 protocolos[chave] = valor
             #protocolos = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc", "http":"[\x09-\x0d -~]*"}
