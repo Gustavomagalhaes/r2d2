@@ -53,14 +53,17 @@ class Coletor():
     
         while 1:
             try:
+                #PRIMEIRO RECEIVE
                 mensagem, endereco = serverSocket.recvfrom(8192)
                 if mensagem == "MONITOR":
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
+                    #PRIMEIRO ENVIO
                     serverSocket.sendto("COLETOR", endereco)
                     serverSocket.settimeout(None)
                     #print "[C3PO] Aguardando..."
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
+                    serverSocket.close()
                     break
                 else:
                     continue
@@ -82,12 +85,14 @@ class Coletor():
         while 1:
             try:
                 
+                #SEGUNDO RECEIVE
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
                 print mensagem
                 print endereco
                 
                 yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
+                    #SEGUNDO ENVIO
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     print str(endereco)
                     print "[C3PO] Capturando"
@@ -112,7 +117,8 @@ class Coletor():
                  
                 elif mensagem == "MONITOR":
                     continue
-                    
+                
+                serverSocket.close()
                     
                 print "OK"
                 self.receberComando(monitor)
@@ -199,6 +205,7 @@ class Coletor():
                     app = transp.data.lower()
                     found = False
                     for p in protocolos.items():
+                        found = False
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
