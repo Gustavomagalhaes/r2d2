@@ -116,7 +116,7 @@ class Various():
                     for p in protocolos.items():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
-                            mensagem = +p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                            mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             print mensagem
                             #self.emit_topic(p[0],mensagem)
                             #self.emit_topic("all",mensagem)
