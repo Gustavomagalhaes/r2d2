@@ -65,7 +65,7 @@ class Various():
                         print str(valor[0:7])
                         if valor[0:7] == "^notify":
                             valor.split(":(alive")
-                            valor = valor[0]
+                            print str(valor)
                         # elif valor[5:16] == "bittorrent":
                         #     valor.split("=get")
                         #     valor = valor[0] + ")"
