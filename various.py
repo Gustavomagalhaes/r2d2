@@ -50,18 +50,12 @@ class Various():
                                 
                 #protocolos[chave] = re.compile(valor)
                 #valor = re.compile(valor)
-                proto = {
-                    "ssl":re.compile("^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)"), 
-                    "ssh":re.compile("^ssh-[12]\.[0-9]"),
-                    "ssdp":re.compile("^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover"), 
-                    "bittorrent":re.compile("^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)"), 
-                    "dhcp":re.compile("^[\x01\x02][\x01- ]\x06.*c\x82sc"), 
-                    "http":re.compile("[\x09-\x0d -~]*")}
+                proto = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc", "http":"[\x09-\x0d -~]*"}
                 for p in proto.iteritems():
                     if chave == p[0]:
                         print chave + "\t" + str(p[0])
-                        print "ARQUIVO:\t" + str(re.compile(valor))
-                        print "DICIONARIO:\t" + str(p[1])
+                        print "ARQUIVO:\t" + valor
+                        print "DICIONARIO:\t" + p[1]
                 protocolos[chave] = valor
             #protocolos = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc", "http":"[\x09-\x0d -~]*"}
                 
