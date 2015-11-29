@@ -127,7 +127,9 @@ class Monitor():
 
         while 1:
             #SEGUNDO ENVIO
+            print "while"
             clientSocket.sendto(comando, (coletor, 6000))
+            print "enviou"
             #SEGUNDO RECEIVE
             time.sleep(3)
             print comando
