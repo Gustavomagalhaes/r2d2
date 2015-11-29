@@ -51,7 +51,14 @@ class Various():
                 #protocolos[chave] = re.compile(valor)
                 #valor = re.compile(valor)
                 #protocolos[chave] = valor
-            protocolos = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc","http":"[\x09-\x0d -~]*"}
+            protocolos = {
+                "ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)",
+                "ssh":"^ssh-[12]\.[0-9]",
+                "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover",
+                "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)",
+                "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc",
+                "http":"[\x09-\x0d -~]*"
+                }
                 
             return protocolos
             
@@ -91,7 +98,7 @@ class Various():
         			for p in protocols.items():
         				if re.compile(p[1]).search(app):
         					cnt[p[0]] += 1
-        					print p[0]
+        					print p[0] + str(ts)
         					cnt["all"] += 1
         					found = True
         			if (not found):
