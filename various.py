@@ -58,7 +58,7 @@ class Various():
             p = re.compile(p)
             if p.search(protocolo):            
                 return nome
-        return "DESCONHECIDO"
+        return "unknown"
             
     def enviarFila(self, routing_key, mensagem):
         connection = pika.BlockingConnection(pika.ConnectionParameters(
@@ -102,8 +102,7 @@ class Various():
                     #self.emit_topic("all",mensagem)
                     
                     self.contProtocolos["all"] += 1
-                    app = transp.data.lower()
-                    found = False
+                    app = transp.data
                     tagCamadaApp = self.classificarProtocolo(app)
                     mensagem = "App: "+tagCamadaApp+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
                     print mensagem
