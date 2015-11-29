@@ -75,7 +75,15 @@ class Various():
         connection.close()
     
     def iniciarColeta(self, file="", tempo = 60):
-        protocols = self.listarProtocolos()
+        #protocols = self.listarProtocolos()
+        expr="\x01\x10\x00\x01"
+        nbns = re.compile(expr)
+        expr="^\x7b\x22\x68\x6f"
+        dropbox = re.compile(expr)
+        expr="^[\x01\x02][\x01- ]\x06.*c\x82sc"
+        dhcp = re.compile(expr)
+        
+        protocols = {"dropbox":dropbox,"nbns":nbns,"dhcp":dhcp}
         cnt = self.getcontProtocolos()
         cNonIP = 0
         
