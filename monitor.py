@@ -126,30 +126,17 @@ class Monitor():
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         #clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         
-        mensagem = ""
-        while mensagem != "CAPTURANDO":
-            print "Aguardando..."
-            try:
-                print "entrou no try"
-                #SEGUNDO ENVIO
-                clientSocket.sendto(comando, (coletor, 6000))
-                print 'enviou'
-                #SEGUNDO RECEIVE
-                mensagem, endereco = clientSocket.recvfrom(2048)
-                print 'recebeu '+mensagem
-                if mensagem == "CAPTURANDO":
-                    self.setColetor(endereco[0], "[COLETANDO]")
-                elif mensagem == "SUSPENSO":
-                    self.setColetor(endereco[0], "[SUSPENSO]")
-                
-                break
-            
-            except:
-                print "..."
-                traceback.print_exc()
-                continue
-        print "Recebeu status CAPTURANDO"
-    
+        #SEGUNDO ENVIO
+        clientSocket.sendto(comando, (coletor, 6000))
+        print 'enviou'
+        #SEGUNDO RECEIVE
+        mensagem, endereco = clientSocket.recvfrom(2048)
+        
+        if mensagem == "CAPTURANDO":
+            self.setColetor(endereco[0], "[COLETANDO]")
+        elif mensagem == "SUSPENSO":
+            self.setColetor(endereco[0], "[SUSPENSO]")
+
     def inserirComando(self):
         while True:
             comando = ""
