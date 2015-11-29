@@ -6,6 +6,8 @@ class Monitor():
         
         self.destino = ('<broadcast>', 6000)
         self.clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        self.clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         #self.clientSocket.settimeout(20)
         self.coletores = {}
         self.coletorAtual = ""
@@ -41,8 +43,6 @@ class Monitor():
         # Inicia o monitor para que esse seja percebido pelos coletores
         clientSocket = self.getClientSocket()
         coletores = self.getColetores()
-        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        
         comandoStatus = False
         
         while 1:
@@ -58,7 +58,7 @@ class Monitor():
                 if endereco[0] not in coletores.keys():
                     self.setColetor(endereco[0], "[INATIVO]")
                     #print "[R2D2] Coletor adicionado a lista de coletores."
-                    #self.getClientSocket().close()
+                    self.getClientSocket().close()
                 if comandoStatus == False:
                     comando.start()
                     comandoStatus = True
@@ -123,8 +123,6 @@ class Monitor():
         
     def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
-        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         mensagem = ""
         while mensagem != "CAPTURANDO":
             print "Aguardando..."

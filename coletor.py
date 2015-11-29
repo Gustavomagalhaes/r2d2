@@ -8,6 +8,7 @@ class Coletor():
     def __init__(self):
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.serverSocket.settimeout(20)
         self.serverSocket.bind(('', 6000))
         
@@ -46,8 +47,7 @@ class Coletor():
 
     def localizarMonitor(self, mensagem = "", endereco = ()):
         serverSocket = self.getServerSocket()
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        #serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         
         print "[C3PO] Procurando monitor..."
     
@@ -68,11 +68,12 @@ class Coletor():
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
+                serverSocket.close()
                 raise
             except:
                 traceback.print_exc()
+                serverSocket.close()
                 #print "[C3PO] Ainda procurando monitor..."
-        serverSocket.close()
     
     def receberComando(self, monitor):
         
@@ -127,6 +128,7 @@ class Coletor():
               #  yoda.stop()
               #  raise
             except:
+                serverSocket.close()
                 traceback.print_exc()
                 print "excepto"
         
