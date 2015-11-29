@@ -126,33 +126,26 @@ class Monitor():
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         mensagem = ""
-        listadecomandos = self.getListaComandos()
-        if comando not in listadecomandos.keys():
-            self.inserirComando()
-        else:
-            while mensagem != "CAPTURANDO":
-                print "Aguardando..."
-                try:
-                    print "entrou no try"
-                    #SEGUNDO ENVIO
-                    clientSocket.sendto(comando, (coletor, 6000))
-                    print str((comando, (coletor, 6000)))
-                    print 'enviou'
-                    time.sleep(2)
-                    #SEGUNDO RECEIVE
-                    mensagem, endereco = clientSocket.recvfrom(2048)
-                    print 'recebeu '+mensagem
-                    if mensagem == "CAPTURANDO":
-                        self.setColetor(endereco[0], "[COLETANDO]")
-                    elif mensagem == "SUSPENSO":
-                        self.setColetor(endereco[0], "[SUSPENSO]")
-                    
-                    break
+        while mensagem != "CAPTURANDO":
+            print "Aguardando..."
+            try:
+                print "entrou no try"
+                clientSocket.sendto(comando, (coletor, 6000))
+                print 'enviou'
+                mensagem, endereco = clientSocket.recvfrom(2048)
+                print 'recebeu '+mensagem
+                if mensagem == "CAPTURANDO":
+                    self.setColetor(endereco[0], "[COLETANDO]")
+                elif mensagem == "SUSPENSO":
+                    self.setColetor(endereco[0], "[SUSPENSO]")
                 
-                except:
-                    print "..."
-                    traceback.print_exc()
-                    continue
+                break
+            
+            except:
+                print "..."
+                traceback.print_exc()
+                continue
+        print "Recebeu status CAPTURANDO"
     
     def inserirComando(self):
         while True:
