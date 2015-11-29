@@ -8,7 +8,7 @@ class Various():
         self.status = None
         self.pacotes = {}
         self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "nbns":0, "dropbox":0, "unknown":0, "all":0, "nonIp":0}
-        #self.run()
+        self.run()
         
     def getPacotes(self):
         return self.pacotes
@@ -116,5 +116,4 @@ class Various():
 if __name__ == '__main__':
     
     various = Various()
-    various.listarProtocolos()
     
