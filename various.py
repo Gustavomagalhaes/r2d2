@@ -8,7 +8,7 @@ class Various():
         self.status = None
         self.pacotes = {}
         self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "nbns":0, "dropbox":0, "unknown":0, "all":0, "nonIp":0}
-        self.run()
+        #self.run()
         
     def getPacotes(self):
         return self.pacotes
@@ -27,7 +27,7 @@ class Various():
         
     def run(self):
         print "Tá no run"
-        yoda = threading.Thread(target=self.listarProtocolos)
+        yoda = threading.Thread(target=self.iniciarColeta("",10000))
         yoda.start()
     
     def listarProtocolos(self):
@@ -48,11 +48,9 @@ class Various():
                             valor = (str(linha).lstrip()).rstrip()
                     linha = file.readline()
                                 
-                protocolos[chave] = valor
-                for n, p in protocolos.iteritems:
-                    print n + "-" + p
+                #protocolos[chave] = re.compile(valor)
                 #valor = re.compile(valor)
-                #protocolos[chave] = valor
+                protocolos[chave] = valor
             #protocolos = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc", "http":"[\x09-\x0d -~]*"}
                 
             return protocolos
@@ -77,8 +75,7 @@ class Various():
         connection.close()
     
     def iniciarColeta(self, file="", tempo = 60):
-        protocols = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc", "http":"[\x09-\x0d -~]*"}
-        protocolos = self.listarProtocolos()
+        protocols = self.listarProtocolos()
         cnt = self.getcontProtocolos()
         cNonIP = 0
         
@@ -94,7 +91,7 @@ class Various():
         			for p in protocols.items():
         				if re.compile(p[1]).search(app):
         					cnt[p[0]] += 1
-        					print p[0] #+ protocolos.get(p[0], default=None)
+        					print p[0] + str(ts)
         					cnt["all"] += 1
         					found = True
         			if (not found):
@@ -112,4 +109,6 @@ class Various():
 if __name__ == '__main__':
     
     various = Various()
+    for n, p in various.listarProtocolos():
+        print n + "-" + p
     
