@@ -62,6 +62,7 @@ class Various():
                     if chave == p[0]:
                         print chave + "\t" + str(p[0])
                         
+                        print str(valor[0:7])
                         if valor[0:7] == "^notify":
                             valor.split(":(alive")
                             valor = valor[0]
