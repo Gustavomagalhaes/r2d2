@@ -1,4 +1,4 @@
-import socket, sys, os, threading, time, traceback
+import socket, sys, os, threading, time, traceback, time
 
 class Monitor():
 
@@ -126,16 +126,24 @@ class Monitor():
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         #clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         
-        #SEGUNDO ENVIO
-        clientSocket.sendto(comando, (coletor, 6000))
-        print 'enviou'
-        #SEGUNDO RECEIVE
-        mensagem, endereco = clientSocket.recvfrom(2048)
-        
-        if mensagem == "CAPTURANDO":
-            self.setColetor(endereco[0], "[COLETANDO]")
-        elif mensagem == "SUSPENSO":
-            self.setColetor(endereco[0], "[SUSPENSO]")
+        while 1:
+            try:
+                #SEGUNDO ENVIO
+                clientSocket.sendto(comando, (coletor, 6000))
+                print 'enviou'
+                #SEGUNDO RECEIVE
+                time.sleep(3)
+                mensagem, endereco = clientSocket.recvfrom(2048)
+                
+                if mensagem == "CAPTURANDO":
+                    self.setColetor(endereco[0], "[COLETANDO]")
+                elif mensagem == "SUSPENSO":
+                    self.setColetor(endereco[0], "[SUSPENSO]")
+                    
+                break
+            except:
+                traceback.print_exc()
+                print "excepto"
 
     def inserirComando(self):
         while True:
