@@ -41,6 +41,7 @@ class Monitor():
         # Inicia o monitor para que esse seja percebido pelos coletores
         clientSocket = self.getClientSocket()
         coletores = self.getColetores()
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         
         comandoStatus = False
