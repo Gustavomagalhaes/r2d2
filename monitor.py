@@ -124,26 +124,23 @@ class Monitor():
     def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        #clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        
+
         while 1:
-            try:
-                #SEGUNDO ENVIO
-                clientSocket.sendto(comando, (coletor, 6000))
-                print 'enviou'
-                #SEGUNDO RECEIVE
-                time.sleep(3)
-                mensagem, endereco = clientSocket.recvfrom(2048)
-                print mensagem
+            #SEGUNDO ENVIO
+            clientSocket.sendto(comando, (coletor, 6000))
+            #SEGUNDO RECEIVE
+            time.sleep(3)
+            mensagem, endereco = clientSocket.recvfrom(2048)
+            if mensagem != "CAPTURANDO":
+                break
+            else:
+                print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
                 if mensagem == "CAPTURANDO":
-                    self.setColetor(endereco[0], "[COLETANDO]")
+                 self.setColetor(endereco[0], "[COLETANDO]")
                 elif mensagem == "SUSPENSO":
                     self.setColetor(endereco[0], "[SUSPENSO]")
-                    
-                break
-            except:
-                traceback.print_exc()
-                print "excepto"
+                else:
+                    continue
 
     def inserirComando(self):
         while True:

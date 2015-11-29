@@ -68,6 +68,7 @@ class Coletor():
                 if mensagem == "COLETAR":# and yoda.getStatus() == None:
                     #SEGUNDO ENVIO
                     self.serverSocket.sendto("CAPTURANDO", endereco)
+                    print str(endereco)
                     print "[C3PO] Capturando"
                    # yoda.start()
                     
