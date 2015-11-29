@@ -27,7 +27,7 @@ class Various():
         
     def run(self):
         print "Tá no run"
-        yoda = threading.Thread(target=self.iniciarColeta("",10000))
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",10000))
         yoda.start()
     
     def listarProtocolos(self):
@@ -82,37 +82,60 @@ class Various():
         connection.close()
     
     def iniciarColeta(self, file="", tempo = 60):
-        protocols = self.listarProtocolos()
-        cnt = self.getcontProtocolos()
-        cNonIP = 0
-        
+        protocolos = self.listarProtocolos()
+        contPkt = 0
         for ts, pkt in pcap.pcap(file):
+            contPkt+=1
+            eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
+            protRede = ""
+            protTransporte = ""
+            protApp = ""
+            
+            ip = eth.data
+            if isinstance(ip,dpkt.ip.IP):
+                mensagem = "Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                print mensagem
+                #self.emit_topic("ip",mensagem)
+                #self.emit_topic("all",mensagem)
+                
+                transp = ip.data
+                if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
+                    if isinstance(transp,dpkt.tcp.TCP):
+                        transporte = "TCP"
+                    elif isinstance(transp,dpkt.udp.UDP):
+                        transporte = "UDP"
+                    
+                    mensagem = "Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                    print mensagem
+                    #self.emit_topic(transporte,mensagem)
+                    #self.emit_topic("all",mensagem)
+                    
+                    self.contProtocolos["all"] += 1
+                    app = transp.data.lower()
+                    found = False
+                    for p in protocolos.items():
+                        expressao = re.compile(p[1])
+                        if expressao.search(app):
+                            mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                            print mensagem
+                            #self.emit_topic(p[0],mensagem)
+                            #self.emit_topic("all",mensagem)
+                            self.contProtocolos[p[0]] += 1
+                            found = True
+        					
+                        if (not found):
+                            mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                            print mensagem
+                            #self.emit_topic("unknown",mensagem)
+                            self.contProtocolos["unknown"] += 1
+                else:
+                    #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
+                    print 'log'
+            else:
+                self.contProtocolos["nonIp"] += 1
         
-        	eth = dpkt.ethernet.Ethernet(pkt)
-        	ip = eth.data
-        	if isinstance(ip,dpkt.ip.IP):
-        		transp = ip.data
-        		if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
-        			app = transp.data.lower()
-        			found = False
-        			for p in protocols.items():
-        				if re.compile(p[1]).search(app):
-        					cnt[p[0]] += 1
-        					print p[0] + str(ts)
-        					cnt["all"] += 1
-        					found = True
-        			if (not found):
-        				cnt["unknown"] += 1
-        				print "unkown"
-        				cnt["all"] += 1
-        	else:
-        		cNonIP += 1
-        		cnt["all"] += 1
-        
-        for p in cnt.items():
-        	print(p[0]+" Pkts:"+str(p[1]))
-        print("Non IP Pkts:"+str(cNonIP))
-
+        #for p in self.contProtocolos.items():
+        #	print(p[0]+" Pkts:"+str(p[1]))
 if __name__ == '__main__':
     
     various = Various()
