@@ -136,12 +136,10 @@ class Monitor():
                     clientSocket.sendto(comando, (coletor, 6000))
                     print 'enviou'
                     time.sleep(2)
-                    mensagem, endereco = clientSocket.recvfrom(2048)
-                    print 'recebeu '+mensagem
-                    if mensagem == "CAPTURANDO":
-                        self.setColetor(endereco[0], "[COLETANDO]")
-                    elif mensagem == "SUSPENSO":
-                        self.setColetor(endereco[0], "[SUSPENSO]")
+                    if comando == "COLETAR":
+                        self.setColetor(coletor, "[COLETANDO]")
+                    elif comando == "SUSPENDER":
+                        self.setColetor(coletor, "[SUSPENSO]")
                     
                     break
                 
