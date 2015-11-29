@@ -47,8 +47,9 @@ class Monitor():
         
         while 1:
             comando = threading.Thread(target=self.inserirComando)
+            #PRIMEIRO ENVIO
             clientSocket.sendto("MONITOR", self.getDestino())
-            #print "teste de thread" 
+            #PRIMEIRO RECEIVE
             mensagem, endereco = clientSocket.recvfrom(2048)
             if mensagem != "COLETOR":
                 break
@@ -133,10 +134,12 @@ class Monitor():
                 print "Aguardando..."
                 try:
                     print "entrou no try"
+                    #SEGUNDO ENVIO
                     clientSocket.sendto(comando, (coletor, 6000))
                     print str((comando, (coletor, 6000)))
                     print 'enviou'
                     time.sleep(2)
+                    #SEGUNDO RECEIVE
                     mensagem, endereco = clientSocket.recvfrom(2048)
                     print 'recebeu '+mensagem
                     if mensagem == "CAPTURANDO":

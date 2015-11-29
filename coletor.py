@@ -9,8 +9,6 @@ class Coletor():
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.settimeout(20)
-        self.serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.serverSocket.bind(('', 6000))
         
         #coleta
@@ -48,6 +46,9 @@ class Coletor():
 
     def localizarMonitor(self, mensagem = "", endereco = ()):
         serverSocket = self.getServerSocket()
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        
         print "[C3PO] Procurando monitor..."
     
         while 1:
@@ -73,6 +74,8 @@ class Coletor():
     def receberComando(self, monitor):
         
         serverSocket = self.getServerSocket()
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         
         print "[C3PO] Aguardando comando do monitor..."
     
