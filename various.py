@@ -92,7 +92,7 @@ class Various():
         			for p in protocols.items():
         				if re.compile(p[1]).search(app):
         					cnt[p[0]] += 1
-        					print p[0] + protocolos.get(p[0], default=None)
+        					print p[0] #+ protocolos.get(p[0], default=None)
         					cnt["all"] += 1
         					found = True
         			if (not found):
