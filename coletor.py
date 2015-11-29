@@ -32,9 +32,11 @@ class Coletor():
     
         while 1:
             try:
+                #PRIMEIRO RECEIVE
                 mensagem, endereco = serverSocket.recvfrom(8192)
                 if mensagem == "MONITOR":
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
+                    #PRIMEIRO ENVIO
                     serverSocket.sendto("COLETOR", endereco)
                     serverSocket.settimeout(None)
                     #print "[C3PO] Aguardando..."
@@ -59,10 +61,12 @@ class Coletor():
         while 1:
             try:
                 
+                #SEGUNDO RECEIVE
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
                 print mensagem
                 print endereco
                 if mensagem == "COLETAR":# and yoda.getStatus() == None:
+                    #SEGUNDO ENVIO
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
                    # yoda.start()
