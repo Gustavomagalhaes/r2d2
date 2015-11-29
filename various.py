@@ -27,7 +27,7 @@ class Various():
         
     def run(self):
         print "Tá no run"
-        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",10000))
+        yoda = threading.Thread(target=self.iniciarColeta("",10000))
         yoda.start()
     
     def listarProtocolos(self):
@@ -99,10 +99,12 @@ class Various():
         			for p in protocols.items():
         				if p[1].search(app):
         					cnt[p[0]] += 1
+        					print p[0]
         					cnt["all"] += 1
         					found = True
         			if (not found):
         				cnt["unknown"] += 1
+        				print "unkown"
         				cnt["all"] += 1
         	else:
         		cNonIP += 1
