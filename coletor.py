@@ -77,7 +77,6 @@ class Coletor():
     def receberComando(self, monitor):
         
         serverSocket = self.getServerSocket()
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         
         print "[C3PO] Aguardando comando do monitor..."
@@ -205,6 +204,7 @@ class Coletor():
                     app = transp.data.lower()
                     found = False
                     for p in protocolos.items():
+                        found = False
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
