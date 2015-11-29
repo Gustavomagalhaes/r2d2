@@ -45,18 +45,17 @@ class Various():
                         if linha[0] != "^" and linha[:5] != "http/" and linha[0] != "\n":
                             chave = str(linha.replace("\n",""))
                         elif  (linha[0] == "^" or linha[:5] == "http/") and linha[0] != "\n":
-                            if linha[:7] == "^notify":
-                                linha.split(":(alive")
-                                linha = linha[0]
-                            # elif linha[5:16] == "bittorrent":
-                            #     linha.split("=get")
-                            #     linha = linha[0] + ")"
-                            # elif linha[:5] == "http/":
-                            #     linha.split("(connection:")
-                            #     linha = linha[0]
-                            #     linha = linha[-15::]
-                            
                             valor = (str(linha).lstrip()).rstrip()
+                            if valor[:7] == "^notify":
+                                valor.split(":(alive")
+                                valor = valor[0]
+                            elif valor[5:16] == "bittorrent":
+                                valor.split("=get")
+                                valor = valor[0] + ")"
+                            elif valor[:5] == "http/":
+                                valor.split("(connection:")
+                                valor = valor[0]
+                                valor = valor[-15::]
                     linha = file.readline()
                                 
                 #protocolos[chave] = re.compile(valor)
