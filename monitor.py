@@ -59,13 +59,12 @@ class Monitor():
                 if endereco[0] not in coletores.keys():
                     self.setColetor(endereco[0], "[INATIVO]")
                     #print "[R2D2] Coletor adicionado a lista de coletores."
-                    #self.getClientSocket().close()
+                    self.getClientSocket().close()
                 if comandoStatus == False:
                     comando.start()
                     comandoStatus = True
                 else:
                     continue
-        clientSocket.close()
     
     def printCharacters(self):
         #os.system('clear')
