@@ -130,7 +130,9 @@ class Monitor():
             clientSocket.sendto(comando, (coletor, 6000))
             #SEGUNDO RECEIVE
             time.sleep(3)
+            print comando
             mensagem, endereco = clientSocket.recvfrom(2048)
+            print mensagem
             if mensagem != "CAPTURANDO":
                 break
             else:
