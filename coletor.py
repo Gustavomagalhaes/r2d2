@@ -9,7 +9,6 @@ class Coletor():
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.settimeout(20)
-        self.serverSocket.bind(('', 6000))
         
         #coleta
         self.statusColeta = None
@@ -46,24 +45,23 @@ class Coletor():
 
     def localizarMonitor(self, mensagem = "", endereco = ()):
         serverSocket = self.getServerSocket()
+        
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        serverSocket.bind(('', 6000))
         
         print "[C3PO] Procurando monitor..."
     
         while 1:
             try:
-                #PRIMEIRO RECEIVE
                 mensagem, endereco = serverSocket.recvfrom(8192)
                 if mensagem == "MONITOR":
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
-                    #PRIMEIRO ENVIO
                     serverSocket.sendto("COLETOR", endereco)
                     serverSocket.settimeout(None)
                     #print "[C3PO] Aguardando..."
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
-                    serverSocket.close()
                     break
                 else:
                     continue
@@ -76,50 +74,42 @@ class Coletor():
     
     def receberComando(self, monitor):
         
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
         serverSocket = self.getServerSocket()
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-
         
         print "[C3PO] Aguardando comando do monitor..."
     
         while 1:
             try:
                 
-                #SEGUNDO RECEIVE
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
                 print mensagem
                 print endereco
-                
-                yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
-                    #SEGUNDO ENVIO
-                    #self.serverSocket.sendto("CAPTURANDO", endereco)
-                    print str(endereco)
+                    self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
                     yoda.start()
                     
                 elif mensagem == "COLETAR" and self.getStatusColeta() == False:
-                    #self.serverSocket.sendto("CAPTURANDO", endereco)
+                    self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
                     self.setStatusColeta(yoda, True)
                     
                 elif mensagem == "SUSPENDER":
-                    #self.serverSocket.sendto("SUSPENSO", endereco)
+                    self.serverSocket.sendto("SUSPENSO", endereco)
                     print "[C3PO] Suspenso"
                     self.setStatusColeta(yoda, False)
                   #  yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR" and self.getStatusColeta() == False:
-                    #self.serverSocket.sendto("CAPTURANDO", endereco)
+                    self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
                     self.setStatusColeta(yoda, True)
                   #  yoda.setStatus(True)
                  
                 elif mensagem == "MONITOR":
                     continue
-                
-                serverSocket.close()
+                    
                     
                 print "OK"
                 self.receberComando(monitor)
@@ -206,7 +196,6 @@ class Coletor():
                     app = transp.data.lower()
                     found = False
                     for p in protocolos.items():
-                        found = False
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
