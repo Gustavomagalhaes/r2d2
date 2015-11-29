@@ -93,7 +93,7 @@ class Various():
         					cnt[p[0]] += 1
         					found = True
         			if (not found):
-        				cnt["noClass"] += 1
+        				cnt["unknown"] += 1
         	else:
         		cNonIP += 1
         
