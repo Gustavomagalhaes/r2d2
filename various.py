@@ -89,7 +89,7 @@ class Various():
         			app = transp.data.lower()
         			found = False
         			for p in protocols.items():
-        				if p[1].search(app):
+        				if re.compile(p[1]).search(app):
         					cnt[p[0]] += 1
         					print p[0]
         					cnt["all"] += 1
