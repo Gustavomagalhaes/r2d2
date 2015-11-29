@@ -77,7 +77,7 @@ class Coletor():
     def receberComando(self, monitor):
         
         serverSocket = self.getServerSocket()
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         
         print "[C3PO] Aguardando comando do monitor..."
     
