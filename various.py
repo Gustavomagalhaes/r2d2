@@ -99,11 +99,14 @@ class Various():
         			for p in protocols.items():
         				if p[1].search(app):
         					cnt[p[0]] += 1
+        					cnt["all"] += 1
         					found = True
         			if (not found):
         				cnt["unknown"] += 1
+        				cnt["all"] += 1
         	else:
         		cNonIP += 1
+        		cnt["all"] += 1
         
         for p in cnt.items():
         	print(p[0]+" Pkts:"+str(p[1]))
