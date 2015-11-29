@@ -5,7 +5,7 @@ class Various():
     
     def __init__(self):
         
-        self.status = None
+        self.statusColeta = None
         self.pacotes = {}
         self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "nbns":0, "dropbox":0, "unknown":0, "all":0, "nonIp":0}
         self.run()
@@ -16,17 +16,16 @@ class Various():
     def setPacote(self, chave, conteudo):
         self.pacotes[(chave)] = conteudo
         
-    def getStatus(self):
-        return self.status
+    def getstatusColeta(self):
+        return self.statusColeta
         
-    def setStatus(self, status):
-        self.status = status
+    def setstatusColeta(self, statusColeta):
+        self.statusColeta = statusColeta
         
     def getcontProtocolos(self):
         return self.contProtocolos
         
     def run(self):
-        print "Tá no run"
         yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",10000))
         yoda.start()
     
