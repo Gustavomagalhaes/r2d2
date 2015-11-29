@@ -102,7 +102,7 @@ class Various():
             
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
-                mensagem = "Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                mensagem = contPkt + "-" + "Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
                 print mensagem
                 #self.emit_topic("ip",mensagem)
                 #self.emit_topic("all",mensagem)
@@ -114,7 +114,7 @@ class Various():
                     elif isinstance(transp,dpkt.udp.UDP):
                         transporte = "UDP"
                     
-                    mensagem = "Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                    mensagem = contPkt + "-" + "Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
                     print mensagem
                     #self.emit_topic(transporte,mensagem)
                     #self.emit_topic("all",mensagem)
@@ -126,14 +126,14 @@ class Various():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                            print mensagem
+                            print contPkt + "-" + mensagem
                             #self.emit_topic(p[0],mensagem)
                             #self.emit_topic("all",mensagem)
                             self.contProtocolos[p[0]] += 1
                             found = True
         					
                         if (not found):
-                            mensagem = "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
+                            mensagem = contPkt + "-" + "App: "+p[0]+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
                             print mensagem
                             #self.emit_topic("unknown",mensagem)
                             self.contProtocolos["unknown"] += 1
