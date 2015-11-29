@@ -7,7 +7,7 @@ class Various():
         
         self.status = None
         self.pacotes = {}
-        self.contProtocolos = self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
+        self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "unknown":0, "all":0, "nonIp":0}
         self.run()
         
     def getPacotes(self):
@@ -21,6 +21,9 @@ class Various():
         
     def setStatus(self, status):
         self.status = status
+        
+    def getcontProtocolos(self):
+        return self.contProtocolos
         
     def run(self):
         print "Tá no run"
@@ -72,49 +75,41 @@ class Various():
         connection.close()
     
     def iniciarColeta(self, file="", tempo = 60):
-        print "Coletando..."
-        protocolos = self.listarProtocolos()
-        contPkt = 0
-        for ts, pkt in pcap.pcap(file):
-            contPkt+=1
-            eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
-            protRede = ""
-            protTransporte = ""
-            protApp = ""
-            
-            ip = eth.data
-            if isinstance(ip,dpkt.ip.IP):
-                mensagem = "Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                print mensagem
-                #self.emit_topic("ip",mensagem)
-                #self.emit_topic("all",mensagem)
-                
-                transp = ip.data
-                if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
-                    if isinstance(transp,dpkt.tcp.TCP):
-                        transporte = "TCP"
-                    elif isinstance(transp,dpkt.udp.UDP):
-                        transporte = "UDP"
-                    
-                    mensagem = "Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                    print mensagem
-                    #self.emit_topic(transporte,mensagem)
-                    #self.emit_topic("all",mensagem)
-                    
-                    self.contProtocolos["all"] += 1
-                    app = transp.data
-                    tagCamadaApp = self.classificarProtocolo(app)
-                    mensagem = "App: "+tagCamadaApp+".Transporte: "+transporte+".Rede: IP.Tamanho: "+str(len(pkt))+".Timestamp: "+str(ts)
-                    print mensagem
-                    self.contProtocolos[tagCamadaApp] += 1
-                else:
-                    #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
-                    print 'erro'
-            else:
-                self.contProtocolos["nonIp"] += 1
+        #assinaturas de protocolos de camada de aplicacao
+        expr="\x01\x10\x00\x01"
+        nbns = re.compile(expr)
+        expr="^\x7b\x22\x68\x6f"
+        dropbox = re.compile(expr)
+        expr="^[\x01\x02][\x01- ]\x06.*c\x82sc"
+        dhcp = re.compile(expr)
         
-        for p in self.contProtocolos.items():
+        protocols = self.listarProtocolos()
+        
+        #contadores
+        cnt = self.getcontProtocolos()
+        cNonIP = 0
+        
+        for ts, pkt in pcap.pcap(file):
+        
+        	eth = dpkt.ethernet.Ethernet(pkt)
+        	ip = eth.data
+        	if isinstance(ip,dpkt.ip.IP):
+        		transp = ip.data
+        		if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
+        			app = transp.data.lower()
+        			found = False
+        			for p in protocols.items():
+        				if p[1].search(app):
+        					cnt[p[0]] += 1
+        					found = True
+        			if (not found):
+        				cnt["noClass"] += 1
+        	else:
+        		cNonIP += 1
+        
+        for p in cnt.items():
         	print(p[0]+" Pkts:"+str(p[1]))
+        print("Non IP Pkts:"+str(cNonIP))
 
 if __name__ == '__main__':
     
