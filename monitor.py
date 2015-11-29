@@ -134,7 +134,7 @@ class Monitor():
                 #SEGUNDO RECEIVE
                 time.sleep(3)
                 mensagem, endereco = clientSocket.recvfrom(2048)
-                
+                print mensagem
                 if mensagem == "CAPTURANDO":
                     self.setColetor(endereco[0], "[COLETANDO]")
                 elif mensagem == "SUSPENSO":
