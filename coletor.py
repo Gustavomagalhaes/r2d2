@@ -62,6 +62,7 @@ class Coletor():
                     #print "[C3PO] Aguardando..."
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
+                    serverSocket.close()
                     break
                 else:
                     continue
@@ -76,6 +77,9 @@ class Coletor():
         
         yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
         serverSocket = self.getServerSocket()
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        serverSocket.bind(('', 6000))
         
         print "[C3PO] Aguardando comando do monitor..."
     

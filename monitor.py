@@ -1,4 +1,4 @@
-import socket, sys, os, threading
+import socket, sys, os, threading, time
 
 class Monitor():
 
@@ -134,7 +134,9 @@ class Monitor():
                 try:
                     print "entrou no try"
                     clientSocket.sendto(comando, (coletor, 6000))
+                    print str(comando, (coletor, 6000))
                     print 'enviou'
+                    time.sleep(2)
                     mensagem, endereco = clientSocket.recvfrom(2048)
                     print 'recebeu '+mensagem
                     if mensagem == "CAPTURANDO":
