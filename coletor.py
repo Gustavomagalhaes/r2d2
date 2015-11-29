@@ -1,6 +1,7 @@
 # -*- coding: cp1252 -*-
 #PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f coletor.py
-import os, socket, traceback, sys, threading, re, time, pcap, dpkt, pika
+import os, socket, traceback, sys, threading, re, time, pcap, dpkt, pika, logging
+logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
 class Coletor():
     
@@ -14,14 +15,10 @@ class Coletor():
         self.pacotes = {}
         self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "nbns":0, "dropbox":0, "unknown":0, "all":0, "nonIp":0}
         
-        
-        self.run()
-        
-        #self.localizarMonitor()
-    
-    def run(self):
         c3po = threading.Thread(target=self.localizarMonitor)
         c3po.start()
+        
+        #self.localizarMonitor()
         
     def getServerSocket(self):
         return self.serverSocket
@@ -77,6 +74,7 @@ class Coletor():
     
     def receberComando(self, monitor):
         
+        yoda = threading.Thread(target=self.iniciarColeta("",100))
         serverSocket = self.getServerSocket()
         
         print "[C3PO] Aguardando comando do monitor..."
@@ -90,7 +88,6 @@ class Coletor():
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
-                    yoda = threading.Thread(target=self.iniciarColeta("",100))
                     yoda.start()
                     
                 elif mensagem == "COLETAR" and self.getStatusColeta() == False:
