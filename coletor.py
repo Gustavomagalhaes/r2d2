@@ -9,6 +9,9 @@ class Coletor():
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.settimeout(20)
+        self.serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        self.serverSocket.bind(('', 6000))
         
         #coleta
         self.statusColeta = None
@@ -45,11 +48,6 @@ class Coletor():
 
     def localizarMonitor(self, mensagem = "", endereco = ()):
         serverSocket = self.getServerSocket()
-        
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        serverSocket.bind(('', 6000))
-        
         print "[C3PO] Procurando monitor..."
     
         while 1:
@@ -62,7 +60,6 @@ class Coletor():
                     #print "[C3PO] Aguardando..."
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
-                    serverSocket.close()
                     break
                 else:
                     continue
@@ -75,11 +72,7 @@ class Coletor():
     
     def receberComando(self, monitor):
         
-        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
         serverSocket = self.getServerSocket()
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        serverSocket.bind(('', 6000))
         
         print "[C3PO] Aguardando comando do monitor..."
     
@@ -89,6 +82,8 @@ class Coletor():
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
                 print mensagem
                 print endereco
+                
+                yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
