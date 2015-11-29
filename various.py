@@ -47,7 +47,6 @@ class Various():
                         elif  (linha[0] == "^" or linha[:5] == "http/") and linha[0] != "\n":
                             valor = linha[1]
                             valor = str(valor.replace("\n",""))
-                            chave = str(linha[0])
                             #print valor[:6]
                             if "?info_hash=get" in valor:
                                 valor = valor[:-67:]+")"
