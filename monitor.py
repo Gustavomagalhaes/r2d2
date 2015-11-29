@@ -1,4 +1,4 @@
-import socket, sys, os, threading, time, traceback, time
+import socket, sys, os, threading, time, traceback
 
 class Monitor():
 
@@ -41,7 +41,6 @@ class Monitor():
         # Inicia o monitor para que esse seja percebido pelos coletores
         clientSocket = self.getClientSocket()
         coletores = self.getColetores()
-        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         
         comandoStatus = False
@@ -59,7 +58,7 @@ class Monitor():
                 if endereco[0] not in coletores.keys():
                     self.setColetor(endereco[0], "[INATIVO]")
                     #print "[R2D2] Coletor adicionado a lista de coletores."
-                    self.getClientSocket().close()
+                    #self.getClientSocket().close()
                 if comandoStatus == False:
                     comando.start()
                     comandoStatus = True
@@ -124,28 +123,30 @@ class Monitor():
         
     def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
-
-        while 1:
-            #SEGUNDO ENVIO
-            print "while"
-            clientSocket.sendto(comando, (coletor, 6000))
-            print "enviou"
-            #SEGUNDO RECEIVE
-            time.sleep(3)
-            print comando
-            mensagem, endereco = clientSocket.recvfrom(2048)
-            print mensagem
-            if mensagem != "CAPTURANDO":
-                break
-            else:
-                print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
+        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        mensagem = ""
+        while mensagem != "CAPTURANDO":
+            print "Aguardando..."
+            try:
+                print "entrou no try"
+                clientSocket.sendto(comando, (coletor, 6000))
+                print 'enviou'
+                mensagem, endereco = clientSocket.recvfrom(2048)
+                print 'recebeu '+mensagem
                 if mensagem == "CAPTURANDO":
-                 self.setColetor(endereco[0], "[COLETANDO]")
+                    self.setColetor(endereco[0], "[COLETANDO]")
                 elif mensagem == "SUSPENSO":
                     self.setColetor(endereco[0], "[SUSPENSO]")
-                else:
-                    continue
-
+                
+                break
+            
+            except:
+                print "..."
+                traceback.print_exc()
+                continue
+        print "Recebeu status CAPTURANDO"
+    
     def inserirComando(self):
         while True:
             comando = ""
