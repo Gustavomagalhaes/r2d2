@@ -124,7 +124,6 @@ class Monitor():
         
     def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
-        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
         while 1:
             #SEGUNDO ENVIO
