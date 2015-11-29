@@ -64,6 +64,7 @@ class Monitor():
                     comandoStatus = True
                 else:
                     continue
+        clientSocket.close()
     
     def printCharacters(self):
         #os.system('clear')
