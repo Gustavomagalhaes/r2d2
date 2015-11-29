@@ -77,7 +77,6 @@ class Coletor():
     
     def receberComando(self, monitor):
         
-        yoda = threading.Thread(target=self.iniciarColeta("",100))
         serverSocket = self.getServerSocket()
         
         print "[C3PO] Aguardando comando do monitor..."
@@ -91,6 +90,7 @@ class Coletor():
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
+                    yoda = threading.Thread(target=self.iniciarColeta("",100))
                     yoda.start()
                     
                 elif mensagem == "COLETAR" and self.getStatusColeta() == False:
