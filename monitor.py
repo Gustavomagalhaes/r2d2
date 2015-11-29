@@ -46,11 +46,11 @@ class Monitor():
         comandoStatus = False
         
         while 1:
+            comando = threading.Thread(target=self.inserirComando)
             #PRIMEIRO ENVIO
             clientSocket.sendto("MONITOR", self.getDestino())
             #PRIMEIRO RECEIVE
             mensagem, endereco = clientSocket.recvfrom(2048)
-            comando = threading.Thread(target=self.inserirComando(endereco))
             if mensagem != "COLETOR":
                 break
             else:
@@ -100,32 +100,31 @@ class Monitor():
         for coletor, status in self.getColetores().iteritems():
             print str(coletor) + ": " + status
             
-    def suspenderColetores(self, monitor):
+    def suspenderColetores(self):
         self.printCharacters()
         self.listaDeColetores()
         print "\nEscolha o coletor que deseja suspender:\n"
         coletor = self.ask()
-        self.enviarComando("SUSPENDER", coletor, monitor)
+        self.enviarComando("SUSPENDER", coletor)
         
-    def continuarColetando(self, monitor):
+    def continuarColetando(self):
         self.printCharacters()
         self.listaDeColetores()
         print "\nEscolha o coletor que deseja continuar:\n"
         coletor = self.ask()
-        self.enviarComando("CONTINUAR", coletor, monitor)
+        self.enviarComando("CONTINUAR", coletor)
         
-    def iniciarColeta(self, monitor):
+    def iniciarColeta(self):
         self.printCharacters()
         self.listaDeColetores()
         print "\nEscolha o coletor que deseja coletar:\n"
         coletor = self.ask()
-        self.enviarComando("COLETAR", coletor, monitor)
+        self.enviarComando("COLETAR", coletor)
         
-    def enviarComando(self, comando, coletor, monitor):
+    def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
         clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        clientSocket.bind((monitor))
+        #clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         
         mensagem = ""
         while mensagem != "CAPTURANDO":
@@ -151,7 +150,7 @@ class Monitor():
                 continue
         print "Recebeu status CAPTURANDO"
     
-    def inserirComando(self, monitor):
+    def inserirComando(self):
         while True:
             comando = ""
             listadecomandos = self.getListaComandos()
@@ -166,11 +165,11 @@ class Monitor():
                 self.listaDeColetores()
                 self.stopPoing()
             elif comando == "SUSPENDER":
-                self.suspenderColetores(monitor)
+                self.suspenderColetores()
             elif comando == "CONTINUAR":
-                self.continuarColetando(monitor)
+                self.continuarColetando()
             elif comando == "COLETAR":
-                self.iniciarColeta(monitor)
+                self.iniciarColeta()
             elif comando == "SAIR":
                 os.system('clear')
                 break
