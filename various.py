@@ -45,9 +45,9 @@ class Various():
                         if linha[0] != "^" and linha[:5] != "http/" and linha[0] != "\n":
                             chave = str(linha.replace("\n",""))
                         elif  (linha[0] == "^" or linha[:5] == "http/") and linha[0] != "\n":
-                            # if linha[:7] == "^notify":
-                            #     linha.split(":(alive")
-                            #     linha = linha[0]
+                            if linha[:7] == "^notify":
+                                linha.split(":(alive")
+                                linha = linha[0]
                             # elif linha[5:16] == "bittorrent":
                             #     linha.split("=get")
                             #     linha = linha[0] + ")"
