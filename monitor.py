@@ -1,4 +1,4 @@
-import socket, sys, os, threading, time
+import socket, sys, os, threading, time, traceback
 
 class Monitor():
 
@@ -148,6 +148,7 @@ class Monitor():
                 
                 except:
                     print "..."
+                    traceback.print_exc()
                     continue
     
     def inserirComando(self):
