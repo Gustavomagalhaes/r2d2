@@ -46,16 +46,6 @@ class Various():
                             chave = str(linha.replace("\n",""))
                         elif  (linha[0] == "^" or linha[:5] == "http/") and linha[0] != "\n":
                             valor = (str(linha).lstrip()).rstrip()
-                            if valor[:7] == "^notify":
-                                valor.split(":(alive")
-                                valor = valor[0]
-                            elif valor[5:16] == "bittorrent":
-                                valor.split("=get")
-                                valor = valor[0] + ")"
-                            elif valor[:5] == "http/":
-                                valor.split("(connection:")
-                                valor = valor[0]
-                                valor = valor[-15::]
                     linha = file.readline()
                                 
                 #protocolos[chave] = re.compile(valor)
@@ -71,6 +61,18 @@ class Various():
                 for p in proto.iteritems():
                     if chave == p[0]:
                         print chave + "\t" + str(p[0])
+                        
+                        if valor[0:7] == "^notify":
+                            valor.split(":(alive")
+                            valor = valor[0]
+                        # elif valor[5:16] == "bittorrent":
+                        #     valor.split("=get")
+                        #     valor = valor[0] + ")"
+                        # elif valor[:5] == "http/":
+                        #     valor.split("(connection:")
+                        #     valor = valor[0]
+                        #     valor = valor[-15::]
+                        
                         print "ARQUIVO:\t" + str(valor)
                         print "DICIONARIO:\t" + str(p[1])
                 protocolos[chave] = valor
