@@ -85,6 +85,7 @@ class Coletor():
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
                 print mensagem
                 print endereco
+                print self.getStatusColeta()
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
