@@ -78,14 +78,14 @@ class Coletor():
         # yoda = threading.Thread(target=self.iniciarColeta("",0))
         serverSocket = self.getServerSocket()
         
-        print "[C3PO] Aguardando comando do monitor..."
+        print "\n[C3PO] Aguardando comando do monitor..."
     
         while 1:
             try:
                 
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
-                print mensagem
-                print endereco
+                # print mensagem
+                # print endereco
                 if mensagem == "COLETAR" and self.getStatusColeta() == None: 
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     self.setStatusColeta(yoda, True)
@@ -177,7 +177,7 @@ class Coletor():
             protApp = ""
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
-                print "\bPacote ["+str(contPkt)+"]"
+                print "\nPacote [ "+str(contPkt)+" ]\n"
                 duracao = time.time() - inicio
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
                 # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
