@@ -74,8 +74,8 @@ class Coletor():
     
     def receberComando(self, monitor):
         
-        # yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",20))
-        yoda = threading.Thread(target=self.iniciarColeta("",20))
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",0))
+        # yoda = threading.Thread(target=self.iniciarColeta("",20))
         serverSocket = self.getServerSocket()
         
         print "[C3PO] Aguardando comando do monitor..."
