@@ -183,9 +183,11 @@ class Coletor():
                 # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 # print mensagem
                 # print self.getStatusColeta()
-                if (self.getStatusColeta() == True):
-                    self.enviarFila("ip",mensagem)
-                    self.enviarFila("all",mensagem)
+                
+                # Nao tem fila IP
+                # if (self.getStatusColeta() == True):
+                    # self.enviarFila("ip",mensagem)
+                    # self.enviarFila("all",mensagem)
                 
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
@@ -198,9 +200,10 @@ class Coletor():
                     mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
                     # mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                     #print mensagem
-                    if (self.getStatusColeta() == True):
-                        self.enviarFila(transporte,mensagem)
-                        self.enviarFila("all",mensagem)
+                    # Nao tem fila UDP
+                    # if (self.getStatusColeta() == True):
+                    #     self.enviarFila(transporte,mensagem)
+                    #     self.enviarFila("all",mensagem)
                     
                     self.contProtocolos["all"] += 1
                     app = transp.data.lower()
