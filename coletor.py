@@ -13,7 +13,7 @@ class Coletor():
         #coleta
         self.statusColeta = None
         self.pacotes = {}
-        self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "nbns":0, "dropbox":0, "unknown":0, "all":0, "nonIp":0}
+        self.contProtocolos = {"http":0, "ssdp":0, "ssl":0, "dhcp":0, "ssh":0, "nbns":0, "dropbox":0, "unknown":0, "bittorrent":0, "all":0, "nonIp":0}
         
         c3po = threading.Thread(target=self.localizarMonitor)
         c3po.start()
@@ -74,7 +74,8 @@ class Coletor():
     
     def receberComando(self, monitor):
         
-        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",20))
+        # yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",20))
+        yoda = threading.Thread(target=self.iniciarColeta("",20))
         serverSocket = self.getServerSocket()
         
         print "[C3PO] Aguardando comando do monitor..."
@@ -100,7 +101,6 @@ class Coletor():
                     self.serverSocket.sendto("SUSPENSO", endereco)
                     print "[C3PO] Suspenso"
                     self.setStatusColeta(yoda, False)
-                    print self.getStatusColeta()
                     # yoda.OnStop()
                   #  yoda.setStatus(False)
                     
