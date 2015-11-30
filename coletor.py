@@ -177,8 +177,8 @@ class Coletor():
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 #print mensagem
-                self.enviarFila("ip",mensagem)
-                self.enviarFila("all",mensagem)
+                #self.enviarFila("ip",mensagem)
+                #self.enviarFila("all",mensagem)
                 
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
@@ -189,8 +189,8 @@ class Coletor():
                     
                     mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                     #print mensagem
-                    self.enviarFila(transporte,mensagem)
-                    self.enviarFila("all",mensagem)
+                    #self.enviarFila(transporte,mensagem)
+                    #self.enviarFila("all",mensagem)
                     
                     self.contProtocolos["all"] += 1
                     app = transp.data.lower()
@@ -200,16 +200,16 @@ class Coletor():
                         if expressao.search(app):
                             mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
-                            self.enviarFila(p[0],mensagem)
-                            self.enviarFila("all",mensagem)
+                            #self.enviarFila(p[0],mensagem)
+                            #self.enviarFila("all",mensagem)
                             self.contProtocolos[p[0]] += 1
                             found = True
         					
                         if (not found):
                             mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
-                            self.enviarFila("unknown",mensagem)
-                            self.contProtocolos["unknown"] += 1
+                            #self.enviarFila("unknown",mensagem)
+                            #self.contProtocolos["unknown"] += 1
                 else:
                     #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
                     print 'log'
