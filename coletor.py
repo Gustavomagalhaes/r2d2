@@ -176,9 +176,9 @@ class Coletor():
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
-                #print mensagem
-                #self.enviarFila("ip",mensagem)
-                #self.enviarFila("all",mensagem)
+                print mensagem
+                self.enviarFila("ip",mensagem)
+                self.enviarFila("all",mensagem)
                 
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
@@ -226,12 +226,12 @@ class Coletor():
         channel.exchange_declare(exchange='topic_logs',type='topic')
         channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
         
-        print " [x] Sent %r:%r" % (routing_key, mensagem)
+        print " [x] Enviado para fila [%s]: %r" % (routing_key.upper(), mensagem)
         
         connection.close()
 
 if __name__ == '__main__':
-    
+    os.system('clear')
     coletor = Coletor()
     #coletorThread = threading.Thread(target=coletor.start)
     #coletorThread.start()
