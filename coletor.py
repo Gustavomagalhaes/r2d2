@@ -164,7 +164,7 @@ class Coletor():
                 return nome
         return "unknown"
     
-    def iniciarColeta(self, file="", tempo = 60):
+    def iniciarColeta(self, file="", tempo = 120):
         protocolos = self.listarProtocolos()
         contPkt = 0
         for ts, pkt in pcap.pcap(file):
@@ -227,9 +227,7 @@ class Coletor():
         channel.exchange_declare(exchange='topic_logs',type='topic')
         channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
         
-        msg = mensagem.split('#')
-        
-        print "Enviado para fila [%s] %r" % (routing_key.upper(), msg)
+        print "Enviado para fila [%s] %r" % (routing_key.upper(), mensagem)
         
         connection.close()
 
