@@ -166,7 +166,7 @@ class Coletor():
     def iniciarColeta(self, file="", tempo = 60):
         protocolos = self.listarProtocolos()
         contPkt = 0
-        for ts, pkt in pcap.pcap():
+        for ts, pkt in pcap.pcap(file):
             contPkt+=1
             eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
             protRede = ""
