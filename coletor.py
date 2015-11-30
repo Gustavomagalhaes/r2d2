@@ -177,8 +177,8 @@ class Coletor():
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
-                print mensagem
-                #self.enviarFila("ip",mensagem)
+                #print mensagem
+                self.enviarFila("ip",mensagem)
                 self.enviarFila("all",mensagem)
                 
                 transp = ip.data
@@ -190,8 +190,8 @@ class Coletor():
                     
                     mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                     #print mensagem
-                    #self.enviarFila(transporte,mensagem)
-                    #self.enviarFila("all",mensagem)
+                    self.enviarFila(transporte,mensagem)
+                    self.enviarFila("all",mensagem)
                     
                     self.contProtocolos["all"] += 1
                     app = transp.data.lower()
@@ -201,16 +201,16 @@ class Coletor():
                         if expressao.search(app):
                             mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
-                            #self.enviarFila(p[0],mensagem)
-                            #self.enviarFila("all",mensagem)
+                            self.enviarFila(p[0],mensagem)
+                            self.enviarFila("all",mensagem)
                             self.contProtocolos[p[0]] += 1
                             found = True
         					
                         if (not found):
                             mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
-                            #self.enviarFila("unknown",mensagem)
-                            #self.contProtocolos["unknown"] += 1
+                            self.enviarFila("unknown",mensagem)
+                            self.contProtocolos["unknown"] += 1
                 else:
                     #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
                     print 'log'
@@ -227,7 +227,7 @@ class Coletor():
         channel.exchange_declare(exchange='topic_logs',type='topic')
         channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
         
-        print " [x] Enviado para fila %r:%r" % (routing_key, mensagem)
+        print " [x] Enviado %r:%r" % (routing_key, mensagem)
         
         connection.close()
 
