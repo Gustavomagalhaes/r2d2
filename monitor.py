@@ -53,7 +53,7 @@ class Monitor():
             if mensagem != "COLETOR":
                 break
             else:
-                print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
+                #print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
                 if endereco[0] not in coletores.keys():
                     self.setColetor(endereco[0], "[INATIVO]")
                     #print "[R2D2] Coletor adicionado a lista de coletores."
