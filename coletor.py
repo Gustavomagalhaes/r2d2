@@ -165,7 +165,7 @@ class Coletor():
                 return nome
         return "unknown"
     
-    def iniciarColeta(self, file="", tempo = 60):
+    def iniciarColeta(self, file="", tempo):
         protocolos = self.listarProtocolos()
         contPkt = 0
         for ts, pkt in pcap.pcap(file):
@@ -177,7 +177,7 @@ class Coletor():
             protApp = ""
             
             ip = eth.data
-            if isinstance(ip,dpkt.ip.IP):
+            if isinstance(ip,dpkt.ip.IP) and self.getStatusColeta() != None:
                 duracao = time.time() - inicio
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
                 # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
