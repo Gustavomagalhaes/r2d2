@@ -9,6 +9,7 @@ class Coletor():
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.settimeout(20)
+        self.statusFila = False
         
         #coleta
         self.statusColeta = None
@@ -25,6 +26,12 @@ class Coletor():
     
     def getPacotes(self):
         return self.pacotes
+        
+    def setStatusFila(self, status):
+        self.statusFila = status
+    
+    def getStatusFila(self):
+        return self.statusFila
         
     def setPacote(self, chave, conteudo):
         self.pacotes[(chave)] = conteudo
@@ -88,22 +95,26 @@ class Coletor():
                 print endereco
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
+                    self.setStatusFila(True)
                     print "[C3PO] Capturando"
                     yoda.start()
                     
                 elif mensagem == "COLETAR" and self.getStatusColeta() == False:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
+                    self.setStatusFila(True)
                     print "[C3PO] Capturando"
                     self.setStatusColeta(yoda, True)
                     
                 elif mensagem == "SUSPENDER":
                     self.serverSocket.sendto("SUSPENSO", endereco)
+                    self.setStatusFila(False)
                     print "[C3PO] Suspenso"
                     self.setStatusColeta(yoda, False)
                   #  yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR" and self.getStatusColeta() == False:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
+                    self.setStatusFila(True)
                     print "[C3PO] Capturando"
                     self.setStatusColeta(yoda, True)
                   #  yoda.setStatus(True)
@@ -178,7 +189,7 @@ class Coletor():
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 #print mensagem
-                print self.getStatusColeta()
+                print self.getStatusFila()
                 self.enviarFila("ip",mensagem)
                 self.enviarFila("all",mensagem)
                 
