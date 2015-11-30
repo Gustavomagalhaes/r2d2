@@ -86,7 +86,7 @@ class Coletor():
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
                 print mensagem
                 print endereco
-                if mensagem == "COLETAR" and self.getStatusColeta() != None: 
+                if mensagem == "COLETAR" and self.getStatusColeta() == None: 
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     self.setStatusColeta(yoda, True)
                     print "[C3PO] Capturando"
@@ -122,7 +122,7 @@ class Coletor():
               #  raise
             except:
                 traceback.print_exc()
-                print "excepto"
+                print "except"
         
     
     def listarProtocolos(self):
@@ -176,7 +176,6 @@ class Coletor():
             protTransporte = ""
             protApp = ""
             print self.getStatusColeta()
-            print ""
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
                 duracao = time.time() - inicio
