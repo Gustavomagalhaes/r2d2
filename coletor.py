@@ -190,8 +190,9 @@ class Coletor():
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 #print mensagem
                 print self.getStatusFila()
-                self.enviarFila("ip",mensagem)
-                self.enviarFila("all",mensagem)
+                if (self.getStatusFila):
+                    self.enviarFila("ip",mensagem)
+                    self.enviarFila("all",mensagem)
                 
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
