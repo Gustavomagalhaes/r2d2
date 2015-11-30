@@ -112,8 +112,6 @@ class Coletor():
                     continue
                     
                     
-                print "OK"
-                print self.getStatusColeta()
                 self.receberComando(monitor)
                 
                 #self.serverSocket.sendto("OK", endereco)
@@ -178,10 +176,11 @@ class Coletor():
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
-                print mensagem
-                print self.getStatusColeta()
-                # self.enviarFila("ip",mensagem)
-                # self.enviarFila("all",mensagem)
+                # print mensagem
+                # print self.getStatusColeta()
+                if (self.getStatusColeta() == True):
+                    self.enviarFila("ip",mensagem)
+                    self.enviarFila("all",mensagem)
                 
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
@@ -192,8 +191,9 @@ class Coletor():
                     
                     mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                     #print mensagem
-                    #self.enviarFila(transporte,mensagem)
-                    #self.enviarFila("all",mensagem)
+                    if (self.getStatusColeta() == True):
+                        self.enviarFila(transporte,mensagem)
+                        self.enviarFila("all",mensagem)
                     
                     self.contProtocolos["all"] += 1
                     app = transp.data.lower()
@@ -203,16 +203,18 @@ class Coletor():
                         if expressao.search(app):
                             mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
-                            #self.enviarFila(p[0],mensagem)
-                            #self.enviarFila("all",mensagem)
+                            if (self.getStatusColeta() == True):
+                                self.enviarFila(p[0],mensagem)
+                                self.enviarFila("all",mensagem)
                             self.contProtocolos[p[0]] += 1
                             found = True
         					
                         if (not found):
                             mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
-                            #self.enviarFila("unknown",mensagem)
-                            #self.contProtocolos["unknown"] += 1
+                            if (self.getStatusColeta() == True):
+                                self.enviarFila("unknown",mensagem)
+                                self.contProtocolos["unknown"] += 1
                 else:
                     #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
                     print 'log'
