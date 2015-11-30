@@ -183,7 +183,10 @@ class Coletor():
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
                 duracao = time.time() - inicio
+                
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
+                
+                
                 # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 # print mensagem
                 # print self.getStatusColeta()
@@ -216,7 +219,12 @@ class Coletor():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             duracao = time.time() - inicio
-                            mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
+                            ipOrigem = str(ip.src)
+                            ipDestino = str(ip.dst)
+                            portaOrigem = str(transp.sport)
+                            portaDestino = str(transp.dport)
+                            #mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
+                            mensagem = str(ipOrigem) + "#" + str(portaOrigem) + "#" + str(ipDestino) + "#" + str(portaDestino) + "#" + str(p[0])
                             # mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
                             # HTTP entre outros. 
@@ -249,7 +257,7 @@ class Coletor():
         
     def enviarFila(self, routing_key, mensagem):
         connection = pika.BlockingConnection(pika.ConnectionParameters(
-               "", 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
+               "172.16.207.155", 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
         channel = connection.channel()
         channel.exchange_declare(exchange='topic_logs',type='topic')
         channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)

@@ -73,7 +73,7 @@ def classificar(body):
     else:
         dadosClassificados.append("rato")
         
-    if(dados[1] > (medias[1] + 3* desvios[1])):
+    if((dados[1] > (medias[1] + 3* desvios[1]) or dados[1]>900000)):
         dadosClassificados.append("tartaruga")
         
     else: 
@@ -94,7 +94,7 @@ def callback(ch, method, properties, body):
     dadosClassificados = classificar(body)
     
     mensagem = dadosClassificados[0] + "|" + dadosClassificados[1] + "|" + dadosClassificados[2]    
-    connection = pika.BlockingConnection(pika.ConnectionParameters( '192.168.25.57', 5672, '/starwars', credentials))
+    connection = pika.BlockingConnection(pika.ConnectionParameters( '172.16.207.155', 5672, '/starwars', credentials))
     channel = connection.channel()
     channel.exchange_declare(exchange='topic_logs',type='topic')
     channel.basic_publish(exchange='topic_logs',routing_key=method.routing_key,body=mensagem)
@@ -105,7 +105,7 @@ def callback(ch, method, properties, body):
    
 channel.basic_consume(callback, queue=queue_name, no_ack=True)
 
-sc = SparkContext("spark://192.168.25.57:7077","consumer")
+sc = SparkContext("spark://172.16.207.155","consumer")
 ssc = StreamingContext(sc, 1)
 CSR = DStream(channel.start_consuming())
 ssc.start()
