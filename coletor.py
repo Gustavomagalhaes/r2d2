@@ -215,6 +215,7 @@ class Coletor():
                             mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
                             # mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
+                            # HTTP entre outros. 
                             if (self.getStatusColeta() == True):
                                 self.enviarFila(p[0],mensagem)
                                 self.enviarFila("all",mensagem)
