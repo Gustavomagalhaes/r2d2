@@ -74,8 +74,7 @@ class Coletor():
     
     def receberComando(self, monitor):
         
-        # yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",20))
-        yoda = threading.Thread(target=self.iniciarColeta('',20))
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",20))
         serverSocket = self.getServerSocket()
         
         print "[C3PO] Aguardando comando do monitor..."
@@ -177,9 +176,9 @@ class Coletor():
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
-                print mensagem
-                self.enviarFila("ip",mensagem)
-                self.enviarFila("all",mensagem)
+                # print mensagem
+                # self.enviarFila("ip",mensagem)
+                # self.enviarFila("all",mensagem)
                 
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
