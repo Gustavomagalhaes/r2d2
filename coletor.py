@@ -185,7 +185,6 @@ class Coletor():
             protApp = ""
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
-                print "\n<<Pacote "+str(contPkt)+">>\n"
                 duracao = time.time() - inicio
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
                 # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
@@ -225,6 +224,7 @@ class Coletor():
                             #print mensagem
                             # HTTP entre outros. 
                             if (self.getStatusColeta() == True):
+                                print "\n<<Pacote "+str(contPkt)+">>\n"
                                 self.enviarFila(p[0],mensagem)
                                 self.enviarFila("all",mensagem)
                             self.contProtocolos[p[0]] += 1
@@ -236,6 +236,7 @@ class Coletor():
                             # mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
                             if (self.getStatusColeta() == True):
+                                print "\n<<Pacote "+str(contPkt)+">>\n"
                                 self.enviarFila("unknown",mensagem)
                                 self.contProtocolos["unknown"] += 1
                 else:
