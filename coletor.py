@@ -176,9 +176,9 @@ class Coletor():
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
-                print mensagem
-                #self.emit_topic("ip",mensagem)
-                #self.emit_topic("all",mensagem)
+                #print mensagem
+                self.enviarFila("ip",mensagem)
+                self.enviarFila("all",mensagem)
                 
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
@@ -188,9 +188,9 @@ class Coletor():
                         transporte = "UDP"
                     
                     mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
-                    print mensagem
-                    #self.emit_topic(transporte,mensagem)
-                    #self.emit_topic("all",mensagem)
+                    #print mensagem
+                    self.enviarFila(transporte,mensagem)
+                    self.enviarFila("all",mensagem)
                     
                     self.contProtocolos["all"] += 1
                     app = transp.data.lower()
@@ -199,16 +199,16 @@ class Coletor():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
-                            print mensagem
-                            #self.emit_topic(p[0],mensagem)
-                            #self.emit_topic("all",mensagem)
+                            #print mensagem
+                            self.enviarFila(p[0],mensagem)
+                            self.enviarFila("all",mensagem)
                             self.contProtocolos[p[0]] += 1
                             found = True
         					
                         if (not found):
                             mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
-                            print mensagem
-                            #self.emit_topic("unknown",mensagem)
+                            #print mensagem
+                            self.enviarFila("unknown",mensagem)
                             self.contProtocolos["unknown"] += 1
                 else:
                     #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
@@ -218,6 +218,17 @@ class Coletor():
         
         #for p in self.contProtocolos.items():
         #	print(p[0]+" Pkts:"+str(p[1]))
+        
+    def enviarFila(self, routing_key, mensagem):
+        connection = pika.BlockingConnection(pika.ConnectionParameters(
+               "", 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
+        channel = connection.channel()
+        channel.exchange_declare(exchange='topic_logs',type='topic')
+        channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
+        
+        print " [x] Sent %r:%r" % (routing_key, mensagem)
+        
+        connection.close()
 
 if __name__ == '__main__':
     

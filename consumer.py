@@ -6,6 +6,7 @@ from pyspark.streaming import StreamingContext
 from pyspark.streaming import DStream
 from math import sqrt
 
+
 credentials = pika.PlainCredentials('skywalker', 'luke')
 connection = pika.BlockingConnection(pika.ConnectionParameters(
                '192.168.25.57', 5672, '/starwars', credentials))

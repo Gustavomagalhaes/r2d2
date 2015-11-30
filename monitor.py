@@ -130,16 +130,18 @@ class Monitor():
             self.inserirComando()
         else:
             while (mensagem != "CAPTURANDO") or (mensagem != "SUSPENSO"):
-                print "Aguardando..."
+                #print "Aguardando..."
                 try:
-                    print "entrou no try"
+                    #print "entrou no try"
                     clientSocket.sendto(comando, (coletor, 6000))
-                    print 'enviou'
+                    #print 'enviou'
                     time.sleep(2)
                     if comando == "COLETAR":
                         self.setColetor(coletor, "[COLETANDO]")
                     elif comando == "SUSPENDER":
                         self.setColetor(coletor, "[SUSPENSO]")
+                    elif comando == "CONTINUAR":
+                        self.setColetor(coletor, "[COLETANDO]")
                     
                     break
                 
