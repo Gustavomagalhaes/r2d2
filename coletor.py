@@ -74,7 +74,7 @@ class Coletor():
     
     def receberComando(self, monitor):
         
-        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",20))
+        yoda = threading.Thread(target=self.iniciarColeta("files/test2.pcap",20))
         serverSocket = self.getServerSocket()
         
         print "[C3PO] Aguardando comando do monitor..."
@@ -100,6 +100,7 @@ class Coletor():
                     self.serverSocket.sendto("SUSPENSO", endereco)
                     print "[C3PO] Suspenso"
                     self.setStatusColeta(yoda, False)
+                    # yoda.OnStop()
                   #  yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR" and self.getStatusColeta() == False:
