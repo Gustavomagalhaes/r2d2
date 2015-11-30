@@ -97,8 +97,7 @@ class Monitor():
         self.printCharacters()
         print "Lista de coletores:\n"
         for coletor, status in self.getColetores().iteritems():
-            print self.getColetores()
-            print self.getColetores()[0]
+            self.getColetores().iteritems()
             print str(coletor) + ": " + status
             
     def suspenderColetores(self):
