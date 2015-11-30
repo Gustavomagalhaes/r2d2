@@ -178,6 +178,7 @@ class Coletor():
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 #print mensagem
+                print getStatusColeta()
                 self.enviarFila("ip",mensagem)
                 self.enviarFila("all",mensagem)
                 
