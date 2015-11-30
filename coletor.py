@@ -164,7 +164,7 @@ class Coletor():
                 return nome
         return "unknown"
     
-    def iniciarColeta(self, file="", tempo = 120):
+    def iniciarColeta(self, file="", tempo = 20):
         protocolos = self.listarProtocolos()
         contPkt = 0
         for ts, pkt in pcap.pcap(file):
@@ -178,7 +178,7 @@ class Coletor():
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 #print mensagem
-                print getStatusColeta()
+                print self.getStatusColeta()
                 self.enviarFila("ip",mensagem)
                 self.enviarFila("all",mensagem)
                 
