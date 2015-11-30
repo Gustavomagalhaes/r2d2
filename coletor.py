@@ -175,14 +175,14 @@ class Coletor():
             protRede = ""
             protTransporte = ""
             protApp = ""
-            
+            print self.getStatusColeta()
             ip = eth.data
-            if isinstance(ip,dpkt.ip.IP) and self.getStatusColeta() != None:
+            if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
                 duracao = time.time() - inicio
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
                 # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 # print mensagem
-                print self.getStatusColeta()
+                # print self.getStatusColeta()
                 if (self.getStatusColeta() == True):
                     self.enviarFila("ip",mensagem)
                     self.enviarFila("all",mensagem)
