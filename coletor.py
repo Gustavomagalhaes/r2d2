@@ -33,12 +33,8 @@ class Coletor():
     def getStatusColeta(self):
         return self.statusColeta
         
-    def setStatusColeta(self, thread, statusColeta):
+    def setStatusColeta(self, statusColeta):
         self.statusColeta = statusColeta
-        if self.statusColeta == "False" and statusColeta == "True":
-            thread.start()
-        elif self.statusColeta == "True" and statusColeta == "False":
-            thread.stop()
             
         
     def getcontProtocolos(self):
@@ -95,26 +91,26 @@ class Coletor():
                 # print endereco
                 if mensagem == "COLETAR" and self.getStatusColeta() == None: 
                     self.serverSocket.sendto("CAPTURANDO", endereco)
-                    self.setStatusColeta(yoda, True)
+                    self.setStatusColeta(True)
                     print "[C3PO] Capturando"
                     yoda.start()
                     
                 elif mensagem == "COLETAR" and self.getStatusColeta() == False:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
-                    self.setStatusColeta(yoda, True)
+                    self.setStatusColeta(True)
                     
                 elif mensagem == "SUSPENDER" and self.getStatusColeta() == True:
                     self.serverSocket.sendto("SUSPENSO", endereco)
                     print "[C3PO] Suspenso"
-                    self.setStatusColeta(yoda, False)
+                    self.setStatusColeta(False)
                     # yoda.OnStop()
                   #  yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR" and self.getStatusColeta() == False:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
-                    self.setStatusColeta(yoda, True)
+                    self.setStatusColeta(True)
                   #  yoda.setStatus(True)
                  
                 elif mensagem == "MONITOR":
