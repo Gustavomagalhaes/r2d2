@@ -177,7 +177,7 @@ class Coletor():
             protApp = ""
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
-                print "\nPacote [ "+str(contPkt)+" ]\n"
+                print "\n<Pacote_"+str(contPkt)+">\n"
                 duracao = time.time() - inicio
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
                 # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
@@ -233,6 +233,7 @@ class Coletor():
                 else:
                     #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
                     print 'log'
+                print "\n</Pacote_"+str(contPkt)+">\n"
             else:
                 self.contProtocolos["nonIp"] += 1
         
