@@ -74,8 +74,7 @@ class Coletor():
     
     def receberComando(self, monitor):
         
-        # yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
-        yoda = threading.Thread(target=self.iniciarColeta("",100))
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
         serverSocket = self.getServerSocket()
         
         print "[C3PO] Aguardando comando do monitor..."
@@ -167,7 +166,7 @@ class Coletor():
     def iniciarColeta(self, file="", tempo = 60):
         protocolos = self.listarProtocolos()
         contPkt = 0
-        for ts, pkt in pcap.pcap(file):
+        for ts, pkt in pcap.pcap():
             contPkt+=1
             eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
             protRede = ""
