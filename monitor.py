@@ -21,6 +21,9 @@ class Monitor():
     def setColetor(self, coletor, status):
         self.coletores[(coletor)] = status
         
+    def getStatusColetor(self, coletor):
+        return self.coletores[(coletor)]
+        
     def setColetorAtual(self, coletor):
         self.coletorAtual = coletor
         
@@ -56,6 +59,7 @@ class Monitor():
                 #print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
                 if endereco[0] not in coletores.keys():
                     self.setColetor(endereco[0], "[INATIVO]")
+                    print self.getStatusColetor(endereco[0])
                     #print "[R2D2] Coletor adicionado a lista de coletores."
                     #self.getClientSocket().close()
                 if comandoStatus == False:

@@ -227,7 +227,7 @@ class Coletor():
         channel.exchange_declare(exchange='topic_logs',type='topic')
         channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
         
-        print "Enviado para fila [%s] %r" % (routing_key.upper(), mensagem)
+        print "Enviado para fila [%s]\t%r" % (routing_key.upper(), mensagem)
         
         connection.close()
 
