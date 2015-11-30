@@ -85,7 +85,6 @@ class Coletor():
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
                 print mensagem
                 print endereco
-                print self.getStatusColeta()
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
                     self.setStatusColeta(yoda, True)
@@ -114,6 +113,7 @@ class Coletor():
                     
                     
                 print "OK"
+                print self.getStatusColeta()
                 self.receberComando(monitor)
                 
                 #self.serverSocket.sendto("OK", endereco)
@@ -178,7 +178,8 @@ class Coletor():
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
-                # print mensagem
+                print mensagem
+                print self.getStatusColeta()
                 # self.enviarFila("ip",mensagem)
                 # self.enviarFila("all",mensagem)
                 
