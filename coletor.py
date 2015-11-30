@@ -165,7 +165,7 @@ class Coletor():
                 return nome
         return "unknown"
     
-    def iniciarColeta(self, file="", tempo):
+    def iniciarColeta(self, file="", tempo = 20):
         protocolos = self.listarProtocolos()
         contPkt = 0
         for ts, pkt in pcap.pcap(file):
