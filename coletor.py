@@ -179,7 +179,7 @@ class Coletor():
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 print mensagem
                 #self.enviarFila("ip",mensagem)
-                #self.enviarFila("all",mensagem)
+                self.enviarFila("all",mensagem)
                 
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
@@ -227,7 +227,7 @@ class Coletor():
         channel.exchange_declare(exchange='topic_logs',type='topic')
         channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
         
-        print " [x] Sent %r:%r" % (routing_key, mensagem)
+        print " [x] Enviado para fila %r:%r" % (routing_key, mensagem)
         
         connection.close()
 
