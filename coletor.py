@@ -74,7 +74,7 @@ class Coletor():
     
     def receberComando(self, monitor):
         
-        yoda = threading.Thread(target=self.iniciarColeta("files/test2.pcap",20))
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",20))
         serverSocket = self.getServerSocket()
         
         print "[C3PO] Aguardando comando do monitor..."
@@ -232,7 +232,7 @@ class Coletor():
         channel.exchange_declare(exchange='topic_logs',type='topic')
         channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
         
-        print " [x] Enviado para fila [%s]: %r" % (routing_key.upper(), mensagem)
+        # print " [x] Enviado para fila [%s]: %r" % (routing_key.upper(), mensagem)
         
         connection.close()
 
