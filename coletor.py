@@ -179,7 +179,7 @@ class Coletor():
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 duracao = time.time() - inicio
-                mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+duracao+"#"+(len(pkt)/duracao) 
+                mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
                 # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 # print mensagem
                 print self.getStatusColeta()
@@ -195,7 +195,7 @@ class Coletor():
                         transporte = "UDP"
                     
                     duracao = time.time() - inicio
-                    mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+duracao+"#"+(len(pkt)/duracao)
+                    mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
                     # mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                     #print mensagem
                     if (self.getStatusColeta() == True):
@@ -209,7 +209,7 @@ class Coletor():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             duracao = time.time() - inicio
-                            mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+duracao+"#"+(len(pkt)/duracao)
+                            mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
                             # mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
                             if (self.getStatusColeta() == True):
@@ -220,7 +220,7 @@ class Coletor():
         					
                         if (not found):
                             duracao = time.time() - inicio
-                            mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+duracao+"#"+(len(pkt)/duracao)
+                            mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
                             # mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
                             if (self.getStatusColeta() == True):
