@@ -9,7 +9,6 @@ class Coletor():
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.settimeout(20)
-        self.statusFila = False
         
         #coleta
         self.statusColeta = None
@@ -26,12 +25,6 @@ class Coletor():
     
     def getPacotes(self):
         return self.pacotes
-        
-    def setStatusFila(self, status):
-        self.statusFila = status
-    
-    def getStatusFila(self):
-        return self.statusFila
         
     def setPacote(self, chave, conteudo):
         self.pacotes[(chave)] = conteudo
@@ -81,8 +74,7 @@ class Coletor():
     
     def receberComando(self, monitor):
         
-        # yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
-        yoda = threading.Thread(target=self.iniciarColeta("",100))
+        yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",100))
         serverSocket = self.getServerSocket()
         
         print "[C3PO] Aguardando comando do monitor..."
@@ -95,26 +87,22 @@ class Coletor():
                 print endereco
                 if mensagem == "COLETAR" and self.getStatusColeta() == None:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
-                    self.setStatusFila(True)
                     print "[C3PO] Capturando"
                     yoda.start()
                     
                 elif mensagem == "COLETAR" and self.getStatusColeta() == False:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
-                    self.setStatusFila(True)
                     print "[C3PO] Capturando"
                     self.setStatusColeta(yoda, True)
                     
                 elif mensagem == "SUSPENDER":
                     self.serverSocket.sendto("SUSPENSO", endereco)
-                    self.setStatusFila(False)
                     print "[C3PO] Suspenso"
                     self.setStatusColeta(yoda, False)
                   #  yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR" and self.getStatusColeta() == False:
                     self.serverSocket.sendto("CAPTURANDO", endereco)
-                    self.setStatusFila(True)
                     print "[C3PO] Capturando"
                     self.setStatusColeta(yoda, True)
                   #  yoda.setStatus(True)
@@ -175,7 +163,7 @@ class Coletor():
                 return nome
         return "unknown"
     
-    def iniciarColeta(self, file="", tempo = 20):
+    def iniciarColeta(self, file="", tempo = 60):
         protocolos = self.listarProtocolos()
         contPkt = 0
         for ts, pkt in pcap.pcap(file):
@@ -189,10 +177,8 @@ class Coletor():
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 #print mensagem
-                print self.getStatusFila()
-                if (self.getStatusFila):
-                    self.enviarFila("ip",mensagem)
-                    self.enviarFila("all",mensagem)
+                #self.enviarFila("ip",mensagem)
+                #self.enviarFila("all",mensagem)
                 
                 transp = ip.data
                 if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
@@ -203,8 +189,8 @@ class Coletor():
                     
                     mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                     #print mensagem
-                    self.enviarFila(transporte,mensagem)
-                    self.enviarFila("all",mensagem)
+                    #self.enviarFila(transporte,mensagem)
+                    #self.enviarFila("all",mensagem)
                     
                     self.contProtocolos["all"] += 1
                     app = transp.data.lower()
@@ -214,16 +200,16 @@ class Coletor():
                         if expressao.search(app):
                             mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
-                            self.enviarFila(p[0],mensagem)
-                            self.enviarFila("all",mensagem)
+                            #self.enviarFila(p[0],mensagem)
+                            #self.enviarFila("all",mensagem)
                             self.contProtocolos[p[0]] += 1
                             found = True
         					
                         if (not found):
                             mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
-                            self.enviarFila("unknown",mensagem)
-                            self.contProtocolos["unknown"] += 1
+                            #self.enviarFila("unknown",mensagem)
+                            #self.contProtocolos["unknown"] += 1
                 else:
                     #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
                     print 'log'
@@ -240,12 +226,12 @@ class Coletor():
         channel.exchange_declare(exchange='topic_logs',type='topic')
         channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
         
-        print "Enviado para fila [%s]\t%r" % (routing_key.upper(), mensagem)
+        print " [x] Sent %r:%r" % (routing_key, mensagem)
         
         connection.close()
 
 if __name__ == '__main__':
-    os.system("clear")
+    
     coletor = Coletor()
     #coletorThread = threading.Thread(target=coletor.start)
     #coletorThread.start()
