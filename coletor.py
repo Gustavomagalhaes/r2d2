@@ -1,6 +1,7 @@
 # -*- coding: cp1252 -*-
 #PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f coletor.py
-import os, socket, traceback, sys, threading, re, time, pcap, dpkt, pika, logging
+import os, socket, traceback, sys, threading, re, time, pcap, dpkt, pika, logging, datetime
+logging.basicConfig(filename='erros.log',level=logging.DEBUG)
 #logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
 class Coletor():
@@ -66,10 +67,15 @@ class Coletor():
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
+                erro = str(socket.gethostbyname(socket.gethostname())) + str(datetime.datetime.now()) + 'Localizar monitor: Operacao cancelada pelo usuario.'
+                logging.debug(erro)
                 raise
             except:
                 traceback.print_exc()
                 #print "[C3PO] Ainda procurando monitor..."
+                erro = str(socket.gethostbyname(socket.gethostname())) + str(datetime.datetime.now()) + 'Localizar monitor: Monitor nao localizado.'
+                logging.debug(erro)
+                
         serverSocket.close()
     
     def receberComando(self, monitor):
@@ -122,7 +128,9 @@ class Coletor():
               #  raise
             except:
                 traceback.print_exc()
-                print "except"
+                erro = str(socket.gethostbyname(socket.gethostname())) + str(datetime.datetime.now()) + 'Aguardando comando: sem comunicacao com o monitor.'
+                logging.debug(erro)
+                #print "except"
         
     
     def listarProtocolos(self):
@@ -232,7 +240,9 @@ class Coletor():
                                 self.contProtocolos["unknown"] += 1
                 else:
                     #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
-                    print 'log'
+                    #print 'log'
+                    erro = str(socket.gethostbyname(socket.gethostname())) + str(datetime.datetime.now()) + 'Captura de pacotes: erro na camada ' + transp
+                    logging.debug(erro)
             else:
                 self.contProtocolos["nonIp"] += 1
         
