@@ -175,9 +175,9 @@ class Coletor():
             protRede = ""
             protTransporte = ""
             protApp = ""
-            print self.getStatusColeta()
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
+                print "\bPacote ["+str(contPkt)+"]"
                 duracao = time.time() - inicio
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
                 # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
