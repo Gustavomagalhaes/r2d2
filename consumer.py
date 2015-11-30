@@ -105,7 +105,7 @@ def callback(ch, method, properties, body):
    
 channel.basic_consume(callback, queue=queue_name, no_ack=True)
 
-sc = SparkContext("spark://172.16.207.155","consumer")
+sc = SparkContext("spark://172.16.207.155:8088","consumer")
 ssc = StreamingContext(sc, 1)
 CSR = DStream(channel.start_consuming())
 ssc.start()

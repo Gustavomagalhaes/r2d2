@@ -219,12 +219,7 @@ class Coletor():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             duracao = time.time() - inicio
-                            ipOrigem = str(ip.src)
-                            ipDestino = str(ip.dst)
-                            portaOrigem = str(transp.sport)
-                            portaDestino = str(transp.dport)
-                            #mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
-                            mensagem = str(ipOrigem) + "#" + str(portaOrigem) + "#" + str(ipDestino) + "#" + str(portaDestino) + "#" + str(p[0])
+                            mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
                             # mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
                             # HTTP entre outros. 
