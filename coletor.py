@@ -169,6 +169,7 @@ class Coletor():
         protocolos = self.listarProtocolos()
         contPkt = 0
         for ts, pkt in pcap.pcap(file):
+            inicio = time.time()
             contPkt+=1
             eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
             protRede = ""
@@ -177,7 +178,9 @@ class Coletor():
             
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
-                mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
+                duracao = time.time() - inicio
+                mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+duracao+"#"+(len(pkt)/duracao) 
+                # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
                 # print mensagem
                 print self.getStatusColeta()
                 if (self.getStatusColeta() == True):
@@ -191,7 +194,9 @@ class Coletor():
                     elif isinstance(transp,dpkt.udp.UDP):
                         transporte = "UDP"
                     
-                    mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                    duracao = time.time() - inicio
+                    mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+duracao+"#"+(len(pkt)/duracao)
+                    # mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                     #print mensagem
                     if (self.getStatusColeta() == True):
                         self.enviarFila(transporte,mensagem)
@@ -203,7 +208,9 @@ class Coletor():
                     for p in protocolos.items():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
-                            mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                            duracao = time.time() - inicio
+                            mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+duracao+"#"+(len(pkt)/duracao)
+                            # mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
                             if (self.getStatusColeta() == True):
                                 self.enviarFila(p[0],mensagem)
@@ -212,7 +219,9 @@ class Coletor():
                             found = True
         					
                         if (not found):
-                            mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                            duracao = time.time() - inicio
+                            mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+duracao+"#"+(len(pkt)/duracao)
+                            # mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
                             if (self.getStatusColeta() == True):
                                 self.enviarFila("unknown",mensagem)
