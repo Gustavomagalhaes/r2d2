@@ -176,8 +176,8 @@ class Coletor():
             ip = eth.data
             if isinstance(ip,dpkt.ip.IP):
                 mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
-                #print mensagem
-                #self.enviarFila("ip",mensagem)
+                print mensagem
+                self.enviarFila("ip",mensagem)
                 #self.enviarFila("all",mensagem)
                 
                 transp = ip.data

@@ -65,7 +65,7 @@ class Monitor():
                     continue
     
     def printCharacters(self):
-        #os.system('clear')
+        os.system('clear')
         print "                                         "
         print "   (C3PO)                                "            
         print "         \  .-.                          "            
