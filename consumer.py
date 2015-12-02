@@ -94,7 +94,7 @@ def callback(ch, method, properties, body):
     dadosClassificados = classificar(body)
     
     mensagem = dadosClassificados[0] + "|" + dadosClassificados[1] + "|" + dadosClassificados[2]    
-    connection = pika.BlockingConnection(pika.ConnectionParameters( '172.16.207.155', 5672, '/starwars', credentials))
+    connection = pika.BlockingConnection(pika.ConnectionParameters( '172.16.206.250', 5672, '/starwars', credentials))
     channel = connection.channel()
     channel.exchange_declare(exchange='topic_logs',type='topic')
     channel.basic_publish(exchange='topic_logs',routing_key=method.routing_key,body=mensagem)

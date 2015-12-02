@@ -219,7 +219,12 @@ class Coletor():
                         expressao = re.compile(p[1])
                         if expressao.search(app):
                             duracao = time.time() - inicio
-                            mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
+                            ipOrigem = ip.src
+                            ipOrigem = socket.inet_ntoa(ipOrigem)
+                            ipDestino = ip.dst
+                            ipDestino = socket.inet_ntoa(ipDestino)
+                            #mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
+                            #mensagem = str(ipOrigem) + "#" + str(ipDestino) + "#" + str(p[0])
                             # mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
                             #print mensagem
                             # HTTP entre outros. 
@@ -252,7 +257,7 @@ class Coletor():
         
     def enviarFila(self, routing_key, mensagem):
         connection = pika.BlockingConnection(pika.ConnectionParameters(
-               "172.16.207.155", 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
+               "172.16.206.250", 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
         channel = connection.channel()
         channel.exchange_declare(exchange='topic_logs',type='topic')
         channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)

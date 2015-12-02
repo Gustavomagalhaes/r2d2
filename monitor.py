@@ -134,8 +134,10 @@ class Monitor():
                 try:
                     #print "entrou no try"
                     clientSocket.sendto(comando, (coletor, 6000))
-                    #print 'enviou'
-                    time.sleep(2)
+                    print "enviou"
+                    mensagem, endereco = clientSocket.recvfrom(2048)
+                    print 'enviou'
+                    #time.sleep(2)
                     if comando == "COLETAR":
                         self.setColetor(coletor, "[COLETANDO]")
                     elif comando == "SUSPENDER":
