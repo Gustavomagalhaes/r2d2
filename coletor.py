@@ -239,8 +239,8 @@ class Coletor():
                             # HTTP entre outros. 
                             if (self.getStatusColeta() == True):
                                 print "\n<<Pacote "+str(contPkt)+">>\n"
-                                self.enviarFila(p[0],mensagem)
-                                self.enviarFila("all",mensagem)
+                                #naoenviarainda self.enviarFila(p[0],mensagem)
+                                #naoenviarainda self.enviarFila("all",mensagem)
                             self.contProtocolos[p[0]] += 1
                             found = True
         					
@@ -251,7 +251,7 @@ class Coletor():
                             #print mensagem
                             if (self.getStatusColeta() == True):
                                 print "\n<<Pacote "+str(contPkt)+">>\n"
-                                self.enviarFila("unknown",mensagem)
+                                #naoenviarainda self.enviarFila("unknown",mensagem)
                                 self.contProtocolos["unknown"] += 1
                 else:
                     #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
