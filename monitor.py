@@ -66,6 +66,7 @@ class Monitor():
                     self.setColetor(endereco[0], "[SUSPENSO]")
                 else:
                     continue
+                self.inserirComando()
     
     def printCharacters(self):
         os.system('clear')
