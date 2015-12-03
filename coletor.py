@@ -94,7 +94,7 @@ class Coletor():
                     self.setStatusColeta(True)
                     print "[C3PO] Capturando"
 
-                elif mensagem == "SUSPENDER" and self.getStatusColeta() == True:
+                elif mensagem == "SUSPENDER" and self.getStatusColeta() != False:
                     self.serverSocket.sendto("COM:SUSPENSO", endereco)
                     print "[C3PO] Suspenso"
                     self.setStatusColeta(False)
