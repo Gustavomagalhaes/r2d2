@@ -66,31 +66,6 @@ class Monitor():
                     self.setColetor(endereco[0], "[SUSPENSO]")
                 else:
                     continue
-        
-        # # Inicia o monitor para que esse seja percebido pelos coletores
-        # clientSocket = self.getClientSocket()
-        # coletores = self.getColetores()
-        
-        # comandoStatus = False
-        
-        # while 1:
-        #     comando = threading.Thread(target=self.inserirComando)
-        #     clientSocket.sendto("MONITOR", self.getDestino())
-        #     #print "teste de thread" 
-        #     mensagem, endereco = clientSocket.recvfrom(2048)
-        #     if mensagem != "COLETOR":
-        #         break
-        #     else:
-        #         #print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
-        #         if endereco[0] not in coletores.keys():
-        #             self.setColetor(endereco[0], "[INATIVO]")
-        #             #print "[R2D2] Coletor adicionado a lista de coletores."
-        #             #self.getClientSocket().close()
-        #         if comandoStatus == False:
-        #             comando.start()
-        #             comandoStatus = True
-        #         else:
-        #             continue
     
     def printCharacters(self):
         os.system('clear')
@@ -158,7 +133,6 @@ class Monitor():
                 print "entrou no try"
                 clientSocket.sendto(comando, (coletor, 6000))
                 print 'enviou'
-                #time.sleep(2)
                 self.receive()
             except:
                 print "..."
@@ -184,6 +158,7 @@ class Monitor():
             elif comando == "COLETAR":
                 self.iniciarColeta()
             elif comando == "SAIR":
+                self.enviarComando("SUSPENDERALL", self.getDestino())
                 os.system('clear')
                 break
             else:

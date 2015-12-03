@@ -73,7 +73,7 @@ class Coletor():
                 logging.debug(erro)
                 
         serverSocket.close()
-    
+        
     def receberComando(self, monitor):
         
         if self.getStatusColeta() == True:
@@ -111,6 +111,15 @@ class Coletor():
                     print "[C3PO] Capturando"
                     self.setStatusColeta(True)
                   #  yoda.setStatus(True)
+                  
+                elif mensagem == "SUSPENDERALL":
+                    #self.serverSocket.sendto("COM:SUSPENSO", endereco)
+                    print "[C3PO] Suspenso"
+                    self.setStatusColeta(False)
+                    os.system('clear')
+                    break
+                    # yoda.OnStop()
+                  #  yoda.setStatus(False)
                  
                 elif mensagem == "MONITOR":
                     continue
