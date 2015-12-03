@@ -130,9 +130,7 @@ class Monitor():
             self.inserirComando()
         else:
             try:
-                print "entrou no try"
                 clientSocket.sendto(comando, (coletor, 6000))
-                print 'enviou'
                 self.receive()
             except:
                 print "..."
@@ -158,7 +156,6 @@ class Monitor():
             elif comando == "COLETAR":
                 self.iniciarColeta()
             elif comando == "SAIR":
-                self.enviarComando("SUSPENDERALL", self.getDestino())
                 os.system('clear')
                 break
             else:
