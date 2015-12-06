@@ -5,81 +5,199 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
 
-    <title>R2D2</title>
+    <title>R2D2< Graphics</title>
 
     <script src="Chart.min.js"></script>
     <script type="text/javascript" src="bootstrap.js"></script>
 	<link rel="stylesheet" href="bootstrap.css" type="text/css">
 	
 	<style type="text/css">
-
-    .box {
-        margin: 0px auto;
-        width: 70%;
-    }
-
-    .box-chart {
-        width: 100%;
-        margin: 0 auto;
-        padding: 10px;
-    }
-
+        .box {
+            margin: 0px auto;
+            width: 95%;
+        }
+    
+        .box-chart {
+            width: 100%;
+            margin: 0 auto;
+            /*padding: 10px;*/
+        }
+        h1, h4 {
+            text-align: center;
+        }
     </style> 
     
-    <script type="text/javascript">
+    <!--<script type="text/javascript">
         var randomnb = function(){ return Math.round(Math.random()*300)};
-    </script>  
+    </script>  -->
 
 </head>
 
 <body>    
-
     <div class="box">
-
-        <h1>R2D2 Rest API</h1>
-        <h4>Gráficos</h4>
         
-        <div class="box-chart">
-
-            <canvas id="GraficoPizza" style="width:100%;"></canvas>
-
-            <script type="text/javascript">
-
-                var options = {
-                    responsive:true
-                };
-
-                var data = [
-                    {
-                        // value: randomnb(),
-                        value: 50,
-                        color: "rgba(255, 0, 0, 1)",
-                        highlight: "rgba(255, 0, 0, 0.5)",
-                        label: "Elephant"
-                    },
-                    {
-                        // value: randomnb(),
-                        value: 50,
-                        color: "rgba(255, 255, 0, 1)",
-                        highlight: "rgba(255, 255, 0, 0.5)",
-                        label: "Amarelo"
-                    },
-                    {
-                        // value: randomnb(),
-                        value: 50,
-                        color: "rgba(0, 255, 0, 1)",
-                        highlight: "rgba(0, 255, 0, 0.5)",
-                        label: "Verde"
-                    }
-                ]
-                
-                window.onload = function(){
-
-                    var ctx = document.getElementById("GraficoPizza").getContext("2d");
-                    var PizzaChart = new Chart(ctx).Pie(data, options);
-                }  
-            </script>           
+        <div class="row" align="center">
+            <h1>Gráficos dos fluxos do R2D2</h1><br>
+            <div class="col-lg-6">
+                <canvas id="GraficoBarra" style="width:100%;"></canvas>
+            </div>
+            
+            <div class="col-lg-6">
+                <canvas id="GraficoPizzaGeral" style="width:100%;"></canvas>
+            </div>
         </div>
+        
+        <div class="row">
+            <br>
+            <div class="col-md-4">
+                <h4>Gráfico do Tamanho</h4><br>
+                <canvas id="GraficoPizza1" style="width:100%;"></canvas>
+            </div>
+            
+            <div class="col-md-4">
+                <h4>Gráfico do Tempo</h4><br>
+                <canvas id="GraficoPizza2" style="width:100%;"></canvas>
+            </div>
+            
+            <div class="col-md-4">
+                <h4>Gráfico da Taxa</h4><br>
+                <canvas id="GraficoPizza3" style="width:100%;"></canvas>
+            </div>
+            
+        </div>
+        
     </div>
+    
+    <script type="text/javascript">                                        
+
+        var options = {
+            responsive:true
+        };
+        
+        var tamanhoRato = 50;
+        var tamanhoElefante = 100;
+        
+        var tamanhoTartaruga = 50;
+        var tamanhoLibélula = 100;
+        
+        var tamanhoCaramujo = 50;
+        var tamanhoGuepardo = 100;
+    
+        var data = {
+            labels: ["Rato", "Elefante", "Tartaruga", "Libélula", "Caramujo", "Guepardo"],
+            datasets: [
+                {
+                    label: "Dados",
+                    fillColor: "rgba(151,187,205,0.5)",
+                    strokeColor: "rgba(151,187,205,0.8)",
+                    highlightFill: "rgba(151,187,205,0.75)",
+                    highlightStroke: "rgba(151,187,205,1)",
+                    data: [tamanhoRato, tamanhoElefante, tamanhoTartaruga, tamanhoLibélula, tamanhoCaramujo, tamanhoGuepardo]
+                }
+            ]
+        };
+        
+        var dataPizzaGeral = [
+                {
+                    value: tamanhoElefante,
+                    color:"#F7464A",
+                    highlight: "#FF5A5E",
+                    label: "Elefante"
+                },
+                {
+                    value: tamanhoRato,
+                    color: "#d6fb57",
+                    highlight: "e2fc89",
+                    label: "Rato"
+                },
+                {
+                    value: tamanhoLibélula,
+                    color:"#46a3bf",
+                    highlight: "#6cb6cc",
+                    label: "Libélula"
+                },
+                {
+                    value: tamanhoTartaruga,
+                    color: "#6246bf",
+                    highlight: "#7259c6",
+                    label: "Tartaruga"
+                },
+                {
+                    value: tamanhoGuepardo,
+                    color:"#ff8c00",
+                    highlight: "#ffaf4d",
+                    label: "Guepardo"
+                },
+                {
+                    value: tamanhoCaramujo,
+                    color: "#77c659",
+                    highlight: "96d37f",
+                    label: "Caramujo"
+                }
+            ] 
+        
+        var dataPizza1 = [
+                {
+                    value: tamanhoElefante,
+                    color:"#F7464A",
+                    highlight: "#FF5A5E",
+                    label: "Elefante"
+                },
+                {
+                    value: tamanhoRato,
+                    color: "#d6fb57",
+                    highlight: "e2fc89",
+                    label: "Rato"
+                }
+            ]                
+ 
+        var dataPizza2 = [
+                {
+                    value: tamanhoLibélula,
+                    color:"#46a3bf",
+                    highlight: "#6cb6cc",
+                    label: "Libélula"
+                },
+                {
+                    value: tamanhoTartaruga,
+                    color: "#6246bf",
+                    highlight: "#7259c6",
+                    label: "Tartaruga"
+                }
+            ]
+ 
+         var dataPizza3 = [
+                {
+                    value: tamanhoGuepardo,
+                    color:"#ff8c00",
+                    highlight: "#ffaf4d",
+                    label: "Guepardo"
+                },
+                {
+                    value: tamanhoCaramujo,
+                    color: "#77c659",
+                    highlight: "96d37f",
+                    label: "Caramujo"
+                }
+            ]
+ 
+        window.onload = function(){
+            var ctxBarra = document.getElementById("GraficoBarra").getContext("2d");
+            var BarChart = new Chart(ctxBarra).Bar(data, options);
+            
+            var ctxPizza1 = document.getElementById("GraficoPizza1").getContext("2d");
+            var PizzaChart1 = new Chart(ctxPizza1).Doughnut(dataPizza1, options);
+            
+            var ctxPizza2 = document.getElementById("GraficoPizza2").getContext("2d");
+            var PizzaChart2 = new Chart(ctxPizza2).Doughnut(dataPizza2, options);
+            
+            var ctxPizza3 = document.getElementById("GraficoPizza3").getContext("2d");
+            var PizzaChart3 = new Chart(ctxPizza3).Doughnut(dataPizza3, options);
+            
+            var ctxPizza = document.getElementById("GraficoPizzaGeral").getContext("2d");
+            var PizzaChart = new Chart(ctxPizza).Pie(dataPizzaGeral, options);
+        }           
+    </script>
+    
 </body>
 </html>
