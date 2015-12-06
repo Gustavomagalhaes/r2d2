@@ -1,7 +1,7 @@
 # -*- coding: cp1252 -*-
 #PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f coletor.py
-import os, socket, traceback, sys, threading, re, time, pcap, dpkt, pika, logging, datetime
-logging.basicConfig(filename='erros.log',level=logging.DEBUG)
+import os, socket, socketerror, traceback, sys, threading, re, time, pcap, dpkt, pika, logging, datetime
+#logging.basicConfig(filename='erros.log',level=logging.DEBUG)
 #logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
 class Coletor():
@@ -9,7 +9,14 @@ class Coletor():
     def __init__(self):
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
+        
+        
+        #socketerror
+        self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.serverSocket.settimeout(20)
+        self.logFile = "log.txt"
+        self.file = None
         
         #coleta
         self.statusColeta = None
@@ -39,6 +46,43 @@ class Coletor():
         
     def getcontProtocolos(self):
         return self.contProtocolos
+    
+    def openLog(self, comando = "a"):
+        self.file = open(self.logFile, comando)
+        
+    def closeLog(self):
+        self.file.close()
+        
+    def downloadLog(self):
+        self.downloadSocket.bind(("",6020))
+        while 1:
+            print "Aguardando download"
+            mensagem, endereco, = self.downloadSocket.recWithError(8192)
+            
+            if mensagem == "DOWNLOAD":
+                temp = self.file.read()
+                self.closeLog()
+                buffers = {}
+                
+                for i in range(0, (len(temp)/256)):
+                    buffers["ACK"+str(i)] = temp[i*256:((i+1)*256)]
+                
+                for index in range(0, len(buffers.keys())):
+                    ACK = "ACK"+str(index)
+                    content = buffers[ACK]
+                    content = content.replace("\n", "\n ")
+                    self.downloadSocket().settimeout(5)
+                    while not ("NACK"+str(index)) in mensagem:
+                        try:
+                            if index == len(buffers.keys()) -1:
+                                self.downloadSocket.sendWithError(ACK+content+"COM:THEEND", endereco)
+                                mensagem, endereco = self.downloadSocket.recWithError(8192)
+                            else:
+                                self.downloadSocket.sendWithError(ACK+content, endereco)
+                                mesnage, endereco = self.downloadSocket.recWithError(8192)
+                        except:
+                            print "Timeout"
+                
 
     def localizarMonitor(self, mensagem = "", endereco = ()):
         serverSocket = self.getServerSocket()
