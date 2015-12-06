@@ -1,4 +1,4 @@
-import socket, sys, os, threading, time
+import socket, socketerror, sys, os, threading, time
 
 class Monitor():
 
@@ -11,7 +11,14 @@ class Monitor():
         self.statusComando = None
         self.coletores = {}
         self.coletorAtual = ""
-        self.listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "SAIR":""}
+        self.listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "DOWNLOAD":"", "SAIR":""}
+        
+        #socketerror
+        self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
+        self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.downloadSocket.settimeout(5)
+        self.file = None
+        
         self.run()
         
     def getListaComandos(self):
@@ -64,6 +71,24 @@ class Monitor():
                     self.setColetor(endereco[0], "[COLETANDO]")
                 elif mensagem == "SUSPENSO":
                     self.setColetor(endereco[0], "[SUSPENSO]")
+                elif mensagem == "THEEND":
+                    self.downloadSocket.settimeout(None)
+                    mensagem = ""
+                    string = []
+                    cont = 0
+                    while mensagem.count("THEEND") < 1:
+                        mensagem, endereco = self.downloadSocket.recWithError(2048)
+                        if mensagem != "nothing":
+                            string.append(mensagem[3:].replace("THEEND", ""))
+                            self.downloadSocket.sendWithError("NACK"+str(cont), endereco)
+                            cont+=1
+                    
+                    file = open("log.txt", "w")
+                    for linha in string:
+                        file.write(linha)
+                    file.close()
+                    print "Download realizado com sucesso."
+                    self.downloadSocket.close()
                 else:
                     continue
                 self.inserirComando()
@@ -124,6 +149,13 @@ class Monitor():
         coletor = self.ask()
         self.enviarComando("COLETAR", coletor)
         
+    def downloadLog(self):
+        self.printCharacters()
+        self.listaDeColetores()
+        print "\nEscolha o coletor que deseja fazer download:\n"
+        coletor = self.ask()
+        self.enviarComando("DOWNLOAD", coletor)
+        
     def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
         listadecomandos = self.getListaComandos()
@@ -131,7 +163,10 @@ class Monitor():
             self.inserirComando()
         else:
             try:
-                clientSocket.sendto(comando, (coletor, 6000))
+                if comando != "DOWNLOAD":
+                    clientSocket.sendto(comando, (coletor, 6000))
+                elif comando == "DOWNLOAD":
+                    self.downloadSocket.sendWithError("DOWNLOAD", (coletor, 6020))
                 self.receive()
             except:
                 print "..."
@@ -144,7 +179,7 @@ class Monitor():
                 #os.system('clear')
                 self.printCharacters()
                 print ""
-                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR | SAIR |"
+                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR | DOWNLOAD | SAIR |"
                 print ""
                 comando = self.ask().upper()
             if comando == "LISTAR":
@@ -156,6 +191,8 @@ class Monitor():
                 self.continuarColetando()
             elif comando == "COLETAR":
                 self.iniciarColeta()
+            elif comando == "DOWNLOAD":
+                self.downloadLog()
             elif comando == "SAIR":
                 os.system('clear')
                 break
