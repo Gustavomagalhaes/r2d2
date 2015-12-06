@@ -179,7 +179,7 @@ class Monitor():
                 #os.system('clear')
                 self.printCharacters()
                 print ""
-                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR | SAIR |"
+                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR | DOWNLOAD | SAIR |"
                 print ""
                 comando = self.ask().upper()
             if comando == "LISTAR":
@@ -191,6 +191,8 @@ class Monitor():
                 self.continuarColetando()
             elif comando == "COLETAR":
                 self.iniciarColeta()
+            elif comando == "DOWNLOAD":
+                self.downloadLog()
             elif comando == "SAIR":
                 os.system('clear')
                 break
