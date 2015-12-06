@@ -26,6 +26,9 @@ class Coletor():
         c3po = threading.Thread(target=self.localizarMonitor)
         c3po.start()
         
+        leia = threading.Thread(target=self.downloadLog)
+        leia.start()
+        
         #self.localizarMonitor()
         
     def getServerSocket(self):
