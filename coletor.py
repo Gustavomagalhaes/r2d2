@@ -22,6 +22,12 @@ class Coletor():
         self.statusColeta = None
         self.pacotes = {}
         self.contProtocolos = {"unknown":0, "all":0, "nonIp":0}
+        self.fluxos = {}
+        
+        #rabbit
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters("172.16.206.250", 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
+        self.channel = self.connection.channel()
+        self.channel.exchange_declare(exchange='topic_logs', type='topic')
         
         c3po = threading.Thread(target=self.localizarMonitor)
         c3po.start()
@@ -255,39 +261,52 @@ class Coletor():
                         # if (self.getStatusColeta() == True):
                         #     self.enviarFila(transporte,mensagem)
                         #     self.enviarFila("all",mensagem)
-                        
                         self.contProtocolos["all"] += 1
                         app = transp.data.lower()
-                        found = False
-                        for p in protocolos.items():
-                            expressao = re.compile(p[1])
-                            if expressao.search(app):
-                                duracao = time.time() - inicio
+                        
+                        try:
+                            ipOrigem = socket.inet_ntoa(ip.src)
+                        except:                                
+                            try:
+                                ipOrigem = socket.inet_aton(ip.src.decode('utf-8'))
+                            except:
                                 ipOrigem = ip.src
-                                ipOrigem = socket.inet_ntoa(ipOrigem)
+                        
+                        try:
+                            ipDestino = socket.inet_ntoa(ip.dst)
+                            
+                        except:
+                            try:
+                                ipDestino = socket.inet_aton(ip.dst.decode('utf-8'))
+                            except:
                                 ipDestino = ip.dst
-                                ipDestino = socket.inet_ntoa(ipDestino)
-                                #mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
-                                #mensagem = str(ipOrigem) + "#" + str(ipDestino) + "#" + str(p[0])
-                                # mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
-                                #print mensagem
-                                # HTTP entre outros. 
-                                if (self.getStatusColeta() == True):
-                                    print "\n<<Pacote "+str(contPkt)+">>\n"
-                                    #naoenviarainda self.enviarFila(p[0],mensagem)
-                                    #naoenviarainda self.enviarFila("all",mensagem)
-                                self.contProtocolos[p[0]] += 1
-                                found = True
-            					
-                            if (not found):
-                                duracao = time.time() - inicio
-                                mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
-                                # mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
-                                #print mensagem
-                                if (self.getStatusColeta() == True):
-                                    print "\n<<Pacote "+str(contPkt)+">>\n"
-                                    #naoenviarainda self.enviarFila("unknown",mensagem)
-                                    self.contProtocolos["unknown"] += 1
+
+                        try:    
+                            portaOrigem = transp.sport
+                            portaDestino = transp.dport
+                        except:
+                            break
+                        
+                        chaveFluxo = (transporte, ipOrigem, portaOrigem, ipDestino, portaDestino)
+                        
+                        found = False
+                        
+                        if chaveFluxo not in self.fluxos.keys():
+                            tamanho = len(app)
+                            duracao = 0.000001
+                            stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
+                            self.fluxos[chaveFluxo] = [self.classificarProtocolo(app), ts, tamanho, duracao, stormtrooper, ts, 0, 1]
+                            stormtrooper.start()
+                        else:
+                            self.fluxos[chaveFluxo][2] += len(app)
+                            self.fluxos[chaveFluxo][6] = (ts - (self.fluxos[chaveFluxo][5] + self.fluxos[chaveFluxo][6]))
+                            self.fluxos[chaveFluxo][7] += 1
+                            self.fluxos[chaveFluxo][5] = ts
+                            self.fluxos[chaveFluxo][3] = duracao + (ts - self.fluxos[chaveFluxo][1])
+                            stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
+                            stormtrooper.start()
+                            self.fluxos[chaveFluxo][4] = stormtrooper
+                        
                     else:
                         #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
                         #print 'log'
@@ -305,16 +324,22 @@ class Coletor():
         #for p in self.contProtocolos.items():
         #	print(p[0]+" Pkts:"+str(p[1]))
         
-    def enviarFila(self, routing_key, mensagem):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(
-               "172.16.206.250", 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
-        channel = connection.channel()
-        channel.exchange_declare(exchange='topic_logs',type='topic')
-        channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
+    def enviarFila(self, chaveFluxo):
+        fluxo = self.fluxos[chaveFluxo]
+        tamanho = fluxo[2]
+        duracao = fluxo[3]
+        quantidade = fluxo[7]
+        routing_key = fluxo[0]
         
-        print "SENT TO [%s]: %r" % (routing_key.upper(), mensagem)
+        if (quantidade > 1) and (tamanho > 0) and (duracao > 0.0000001):
+            media = float(tamanho)/duracao
+            atraso = float(fluxo[6])/quantidade
+            mensagem = str(tamanho)+"#"+str(duracao)+"#"+str(media)+"#"+str(atraso)
+            print "Fluxo " + str(chaveFluxo) + " sendo enviado..."
+            self.channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
+            self.channel.basic_publish(exchange='topic_logs',routing_key="ALL",body=mensagem)
         
-        connection.close()
+            print "SENT TO [%s]: %r" % (routing_key.upper(), mensagem)
 
 if __name__ == '__main__':
     os.system('clear')
