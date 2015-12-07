@@ -110,14 +110,15 @@ class Coletor():
                 else:
                     continue
             except (KeyboardInterrupt, SystemExit):
-                erro = str(socket.gethostbyname(socket.gethostname())) + str(datetime.datetime.now()) + 'Localizar monitor: Operacao cancelada pelo usuario.'
-                logging.debug(erro)
+                self.openLog()
+                self.file.write("Localizar monitor: Operacao cancelada pelo usuario\n")            
+                self.closeLog()
+                
                 raise
             except:
-                traceback.print_exc()
-                #print "[C3PO] Ainda procurando monitor..."
-                erro = str(socket.gethostbyname(socket.gethostname())) + str(datetime.datetime.now()) + 'Localizar monitor: Monitor nao localizado.'
-                logging.debug(erro)
+                self.openLog()
+                self.file.write("Localizar monitor: Monitor nao localizado\n")            
+                self.closeLog()
                 
         serverSocket.close()
         
@@ -165,9 +166,9 @@ class Coletor():
               #  yoda.stop()
               #  raise
             except:
-                traceback.print_exc()
-                erro = str(socket.gethostbyname(socket.gethostname())) + str(datetime.datetime.now()) + 'Aguardando comando: sem comunicacao com o monitor.'
-                logging.debug(erro)
+                self.openLog()
+                self.file.write("Aguardando comando: sem comunicacao com o monitor em " + str(time.time()) + "\n")            
+                self.closeLog()
                 #print "except"
         
     
@@ -216,84 +217,91 @@ class Coletor():
         protocolos = self.listarProtocolos()
         contPkt = 0
         for ts, pkt in pcap.pcap(file):
-            inicio = time.time()
-            contPkt+=1
-            eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
-            protRede = ""
-            protTransporte = ""
-            protApp = ""
-            ip = eth.data
-            if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
-                duracao = time.time() - inicio
-                
-                mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
-                
-                
-                # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
-                # print mensagem
-                # print self.getStatusColeta()
-                
-                # Nao tem fila IP
-                # if (self.getStatusColeta() == True):
-                    # self.enviarFila("ip",mensagem)
-                    # self.enviarFila("all",mensagem)
-                
-                transp = ip.data
-                if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
-                    if isinstance(transp,dpkt.tcp.TCP):
-                        transporte = "TCP"
-                    elif isinstance(transp,dpkt.udp.UDP):
-                        transporte = "UDP"
-                    
+            try:
+                inicio = time.time()
+                contPkt+=1
+                eth = dpkt.ethernet.Ethernet(pkt) #extraindo dados do pacote
+                protRede = ""
+                protTransporte = ""
+                protApp = ""
+                ip = eth.data
+                if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
                     duracao = time.time() - inicio
-                    mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
-                    # mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
-                    #print mensagem
-                    # Nao tem fila UDP
-                    # if (self.getStatusColeta() == True):
-                    #     self.enviarFila(transporte,mensagem)
-                    #     self.enviarFila("all",mensagem)
                     
-                    self.contProtocolos["all"] += 1
-                    app = transp.data.lower()
-                    found = False
-                    for p in protocolos.items():
-                        expressao = re.compile(p[1])
-                        if expressao.search(app):
-                            duracao = time.time() - inicio
-                            ipOrigem = ip.src
-                            ipOrigem = socket.inet_ntoa(ipOrigem)
-                            ipDestino = ip.dst
-                            ipDestino = socket.inet_ntoa(ipDestino)
-                            #mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
-                            #mensagem = str(ipOrigem) + "#" + str(ipDestino) + "#" + str(p[0])
-                            # mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
-                            #print mensagem
-                            # HTTP entre outros. 
-                            if (self.getStatusColeta() == True):
-                                print "\n<<Pacote "+str(contPkt)+">>\n"
-                                #naoenviarainda self.enviarFila(p[0],mensagem)
-                                #naoenviarainda self.enviarFila("all",mensagem)
-                            self.contProtocolos[p[0]] += 1
-                            found = True
-        					
-                        if (not found):
-                            duracao = time.time() - inicio
-                            mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
-                            # mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
-                            #print mensagem
-                            if (self.getStatusColeta() == True):
-                                print "\n<<Pacote "+str(contPkt)+">>\n"
-                                #naoenviarainda self.enviarFila("unknown",mensagem)
-                                self.contProtocolos["unknown"] += 1
+                    mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
+                    
+                    
+                    # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
+                    # print mensagem
+                    # print self.getStatusColeta()
+                    
+                    # Nao tem fila IP
+                    # if (self.getStatusColeta() == True):
+                        # self.enviarFila("ip",mensagem)
+                        # self.enviarFila("all",mensagem)
+                    
+                    transp = ip.data
+                    if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
+                        if isinstance(transp,dpkt.tcp.TCP):
+                            transporte = "TCP"
+                        elif isinstance(transp,dpkt.udp.UDP):
+                            transporte = "UDP"
+                        
+                        duracao = time.time() - inicio
+                        mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
+                        # mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                        #print mensagem
+                        # Nao tem fila UDP
+                        # if (self.getStatusColeta() == True):
+                        #     self.enviarFila(transporte,mensagem)
+                        #     self.enviarFila("all",mensagem)
+                        
+                        self.contProtocolos["all"] += 1
+                        app = transp.data.lower()
+                        found = False
+                        for p in protocolos.items():
+                            expressao = re.compile(p[1])
+                            if expressao.search(app):
+                                duracao = time.time() - inicio
+                                ipOrigem = ip.src
+                                ipOrigem = socket.inet_ntoa(ipOrigem)
+                                ipDestino = ip.dst
+                                ipDestino = socket.inet_ntoa(ipDestino)
+                                #mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
+                                #mensagem = str(ipOrigem) + "#" + str(ipDestino) + "#" + str(p[0])
+                                # mensagem = p[0]+"#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                                #print mensagem
+                                # HTTP entre outros. 
+                                if (self.getStatusColeta() == True):
+                                    print "\n<<Pacote "+str(contPkt)+">>\n"
+                                    #naoenviarainda self.enviarFila(p[0],mensagem)
+                                    #naoenviarainda self.enviarFila("all",mensagem)
+                                self.contProtocolos[p[0]] += 1
+                                found = True
+            					
+                            if (not found):
+                                duracao = time.time() - inicio
+                                mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
+                                # mensagem = "UNKOWN#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
+                                #print mensagem
+                                if (self.getStatusColeta() == True):
+                                    print "\n<<Pacote "+str(contPkt)+">>\n"
+                                    #naoenviarainda self.enviarFila("unknown",mensagem)
+                                    self.contProtocolos["unknown"] += 1
+                    else:
+                        #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
+                        #print 'log'
+                        self.openLog()
+                        self.file.write("Erro na camada " + transp + " em " + str(time.time()) + "\n")            
+                        self.closeLog()
                 else:
-                    #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
-                    #print 'log'
-                    erro = str(socket.gethostbyname(socket.gethostname())) + str(datetime.datetime.now()) + 'Captura de pacotes: erro na camada ' + transp
-                    logging.debug(erro)
-            else:
-                self.contProtocolos["nonIp"] += 1
-        
+                    self.contProtocolos["nonIp"] += 1
+            
+            except:
+                self.openLog()
+                self.file.write("Erro no pacote " + str(contPkt) + " em " + str(time.time()) + "\n")            
+                self.closeLog()
+            
         #for p in self.contProtocolos.items():
         #	print(p[0]+" Pkts:"+str(p[1]))
         
