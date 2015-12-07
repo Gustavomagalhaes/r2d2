@@ -9,6 +9,8 @@
 
     <script src="Chart.min.js"></script>
     <script type="text/javascript" src="bootstrap.js"></script>
+    <script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="knockout-3.4.0.js"></script>
 	<link rel="stylesheet" href="bootstrap.css" type="text/css">
 	
 	<style type="text/css">
@@ -38,6 +40,10 @@
         
         <div class="row" align="center">
             <h1>Gráficos dos fluxos do R2D2</h1><br>
+            <!--<div>-->
+            <!--    You've clicked <span data-bind="text: numberOfClicks"></span> times-->
+            <!--    <button data-bind="click: incrementClickCounter">Click me</button>-->
+            <!--</div>-->
             <div class="col-lg-6">
                 <canvas id="GraficoBarra" style="width:100%;"></canvas>
             </div>
@@ -68,8 +74,80 @@
         
     </div>
     
-    <script type="text/javascript">                                        
+    <script type="text/javascript">
+    
+        // var viewModel = {
+        //     numberOfClicks : ko.observable(0),
+        //     incrementClickCounter : function() {
+        //         var previousCount = this.numberOfClicks();
+        //         this.numberOfClicks(previousCount + 1);
+        //     }
+        // };
 
+        // INICIO DO REST
+        function TasksViewModel() {
+            var self = this;
+            self.tasksURI = 'http://localhost:5000/todo/api/v1.0/tasks';
+            self.username = "solo";
+            self.password = "han";
+            self.tasks = ko.observableArray();
+
+            self.ajax = function(uri, method, data) {
+                var request = {
+                    url: uri,
+                    type: method,
+                    contentType: "application/json",
+                    accepts: "application/json",
+                    cache: false,
+                    dataType: 'json',
+                    data: JSON.stringify(data),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", 
+                            "Basic " + btoa(self.username + ":" + self.password));
+                    },
+                    error: function(jqXHR) {
+                        console.log("ajax error " + jqXHR.status);
+                    }
+                };
+                return $.ajax(request);
+            }
+            self.updateTask = function(task, newTask) {
+                var i = self.tasks.indexOf(task);
+                self.tasks()[i].uri(newTask.uri);
+                self.tasks()[i].title(newTask.title);
+                self.tasks()[i].description(newTask.description);
+                self.tasks()[i].done(newTask.done);
+            }
+
+            self.beginLogin = function() {
+                $('#login').modal('show');
+            }
+            self.login = function(username, password) {
+                self.username = username;
+                self.password = password;
+                self.ajax(self.tasksURI, 'GET').done(function(data) {
+                    for (var i = 0; i < data.tasks.length; i++) {
+                        self.tasks.push({
+                            uri: ko.observable(data.tasks[i].uri),
+                            title: ko.observable(data.tasks[i].title),
+                            description: ko.observable(data.tasks[i].description),
+                            done: ko.observable(data.tasks[i].done)
+                        });
+                    }
+                }).fail(function(jqXHR) {
+                    if (jqXHR.status == 403)
+                        setTimeout(self.beginLogin, 500);
+                });
+            }
+            
+            self.beginLogin();
+        }
+        
+        // var tasksViewModel = new TasksViewModel();
+        // ko.applyBindings(tasksViewModel, $('#main')[0]);
+        
+        // FIM DO REST
+    
         var options = {
             responsive:true
         };
