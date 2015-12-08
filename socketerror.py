@@ -15,7 +15,7 @@ class socketError(socket.socket):
             if (u>self.errorProb):
                 print "Enviado"
                 print str(address)
-                print str(mensagem)
+                print str(s)
                 self.sendto(s, address)
             else:
                 print "Nao enviado"
