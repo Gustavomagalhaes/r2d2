@@ -14,6 +14,8 @@ class socketError(socket.socket):
             u = random.randint(0,5)
             if (u>self.errorProb):
                 print "Enviado"
+                print str(address)
+                print str(mensagem)
                 self.sendto(s, address)
             else:
                 print "Nao enviado"
