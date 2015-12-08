@@ -14,7 +14,7 @@ def closeLog():
     
 while True:
     print "Aguardando download"
-    downloadSocket.settimeout(2.0)
+    downloadSocket.settimeout(None)
     mensagem, endereco = downloadSocket.recvWithError(8192)
     
     if mensagem == "DOWNLOAD":
