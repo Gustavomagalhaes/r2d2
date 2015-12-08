@@ -288,13 +288,11 @@ class Coletor():
                             print "A chave nao existe"
                             tamanho = len(app)
                             duracao = 0.000001
-                            #stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
                             stormtrooper = self.schedule.enter(100, 1, self.enviarFila, argument=(chaveFluxo,))
                             self.startSchedule = True
                             self.fluxos[chaveFluxo] = [self.classificarProtocolo(app), ts, tamanho, duracao, stormtrooper, ts, 0, 1]
                             print "Criou " + str(chaveFluxo)
-                            #stormtrooper.start()
-                            #self.enviarFila(chaveFluxo)
+                            self.enviarFila(chaveFluxo)
                             print "Criou - Startou a thread"
                         else:
                             print "A chave existe"
@@ -308,8 +306,7 @@ class Coletor():
                             stormtrooper = self.schedule.enter(100, 1, self.enviarFila, argument=(chaveFluxo,))
                             self.startSchedule = True
                             print "Atualizou " + str(self.fluxos.get(chaveFluxo))
-                            #stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
-                            #stormtrooper.start()
+                            self.enviarFila(chaveFluxo)
                             print "Atualizou - Startou a thread"
                             self.fluxos[chaveFluxo][4] = stormtrooper
                         
