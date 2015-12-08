@@ -116,6 +116,7 @@ class Coletor():
                                     mensagem, endereco = self.downloadSocket.recvWithError(8192)
                                 else:
                                     self.downloadSocket.sendWithError(ACK+content, endereco)
+                                    print mensagem
                                     print "Enviou " + ACK+content + " para " + str(endereco)
                                     mensagem, endereco = self.downloadSocket.recvWithError(8192)
                             except:
