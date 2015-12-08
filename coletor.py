@@ -15,8 +15,8 @@ class Coletor():
         # self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
         # self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         # self.downloadSocket.bind(("",6020))
-        # self.logFile = "log.txt"
-        # self.file = None
+        self.logFile = "log.txt"
+        self.file = None
         
         
         #coleta
