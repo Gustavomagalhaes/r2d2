@@ -9,21 +9,21 @@ class socketError(socket.socket):
     def getErrorProb(self):
         return self.errorProb
     
-    def sendWithError(self, s):
+    def sendWithError(self, s, e):
         if (self.type == socket.SOCK_DGRAM):
             u = random.random()
             if (u>self.errorProb):
-                self.send(s)
+                self.sendto(s, e)
         else:
-            self.send(s)
+            self.sendto(s)
 
     def recvWithError(self, n):
         if (self.type == socket.SOCK_DGRAM):
-            data = self.recv(n)
+            data = self.recvfrom(n)
             u = random.random()
             if (u>self.errorProb):
                 return data
             else:
                 raise socket.timeout
         else:
-            return self.recv(n)
+            return self.recvfrom(n)
