@@ -93,6 +93,7 @@ class Coletor():
                 buffers = {}
                 
                 try:
+                    print "entrou no try"
                     for i in range(0, (len(temp)/256)):
                         print "Entrou no for i"
                         buffers["ACK"+str(i)] = temp[i*256:((i+1)*256)]
@@ -121,6 +122,7 @@ class Coletor():
                                 print "Timeout"
                 except:
                     traceback.print_exc()
+                    print "caiu no except"
                 
 
     def localizarMonitor(self, mensagem = "", endereco = ()):
@@ -366,7 +368,8 @@ class Coletor():
 
 if __name__ == '__main__':
     os.system('clear')
-    coletor = Coletor("192.168.25.117")
+    ip = sys.argv[1]
+    coletor = Coletor(ip)
     #coletorThread = threading.Thread(target=coletor.start)
     #coletorThread.start()
     #comandoThread = threading.Thread(target=coletor.run, args=())
