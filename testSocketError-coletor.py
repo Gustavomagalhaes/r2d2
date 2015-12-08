@@ -23,7 +23,7 @@ while True:
         print "Abriu log"
         temp = open(logFile, "r").read()
         print "Leu log"
-        closeLog()
+        open(logFile, "r").close()
         print "fechou log"
         buffers = {}
         
