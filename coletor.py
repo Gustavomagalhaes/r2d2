@@ -341,6 +341,7 @@ class Coletor():
                     self.contProtocolos["nonIp"] += 1
             
             except:
+                traceback.print_exc()
                 self.openLog()
                 self.file.write("Erro no pacote " + str(contPkt) + " em " + str(time.time()) + "\n")            
                 self.closeLog()
