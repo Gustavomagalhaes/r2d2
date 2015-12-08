@@ -16,7 +16,7 @@ class Monitor():
         #socketerror
         self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
         self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.downloadSocket.settimeout(2.0)
+        #self.downloadSocket.settimeout(2.0)
         self.downloadSocket.setErrorProb(0.5)
         self.file = None
         
@@ -173,7 +173,7 @@ class Monitor():
                     clientSocket.sendto(comando, (coletor, 6000))
                     self.receive()
                 elif comando == "DOWNLOAD":
-                    self.downloadSocket.settimeout(3)
+                    self.downloadSocket.settimeout(None)
                     while True:
                         try:
                             self.downloadSocket.sendWithError(comando, (coletor,6020))

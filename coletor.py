@@ -107,7 +107,7 @@ class Coletor():
                         content = buffers[ACK]
                         content = content.replace("\n", "\n ")
                         print "CONTENT: " + content
-                        self.downloadSocket.settimeout(5)
+                        self.downloadSocket.settimeout(None)
                         while not ("NACK"+str(index)) in mensagem:
                             try:
                                 if index == len(buffers.keys()) -1:
