@@ -305,15 +305,19 @@ class Coletor():
                             duracao = 0.000001
                             stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
                             self.fluxos[chaveFluxo] = [self.classificarProtocolo(app), ts, tamanho, duracao, stormtrooper, ts, 0, 1]
+                            print "Criou " + str(self.fluxos.get(chaveFluxo))
                             stormtrooper.start()
+                            print "Criou - Startou a thread"
                         else:
                             self.fluxos[chaveFluxo][2] += len(app)
                             self.fluxos[chaveFluxo][6] = (ts - (self.fluxos[chaveFluxo][5] + self.fluxos[chaveFluxo][6]))
                             self.fluxos[chaveFluxo][7] += 1
                             self.fluxos[chaveFluxo][5] = ts
                             self.fluxos[chaveFluxo][3] = duracao + (ts - self.fluxos[chaveFluxo][1])
+                            print "Atualizou " + str(self.fluxos.get(chaveFluxo))
                             stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
                             stormtrooper.start()
+                            print "Atualizou - Startou a thread"
                             self.fluxos[chaveFluxo][4] = stormtrooper
                         
                     else:
