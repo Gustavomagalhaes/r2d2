@@ -170,7 +170,7 @@ class Monitor():
                 if comando != "DOWNLOAD":
                     clientSocket.sendto(comando, (coletor, 6000))
                 elif comando == "DOWNLOAD":
-                    self.downloadSocket.sendWithError("DOWNLOAD", (coletor, 6020))
+                    self.downloadSocket.sendWithError("DOWNLOAD",(coletor,6020))
                     print 'Enviou DOWNLOAD'
                 self.receive()
             except:
