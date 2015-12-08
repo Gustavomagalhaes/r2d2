@@ -1,6 +1,6 @@
 # -*- coding: cp1252 -*-
 #PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f coletor.py
-import os, socket, socketerror, traceback, sys, threading, re, time, pcap, dpkt, pika, logging, datetime
+import os, socket, socketerror, traceback, sys, threading, re, time, pcap, dpkt, pika, logging, datetime, sched
 #logging.basicConfig(filename='erros.log',level=logging.DEBUG)
 #logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
@@ -24,6 +24,8 @@ class Coletor():
         self.pacotes = {}
         self.contProtocolos = {"unknown":0, "all":0, "nonIp":0}
         self.fluxos = {}
+        self.schedule = sched.scheduler(time.time, time.sleep)
+        self.startSchedule = False
         
         #rabbit
         self.ip = ip
@@ -38,6 +40,10 @@ class Coletor():
         leia.start()
         
         #self.localizarMonitor()
+        
+    def run(self):
+        while True:
+            self.schedule.run()
         
     def getIp(self):
         return self.ip
@@ -241,35 +247,12 @@ class Coletor():
                 protApp = ""
                 ip = eth.data
                 if isinstance(ip,dpkt.ip.IP) and (self.getStatusColeta() != None):
-                    duracao = time.time() - inicio
-                    
-                    mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao)) 
-                    
-                    
-                    # mensagem = "##IP#"+str(len(pkt))+"#"+str(ts)
-                    # print mensagem
-                    # print self.getStatusColeta()
-                    
-                    # Nao tem fila IP
-                    # if (self.getStatusColeta() == True):
-                        # self.enviarFila("ip",mensagem)
-                        # self.enviarFila("all",mensagem)
-                    
                     transp = ip.data
                     if isinstance(transp,dpkt.tcp.TCP) or isinstance(transp,dpkt.udp.UDP):
                         if isinstance(transp,dpkt.tcp.TCP):
                             transporte = "TCP"
                         elif isinstance(transp,dpkt.udp.UDP):
                             transporte = "UDP"
-                        
-                        duracao = time.time() - inicio
-                        mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)+"#"+str(duracao)+"#"+str((len(pkt)/duracao))
-                        # mensagem = "#"+transporte+"#IP#"+str(len(pkt))+"#"+str(ts)
-                        #print mensagem
-                        # Nao tem fila UDP
-                        # if (self.getStatusColeta() == True):
-                        #     self.enviarFila(transporte,mensagem)
-                        #     self.enviarFila("all",mensagem)
                         self.contProtocolos["all"] += 1
                         app = transp.data.lower()
                         
@@ -306,23 +289,29 @@ class Coletor():
                             tamanho = len(app)
                             duracao = 0.000001
                             #stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
-                            self.fluxos[chaveFluxo] = [self.classificarProtocolo(app), ts, tamanho, duracao, "stormtrooper", ts, 0, 1]
+                            stormtrooper = self.schedule.enter(100, 1, self.enviarFila, argument=(chaveFluxo,))
+                            self.startSchedule = True
+                            self.fluxos[chaveFluxo] = [self.classificarProtocolo(app), ts, tamanho, duracao, stormtrooper, ts, 0, 1]
                             print "Criou " + str(chaveFluxo)
                             #stormtrooper.start()
-                            self.enviarFila(chaveFluxo)
+                            #self.enviarFila(chaveFluxo)
                             print "Criou - Startou a thread"
                         else:
                             print "A chave existe"
                             self.fluxos[chaveFluxo][2] += len(app)
+                            stormtrooper = self.fluxos[chaveFluxo][4]
                             self.fluxos[chaveFluxo][6] = (ts - (self.fluxos[chaveFluxo][5] + self.fluxos[chaveFluxo][6]))
                             self.fluxos[chaveFluxo][7] += 1
                             self.fluxos[chaveFluxo][5] = ts
+                            self.schedule.cancel(stormtrooper)
                             self.fluxos[chaveFluxo][3] = duracao + (ts - self.fluxos[chaveFluxo][1])
+                            stormtrooper = self.schedule.enter(100, 1, self.enviarFila, argument=(chaveFluxo,))
+                            self.startSchedule = True
                             print "Atualizou " + str(self.fluxos.get(chaveFluxo))
                             #stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
                             #stormtrooper.start()
                             print "Atualizou - Startou a thread"
-                            self.fluxos[chaveFluxo][4] = "stormtrooper"
+                            self.fluxos[chaveFluxo][4] = stormtrooper
                         
                     else:
                         #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
