@@ -181,7 +181,8 @@ class Monitor():
                             mensagem, endereco = self.downloadSocket.recvWithError(2048)
                             break
                         except:
-                            print "Timeout"
+                            traceback.print_exc()
+                            print "Monitor - Timeout"
                             continue
                     self.downloadSocket.settimeout(None)
                     mensagem = ""
