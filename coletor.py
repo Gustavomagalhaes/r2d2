@@ -301,6 +301,7 @@ class Coletor():
                         found = False
                         
                         if chaveFluxo not in self.fluxos.keys():
+                            print "A chave nao existe"
                             tamanho = len(app)
                             duracao = 0.000001
                             stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
@@ -309,6 +310,7 @@ class Coletor():
                             stormtrooper.start()
                             print "Criou - Startou a thread"
                         else:
+                            print "A chave existe"
                             self.fluxos[chaveFluxo][2] += len(app)
                             self.fluxos[chaveFluxo][6] = (ts - (self.fluxos[chaveFluxo][5] + self.fluxos[chaveFluxo][6]))
                             self.fluxos[chaveFluxo][7] += 1
