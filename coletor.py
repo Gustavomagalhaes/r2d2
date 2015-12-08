@@ -1,6 +1,6 @@
 # -*- coding: cp1252 -*-
 #PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f coletor.py
-import os, socket, socketerror, traceback, sys, threading, re, time, pcap, dpkt, pika, logging, datetime, sched
+import os, socket, socketerror, traceback, sys, threading, re, time, pcap, dpkt, pika, logging, datetime
 #logging.basicConfig(filename='erros.log',level=logging.DEBUG)
 #logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
@@ -17,11 +17,9 @@ class Coletor():
         self.serverSocket.settimeout(20)
         self.logFile = "log.txt"
         self.file = None
-        self.schedule = sched.scheduler(time.time, time.sleep)
-        self.startSchedule = False
         
         #coleta
-        #self.statusColeta = None
+        self.statusColeta = None
         self.pacotes = {}
         self.contProtocolos = {"unknown":0, "all":0, "nonIp":0}
         self.fluxos = {}
@@ -39,7 +37,7 @@ class Coletor():
         leia.start()
         
         #self.localizarMonitor()
-    
+        
     def getIp(self):
         return self.ip
     
@@ -309,23 +307,21 @@ class Coletor():
                             print "A chave nao existe"
                             tamanho = len(app)
                             duracao = 0.000001
-                            stormtrooper = self.schedule.enter(100, 1, self.enviarFila, argument=(chaveFluxo,))
-                            self.startSchedule = True
-                            print "Criou - Startou a thread"
+                            stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
                             self.fluxos[chaveFluxo] = [self.classificarProtocolo(app), ts, tamanho, duracao, stormtrooper, ts, 0, 1]
                             print "Criou " + str(self.fluxos.get(chaveFluxo))
+                            stormtrooper.start()
+                            print "Criou - Startou a thread"
                         else:
                             print "A chave existe"
                             self.fluxos[chaveFluxo][2] += len(app)
-                            stormtrooper = self.fluxos[chaveFluxo][4]
                             self.fluxos[chaveFluxo][6] = (ts - (self.fluxos[chaveFluxo][5] + self.fluxos[chaveFluxo][6]))
                             self.fluxos[chaveFluxo][7] += 1
                             self.fluxos[chaveFluxo][5] = ts
-                            self.schedule.cancel(stormtrooper)
                             self.fluxos[chaveFluxo][3] = duracao + (ts - self.fluxos[chaveFluxo][1])
                             print "Atualizou " + str(self.fluxos.get(chaveFluxo))
-                            stormtrooper = self.schedule.enter(100, 1, self.enviarFila, argument=(chaveFluxo,))
-                            self.startSchedule = True
+                            stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
+                            stormtrooper.start()
                             print "Atualizou - Startou a thread"
                             self.fluxos[chaveFluxo][4] = stormtrooper
                             
