@@ -1,62 +1,49 @@
-import socket, socketerror, traceback
+import socket, traceback
+from socketerror import *
 
-downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
+downloadSocket = socketError(socket.AF_INET, socket.SOCK_DGRAM)
 downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-downloadSocket.bind(("",6020))
-logFile = "log.txt"
-file = None
+arquivoLog = "log.txt"
+arq = None
 
-def openLog(comando = "a"):
-    file = open(logFile, comando)
-        
-def closeLog():
-    file.close()
-    
-while True:
-    print "Aguardando download"
-    downloadSocket.settimeout(10)
-    mensagem, endereco = downloadSocket.recvWithError(8192)
-    
-    if mensagem == "DOWNLOAD":
-        print "Msg DOWNLOAD recebida"
-        openLog("r")
-        print "Abriu log"
-        temp = open(logFile, "r").read()
-        print "Leu log"
-        open(logFile, "r").close()
-        print "fechou log"
-        buffers = {}
-        
-        try:
-            print "entrou no try"
-            print str(temp)
-            for i in range(0, (len(temp)/256)):
-                print "Entrou no for i"
-                buffers["ACK"+str(i)] = temp[i*256:((i+1)*256)]
-                print "Adicionado " + "ACK"+str(i) + temp[i*256:((i+1)*256)] + "aos buffers"
-            
-            for index in range(0, len(buffers.keys())):
-                print "entrou no for index"
+def abrirArquivoLog(instrucao="a"): #se nao houver nenhuma instrucao o default eh  adicionar
+    arq = open(arquivoLog,instrucao)
+
+def fecharArquivoLog(): #se nao houver nenhuma instrucao o default eh adicionar
+    arq.close()
+
+def enviarArqLog():
+    downloadSocket.bind(('', 6020))
+    #print "Permissao atual = Enviar Arquivo de Log"  
+    while 1:
+        downloadSocket.settimeout(9999)
+        #try:
+        print "Esperando mensagem de download"
+        #self.__downSocket.connect((self.__monitor[0], int(self.__monitor[1]) +1))
+        message, clientAddress = downloadSocket.recvWithError(2048)
+
+        if message == "DOWNLOAD":
+            abrirArquivoLog("r")
+            logBuffer = arq.read()                    
+            fecharArquivoLog()
+            partesBuffer = {}
+
+            for i in range (0, (len(logBuffer) / 256)):
+                partesBuffer["ACK"+str(i)] = logBuffer[i*256:((i+1)*256)]
+
+            for index in range(0,len(partesBuffer.keys())):
+                print index
                 ACK = "ACK"+str(index)
-                print "ACK: " + ACK
-                content = buffers[ACK]
-                content = content.replace("\n", "\n ")
-                print "CONTENT: " + content
-                downloadSocket.settimeout(None)
-                while not ("NACK"+str(index)) in mensagem:
+                conteudo = partesBuffer[ACK]
+                conteudo = conteudo.replace("\n","\n ")
+                downloadSocket.settimeout(5)
+                while not ("NACK"+str(index)) in message:
                     try:
-                        if index == len(buffers.keys()) -1:
-                            downloadSocket.sendWithError(ACK+content+"COM:THEEND", endereco)
-                            print "Pacote final " + ACK+content+"COM:THEEND" + " para " + str(endereco)
-                            mensagem, endereco = downloadSocket.recvWithError(8192)
+                        if index == len(partesBuffer.keys()) -1:
+                            downloadSocket.sendWithError(ACK+conteudo+"FIM", clientAddress)
+                            message, clientAddress = downloadSocket.recvWithError(2048)
                         else:
-                            downloadSocket.sendWithError(ACK+content, endereco)
-                            print mensagem
-                            print "Enviou " + ACK+content + " para " + str(endereco)
-                            mensagem, endereco = downloadSocket.recvWithError(8192)
+                            downloadSocket.sendWithError(ACK+conteudo, clientAddress)
+                            message, clientAddress = downloadSocket.recvWithError(2048)
                     except:
-                        traceback.print_exc()
-                        print "Nao conseguiu enviar no ACK-NACK - Timeout"
-        except:
-            traceback.print_exc()
-            print "Nem entrou no try do add buffers - caiu no except"
+                        print "Timeout"

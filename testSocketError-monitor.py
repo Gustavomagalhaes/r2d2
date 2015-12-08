@@ -1,57 +1,44 @@
-import socket, socketerror, traceback
+import socket, traceback
+from socketerror import *
 
-downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
+downloadSocket = socketError(socket.AF_INET, socket.SOCK_DGRAM)
 downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-downloadSocket.settimeout(2.0)
-downloadSocket.setErrorProb(0.5)
+downloadSocket.settimeout(5)
+logFile = "log.txt"
 file = None
+coletor = ""
 
-def ask():
-    comando = raw_input("[R2D2] Insira um comando > ")
-    return comando
-    
-def enviarComando(comando, coletor):
-    if comando != "DOWNLOAD":
-        inserirComando()
-    else:
+def enviarComandoDownload(self):
+                    
+    if coletor == "":
+        coletor = raw_input('Digite um IP válido: ')
+
+    #self.__downSocket.connect((self.__serverName, int(self.__serverPort) +1))
+    self.downloadSocket.settimeout(3)
+    while True:
         try:
-            downloadSocket.settimeout(3)
-            while True:
-                try:
-                    downloadSocket.sendWithError(comando, (coletor,6020))
-                    print 'Enviou DOWNLOAD'
-                    mensagem, endereco = downloadSocket.recvWithError(2048)
-                    break
-                except:
-                    traceback.print_exc()
-                    print "Monitor - Timeout"
-                    continue
-            downloadSocket.settimeout(3)
-            mensagem = ""
-            string = []
-            cont = 0
-            while mensagem.count("COM:THEEND") <1:
-                print mensagem
-                mensagem, endereco = downloadSocket.recvWithError(2048)
-                if mensagem != "nothing":
-                    string.append(mensagem[3:].replace("COM:THEEND",""))
-                    downloadSocket.sendWithError("NACK"+str(cont),(coletor,6020))
-                    cont+=1
-            file = open("log.txt", "w")
-            for line in string:
-                file.write(line)
-            
-            file.close()
-            print "Download terminado com sucesso."
-            downloadSocket.close()
-                
+            self.downloadSocket.sendWithError("DOWNLOAD",(coletor, 6020))
+            mensage, serverAddress = self.downloadSocket.recvWithError(2048)
+            break            
         except:
-            traceback.print_exc()
-            print "..."
+            print "Timeout"
+            continue
 
-def inserirComando():
-    print "\nEscolha o coletor que deseja fazer download:\n"
-    coletor = ask()
-    enviarComando("DOWNLOAD", coletor)
-    
-inserirComando()
+    self.downloadSocket.settimeout(None)
+    mensage = ""
+    stringBuffer = []
+    cont = 0
+    while mensage.count("FIM") < 1:
+        mensage, serverAddress = self.downloadSocket.recvWithError(2048)
+        if mensage != "nada":            
+            stringBuffer.append(mensage[3:].replace("FIM",""))
+            self.downloadSocket.sendWithError("NACK"+str(cont),(coletor, 6020))
+            cont+=1
+
+    coletor = ""
+    arq = open("log_"+coletor+".txt","w")
+    for linha in stringBuffer:
+        arq.write(linha)
+    arq.close()
+    print "Download concluido"
+    self.downloadSocket.close()
