@@ -15,7 +15,7 @@ def enviarComando(comando, coletor):
         inserirComando()
     else:
         try:
-            downloadSocket.settimeout(None)
+            downloadSocket.settimeout(3)
             while True:
                 try:
                     downloadSocket.sendWithError(comando, (coletor,6020))
@@ -26,7 +26,7 @@ def enviarComando(comando, coletor):
                     traceback.print_exc()
                     print "Monitor - Timeout"
                     continue
-            downloadSocket.settimeout(None)
+            downloadSocket.settimeout(3)
             mensagem = ""
             string = []
             cont = 0
