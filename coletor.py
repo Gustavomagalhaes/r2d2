@@ -94,10 +94,12 @@ class Coletor():
                 
                 try:
                     for i in range(0, (len(temp)/256)):
+                        print "Entrou no for i"
                         buffers["ACK"+str(i)] = temp[i*256:((i+1)*256)]
                         print "Adicionado " + "ACK"+str(i) + temp[i*256:((i+1)*256)] + "aos buffers"
                     
                     for index in range(0, len(buffers.keys())):
+                        print "entrou no for index"
                         ACK = "ACK"+str(index)
                         print "ACK: " + ACK
                         content = buffers[ACK]
