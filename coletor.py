@@ -300,8 +300,6 @@ class Coletor():
                         #print str(chaveFluxo)
                         
                         found = False
-                        
-                        for key, value in self.fluxos.iteritems() :
 
                         if chaveFluxo not in self.fluxos.keys():
                             print "A chave nao existe"
