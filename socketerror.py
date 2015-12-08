@@ -19,10 +19,10 @@ class socketError(socket.socket):
 
     def recvWithError(self, n):
         if (self.type == socket.SOCK_DGRAM):
-            data = self.recvfrom(n)
+            mensagem, endereco = self.recvfrom(n)
             u = random.random()
             if (u>self.errorProb):
-                return data
+                return mensagem, endereco
             else:
                 raise socket.timeout
         else:
