@@ -16,7 +16,7 @@ class Monitor():
         #socketerror
         self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
         self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.downloadSocket.settimeout(5)
+        self.downloadSocket.settimeout(20)
         self.file = None
         
         self.run()
