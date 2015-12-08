@@ -15,7 +15,7 @@ def enviarComando(comando, coletor):
         inserirComando()
     else:
         try:
-            downloadSocket.settimeout(3)
+            downloadSocket.settimeout(10)
             while True:
                 try:
                     downloadSocket.sendWithError(comando, (coletor,6020))
@@ -31,6 +31,7 @@ def enviarComando(comando, coletor):
             string = []
             cont = 0
             while mensagem.count("COM:THEEND") <1:
+                print mensagem
                 mensagem, endereco = downloadSocket.recvWithError(2048)
                 if mensagem != "nothing":
                     string.append(mensagem[3:].replace("COM:THEEND",""))
