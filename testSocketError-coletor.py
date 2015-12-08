@@ -56,7 +56,7 @@ while True:
                             mensagem, endereco = downloadSocket.recvWithError(8192)
                     except:
                         traceback.print_exc()
-                        print "Não conseguiu enviar no ACK-NACK - Timeout"
+                        print "Nao conseguiu enviar no ACK-NACK - Timeout"
         except:
             traceback.print_exc()
             print "Nem entrou no try do add buffers - caiu no except"
