@@ -1,4 +1,4 @@
-import socket, socketerror, sys, os, threading, time
+import socket, socketerror, sys, os, threading, time, traceback
 
 class Monitor():
 
@@ -56,6 +56,7 @@ class Monitor():
         while 1:
             clientSocket.sendto("MONITOR", self.getDestino())
             mensagem, endereco = clientSocket.recvfrom(2048)
+            print mensagem
             if mensagem == "COLETOR":
                 if endereco[0] not in coletores.keys():
                     self.setColetor(endereco[0], "[INATIVO]")
@@ -72,29 +73,32 @@ class Monitor():
                 elif mensagem == "SUSPENSO":
                     self.setColetor(endereco[0], "[SUSPENSO]")
                 elif mensagem == "THEEND":
-                    self.downloadSocket.settimeout(None)
-                    mensagem = ""
-                    string = []
-                    cont = 0
-                    while mensagem.count("THEEND") < 1:
-                        mensagem, endereco = self.downloadSocket.recvWithError(2048)
-                        if mensagem != "nothing":
-                            string.append(mensagem[3:].replace("THEEND", ""))
-                            self.downloadSocket.sendWithError("NACK"+str(cont), endereco)
-                            cont+=1
-                    
-                    file = open("log.txt", "w")
-                    for linha in string:
-                        file.write(linha)
-                    file.close()
-                    print "Download realizado com sucesso."
-                    self.downloadSocket.close()
+                    try:
+                        self.downloadSocket.settimeout(None)
+                        mensagem = ""
+                        string = []
+                        cont = 0
+                        while mensagem.count("THEEND") < 1:
+                            mensagem, endereco = self.downloadSocket.recvWithError(2048)
+                            if mensagem != "nothing":
+                                string.append(mensagem[3:].replace("THEEND", ""))
+                                self.downloadSocket.sendWithError("NACK"+str(cont), endereco)
+                                cont+=1
+                        
+                        file = open("log.txt", "w")
+                        for linha in string:
+                            file.write(linha)
+                        file.close()
+                        print "Download realizado com sucesso."
+                        self.downloadSocket.close()
+                    except:
+                        traceback.print_exc()
                 else:
                     continue
                 self.inserirComando()
     
     def printCharacters(self):
-        os.system('clear')
+        #os.system('clear')
         print "                                         "
         print "   (C3PO)                                "            
         print "         \  .-.                          "            
@@ -167,6 +171,7 @@ class Monitor():
                     clientSocket.sendto(comando, (coletor, 6000))
                 elif comando == "DOWNLOAD":
                     self.downloadSocket.sendWithError("DOWNLOAD", (coletor, 6020))
+                    print 'Enviou DOWNLOAD'
                 self.receive()
             except:
                 print "..."

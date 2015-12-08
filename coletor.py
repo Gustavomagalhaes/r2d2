@@ -80,7 +80,7 @@ class Coletor():
         self.downloadSocket.bind(("",6020))
         while 1:
             print "Aguardando download"
-            mensagem, endereco, = self.downloadSocket.recvWithError(8192)
+            mensagem, endereco = self.downloadSocket.recvWithError(8192)
             
             if mensagem == "DOWNLOAD":
                 print "Msg DOWNLOAD recebida"
