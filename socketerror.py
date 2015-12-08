@@ -28,7 +28,7 @@ class socketError(socket.socket):
             data = self.recvfrom(n)
             u = random.randint(0,10)
             if (u>self.errorProb):
-                print str(data)
+                print "data" + str(data)
                 return data
             else:
                 print "Nao recebido"

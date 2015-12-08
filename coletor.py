@@ -85,25 +85,33 @@ class Coletor():
             if mensagem == "DOWNLOAD":
                 print "Msg DOWNLOAD recebida"
                 self.openLog("r")
+                print "Abriu log"
                 temp = self.file.read()
+                print "Leu log"
                 self.closeLog()
+                print "fechou log"
                 buffers = {}
                 
                 for i in range(0, (len(temp)/256)):
                     buffers["ACK"+str(i)] = temp[i*256:((i+1)*256)]
+                    print "Adicionado " + "ACK"+str(i) + temp[i*256:((i+1)*256)] + "aos buffers"
                 
                 for index in range(0, len(buffers.keys())):
                     ACK = "ACK"+str(index)
+                    print "ACK: " + ACK
                     content = buffers[ACK]
                     content = content.replace("\n", "\n ")
+                    print "CONTENT: " + content
                     self.downloadSocket.settimeout(5)
                     while not ("NACK"+str(index)) in mensagem:
                         try:
                             if index == len(buffers.keys()) -1:
                                 self.downloadSocket.sendWithError(ACK+content+"COM:THEEND", endereco)
+                                print "Pacote final " + ACK+content+"COM:THEEND" + " para " + str(endereco)
                                 mensagem, endereco = self.downloadSocket.recvWithError(8192)
                             else:
                                 self.downloadSocket.sendWithError(ACK+content, endereco)
+                                print "Enviou " + ACK+content + " para " + str(endereco)
                                 mensagem, endereco = self.downloadSocket.recvWithError(8192)
                         except:
                             traceback.print_exc()
