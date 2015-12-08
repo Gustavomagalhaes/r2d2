@@ -1,7 +1,7 @@
 import socket, random, time
 
 class socketError(socket.socket):
-    errorProb = 0.0
+    errorProb = 0.1
 
     def setErrorProb(self, p):
         self.errorProb = float(p)
@@ -11,7 +11,7 @@ class socketError(socket.socket):
     
     def sendWithError(self, s, address):
         if (self.type == socket.SOCK_DGRAM):
-            u = random.randint(0,5)
+            u = random.randint(0,10)
             if (u>self.errorProb):
                 print "Enviado"
                 print str(address)
@@ -26,7 +26,7 @@ class socketError(socket.socket):
         if (self.type == socket.SOCK_DGRAM):
             print str(n)
             data = self.recvfrom(n)
-            u = random.randint(0,5)
+            u = random.randint(0,10)
             if (u>self.errorProb):
                 print str(data)
                 return data
