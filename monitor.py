@@ -174,6 +174,7 @@ class Monitor():
                     print 'Enviou DOWNLOAD'
                 self.receive()
             except:
+                traceback.print_exc()
                 print "..."
     
     def inserirComando(self):
