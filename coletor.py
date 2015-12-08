@@ -12,10 +12,11 @@ class Coletor():
         self.serverSocket.settimeout(20)
         
         #socketerror
-        self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
-        self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.logFile = "log.txt"
-        self.file = None
+        # self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
+        # self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # self.downloadSocket.bind(("",6020))
+        # self.logFile = "log.txt"
+        # self.file = None
         
         
         #coleta
@@ -37,8 +38,6 @@ class Coletor():
         
         leia = threading.Thread(target=self.downloadLog)
         leia.start()
-        
-        #self.localizarMonitor()
         
     def run(self):
         while True:
@@ -76,55 +75,55 @@ class Coletor():
         self.file.close()
         
     def downloadLog(self):
-        self.downloadSocket.bind(("",6020))
-        while True:
-            print "Aguardando download"
-            self.downloadSocket.settimeout(None)
-            mensagem, endereco = self.downloadSocket.recvWithError(8192)
+        print 'Download concluido'
+        # while True:
+        #     print "Aguardando download"
+        #     self.downloadSocket.settimeout(None)
+        #     mensagem, endereco = self.downloadSocket.recvWithError(8192)
             
-            if mensagem == "DOWNLOAD":
-                print "Msg DOWNLOAD recebida"
-                self.openLog("r")
-                print "Abriu log"
-                temp = self.file.read()
-                print "Leu log"
-                self.closeLog()
-                print "fechou log"
-                buffers = {}
+        #     if mensagem == "DOWNLOAD":
+        #         print "Msg DOWNLOAD recebida"
+        #         self.openLog("r")
+        #         print "Abriu log"
+        #         temp = self.file.read()
+        #         print "Leu log"
+        #         self.closeLog()
+        #         print "fechou log"
+        #         buffers = {}
                 
-                try:
-                    print "entrou no try"
-                    print str(temp)
-                    for i in range(0, (len(temp)/256)):
-                        print "Entrou no for i"
-                        buffers["ACK"+str(i)] = temp[i*256:((i+1)*256)]
-                        print "Adicionado " + "ACK"+str(i) + temp[i*256:((i+1)*256)] + "aos buffers"
+        #         try:
+        #             print "entrou no try"
+        #             print str(temp)
+        #             for i in range(0, (len(temp)/256)):
+        #                 print "Entrou no for i"
+        #                 buffers["ACK"+str(i)] = temp[i*256:((i+1)*256)]
+        #                 print "Adicionado " + "ACK"+str(i) + temp[i*256:((i+1)*256)] + "aos buffers"
                     
-                    for index in range(0, len(buffers.keys())):
-                        print "entrou no for index"
-                        ACK = "ACK"+str(index)
-                        print "ACK: " + ACK
-                        content = buffers[ACK]
-                        content = content.replace("\n", "\n ")
-                        print "CONTENT: " + content
-                        self.downloadSocket.settimeout(None)
-                        while not ("NACK"+str(index)) in mensagem:
-                            try:
-                                if index == len(buffers.keys()) -1:
-                                    self.downloadSocket.sendWithError(ACK+content+"COM:THEEND", endereco)
-                                    print "Pacote final " + ACK+content+"COM:THEEND" + " para " + str(endereco)
-                                    mensagem, endereco = self.downloadSocket.recvWithError(8192)
-                                else:
-                                    self.downloadSocket.sendWithError(ACK+content, endereco)
-                                    print mensagem
-                                    print "Enviou " + ACK+content + " para " + str(endereco)
-                                    mensagem, endereco = self.downloadSocket.recvWithError(8192)
-                            except:
-                                traceback.print_exc()
-                                print "Timeout"
-                except:
-                    traceback.print_exc()
-                    print "caiu no except"
+        #             for index in range(0, len(buffers.keys())):
+        #                 print "entrou no for index"
+        #                 ACK = "ACK"+str(index)
+        #                 print "ACK: " + ACK
+        #                 content = buffers[ACK]
+        #                 content = content.replace("\n", "\n ")
+        #                 print "CONTENT: " + content
+        #                 self.downloadSocket.settimeout(None)
+        #                 while not ("NACK"+str(index)) in mensagem:
+        #                     try:
+        #                         if index == len(buffers.keys()) -1:
+        #                             self.downloadSocket.sendWithError(ACK+content+"COM:THEEND", endereco)
+        #                             print "Pacote final " + ACK+content+"COM:THEEND" + " para " + str(endereco)
+        #                             mensagem, endereco = self.downloadSocket.recvWithError(8192)
+        #                         else:
+        #                             self.downloadSocket.sendWithError(ACK+content, endereco)
+        #                             print mensagem
+        #                             print "Enviou " + ACK+content + " para " + str(endereco)
+        #                             mensagem, endereco = self.downloadSocket.recvWithError(8192)
+        #                     except:
+        #                         traceback.print_exc()
+        #                         print "Timeout"
+        #         except:
+        #             traceback.print_exc()
+        #             print "caiu no except"
                 
 
     def localizarMonitor(self, mensagem = "", endereco = ()):
@@ -143,7 +142,6 @@ class Coletor():
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
                     serverSocket.sendto("COLETOR", endereco)
                     serverSocket.settimeout(None)
-                    #print "[C3PO] Aguardando..."
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
                     break
@@ -166,7 +164,6 @@ class Coletor():
         
         if self.getStatusColeta() == True:
             yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",0))
-        # yoda = threading.Thread(target=self.iniciarColeta("",0))
         serverSocket = self.getServerSocket()
         
         print "\n[C3PO] Aguardando comando do monitor..."
@@ -175,8 +172,6 @@ class Coletor():
             try:
                 
                 mensagem, endereco = self.serverSocket.recvfrom(8192)
-                # print mensagem
-                # print endereco
                 if mensagem == "COLETAR": 
                     self.serverSocket.sendto("COM:CAPTURANDO", endereco)
                     self.setStatusColeta(True)
@@ -186,25 +181,17 @@ class Coletor():
                     self.serverSocket.sendto("COM:SUSPENSO", endereco)
                     print "[C3PO] Suspenso"
                     self.setStatusColeta(False)
-                    # yoda.OnStop()
-                  #  yoda.setStatus(False)
                     
                 elif mensagem == "CONTINUAR":
                     self.serverSocket.sendto("COM:CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
                     self.setStatusColeta(True)
-                  #  yoda.setStatus(True)
                  
                 elif mensagem == "MONITOR":
                     continue
                     
                     
                 self.receberComando(monitor)
-                
-                #self.serverSocket.sendto("OK", endereco)
-            #except (KeyboardInterrupt, SystemExit):
-              #  yoda.stop()
-              #  raise
             except:
                 self.openLog()
                 self.file.write("Aguardando comando: sem comunicacao com o monitor em " + str(time.time()) + "\n")            
@@ -230,8 +217,6 @@ class Coletor():
                             valor = (str(linha).lstrip()).rstrip()
                     linha = file.readline()
                                 
-                #protocolos[chave] = re.compile(valor)
-                #valor = re.compile(valor)
                 proto = {}
                 arq = open("protocolos.txt","r")
                 listaLinhas = arq.readlines()
@@ -242,7 +227,6 @@ class Coletor():
                     proto[nome] = expr
                 protocolos[chave] = valor
                 self.contProtocolos[chave] = 0
-            #protocolos = {"ssl":"^(.?.?\x16\x03.*\x16\x03|.?.?\x01\x03\x01?.*\x0b)", "ssh":"^ssh-[12]\.[0-9]", "ssdp":"^notify[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:(alive|byebye)|^m-search[\x09-\x0d ]\*[\x09-\x0d ]http/1\.1[\x09-\x0d -~]*ssdp:discover", "bittorrent":"^(\x13bittorrent protocol|azver\x01$|get /scrape\?info_hash=)", "dhcp":"^[\x01\x02][\x01- ]\x06.*c\x82sc", "http":"[\x09-\x0d -~]*"}
                 
             return proto
     
@@ -330,8 +314,6 @@ class Coletor():
                             self.fluxos[chaveFluxo][4] = stormtrooper
                         
                     else:
-                        #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
-                        #print 'log'
                         self.openLog()
                         self.file.write("Erro na camada " + transp + " em " + str(time.time()) + "\n")            
                         self.closeLog()
@@ -343,10 +325,7 @@ class Coletor():
                 self.openLog()
                 self.file.write("Erro no pacote " + str(contPkt) + " em " + str(time.time()) + "\n")            
                 self.closeLog()
-            
-        #for p in self.contProtocolos.items():
-        #	print(p[0]+" Pkts:"+str(p[1]))
-        
+
     def enviarFila(self, chaveFluxo):
         print "foi pra fila"
         fluxo = self.fluxos[chaveFluxo]
@@ -374,6 +353,3 @@ if __name__ == '__main__':
     if not ip:
         ip = "192.168.25.118"
     coletor = Coletor(ip)
-    #coletorThread = threading.Thread(target=coletor.start)
-    #coletorThread.start()
-    #comandoThread = threading.Thread(target=coletor.run, args=())
