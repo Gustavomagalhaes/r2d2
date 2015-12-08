@@ -104,7 +104,7 @@ class Coletor():
                                 mensagem, endereco = self.downloadSocket.recvWithError(8192)
                             else:
                                 self.downloadSocket.sendWithError(ACK+content, endereco)
-                                mesnage, endereco = self.downloadSocket.recvWithError(8192)
+                                mensagem, endereco = self.downloadSocket.recvWithError(8192)
                         except:
                             traceback.print_exc()
                             print "Timeout"
