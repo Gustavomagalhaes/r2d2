@@ -300,6 +300,9 @@ class Coletor():
                         
                         found = False
                         
+                        for key, value in fluxos.iteritems() :
+                            print "Inicio - " + key, value
+                        
                         if chaveFluxo not in self.fluxos.keys():
                             print "A chave nao existe"
                             tamanho = len(app)
@@ -321,6 +324,8 @@ class Coletor():
                             stormtrooper.start()
                             print "Atualizou - Startou a thread"
                             self.fluxos[chaveFluxo][4] = stormtrooper
+                            
+                        print "Final - " + key, value
                         
                     else:
                         #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
