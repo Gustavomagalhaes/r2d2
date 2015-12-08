@@ -15,7 +15,7 @@ def enviarComando(comando, coletor):
         inserirComando()
     else:
         try:
-            downloadSocket.settimeout(10)
+            downloadSocket.settimeout(3)
             while True:
                 try:
                     downloadSocket.sendWithError(comando, (coletor,6020))
