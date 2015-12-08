@@ -349,8 +349,7 @@ class Coletor():
         duracao = fluxo[3]
         quantidade = fluxo[7]
         routing_key = fluxo[0]
-        print tamanho, duracao, quantidade, routing_key
-        
+
         if (quantidade > 0) and (tamanho > 0):
             media = float(tamanho)/duracao
             print media
