@@ -18,6 +18,7 @@ class Coletor():
         self.logFile = "log.txt"
         self.file = None
         
+        
         #coleta
         self.statusColeta = None
         self.pacotes = {}
@@ -300,7 +301,7 @@ class Coletor():
                         
                         found = False
                         
-                        for key, value in fluxos.iteritems() :
+                        for key, value in self.fluxos.iteritems() :
                             print "Inicio - " + key, value
                         
                         if chaveFluxo not in self.fluxos.keys():
