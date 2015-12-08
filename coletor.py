@@ -84,6 +84,7 @@ class Coletor():
             
             if mensagem == "DOWNLOAD":
                 print "Msg DOWNLOAD recebida"
+                self.openLog("r")
                 temp = self.file.read()
                 self.closeLog()
                 buffers = {}
