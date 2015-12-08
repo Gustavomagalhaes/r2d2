@@ -76,6 +76,7 @@ class Coletor():
             mensagem, endereco, = self.downloadSocket.recvWithError(8192)
             
             if mensagem == "DOWNLOAD":
+                print "Msg DOWNLOAD recebida"
                 temp = self.file.read()
                 self.closeLog()
                 buffers = {}
@@ -295,6 +296,7 @@ class Coletor():
                             break
                         
                         chaveFluxo = (transporte, ipOrigem, portaOrigem, ipDestino, portaDestino)
+                        print str(chaveFluxo)
                         
                         found = False
                         
