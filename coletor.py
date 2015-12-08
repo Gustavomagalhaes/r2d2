@@ -302,7 +302,7 @@ class Coletor():
                         found = False
                         
                         for key, value in self.fluxos.iteritems() :
-                            print "Inicio - " + key, value
+                            print "Inicio - " + str(key) + str(value)
                         
                         if chaveFluxo not in self.fluxos.keys():
                             print "A chave nao existe"
@@ -329,7 +329,7 @@ class Coletor():
                             self.fluxos[chaveFluxo][4] = "stormtrooper"
                             
                             
-                        print "Final - " + key, value
+                        print "Final - " + str(key) + str(value)
                         
                     else:
                         #self.logErros.writelines("#captura_pacotes: ", transp, " \n")
