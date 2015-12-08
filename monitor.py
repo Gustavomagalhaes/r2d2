@@ -77,7 +77,7 @@ class Monitor():
                     string = []
                     cont = 0
                     while mensagem.count("THEEND") < 1:
-                        mensagem, endereco = self.downloadSocket.recWithError(2048)
+                        mensagem, endereco = self.downloadSocket.recvWithError(2048)
                         if mensagem != "nothing":
                             string.append(mensagem[3:].replace("THEEND", ""))
                             self.downloadSocket.sendWithError("NACK"+str(cont), endereco)

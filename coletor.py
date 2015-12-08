@@ -6,7 +6,7 @@ import os, socket, socketerror, traceback, sys, threading, re, time, pcap, dpkt,
 
 class Coletor():
     
-    def __init__(self):
+    def __init__(self, ip):
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
@@ -25,7 +25,8 @@ class Coletor():
         self.fluxos = {}
         
         #rabbit
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters("172.16.206.250", 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
+        self.ip = ip
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(self.getIp(), 5672, '/starwars', pika.PlainCredentials("skywalker", "luke")))
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange='topic_logs', type='topic')
         
@@ -36,6 +37,12 @@ class Coletor():
         leia.start()
         
         #self.localizarMonitor()
+        
+    def getIp(self):
+        return self.ip
+    
+    def setIp(self, ip):
+        self.ip = ip
         
     def getServerSocket(self):
         return self.serverSocket
@@ -66,7 +73,7 @@ class Coletor():
         self.downloadSocket.bind(("",6020))
         while 1:
             print "Aguardando download"
-            mensagem, endereco, = self.downloadSocket.recWithError(8192)
+            mensagem, endereco, = self.downloadSocket.recvWithError(8192)
             
             if mensagem == "DOWNLOAD":
                 temp = self.file.read()
@@ -85,10 +92,10 @@ class Coletor():
                         try:
                             if index == len(buffers.keys()) -1:
                                 self.downloadSocket.sendWithError(ACK+content+"COM:THEEND", endereco)
-                                mensagem, endereco = self.downloadSocket.recWithError(8192)
+                                mensagem, endereco = self.downloadSocket.recvWithError(8192)
                             else:
                                 self.downloadSocket.sendWithError(ACK+content, endereco)
-                                mesnage, endereco = self.downloadSocket.recWithError(8192)
+                                mesnage, endereco = self.downloadSocket.recvWithError(8192)
                         except:
                             print "Timeout"
                 
@@ -343,7 +350,7 @@ class Coletor():
 
 if __name__ == '__main__':
     os.system('clear')
-    coletor = Coletor()
+    coletor = Coletor("192.168.25.117")
     #coletorThread = threading.Thread(target=coletor.start)
     #coletorThread.start()
     #comandoThread = threading.Thread(target=coletor.run, args=())
