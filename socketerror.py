@@ -25,7 +25,7 @@ class socketError(socket.socket):
     def recvWithError(self, n):
         if (self.type == socket.SOCK_DGRAM):
             print str(n)
-            data = self.recvfrom(n)
+            data = self.recv(n)
             u = random.randint(0,10)
             if (u>self.errorProb):
                 print "data" + str(data)

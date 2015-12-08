@@ -94,6 +94,7 @@ class Coletor():
                 
                 try:
                     print "entrou no try"
+                    print str(temp)
                     for i in range(0, (len(temp)/256)):
                         print "Entrou no for i"
                         buffers["ACK"+str(i)] = temp[i*256:((i+1)*256)]
