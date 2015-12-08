@@ -40,10 +40,6 @@ class Coletor():
         
         #self.localizarMonitor()
     
-    def run(self):
-        while True:
-            self.schedule.run()
-            
     def getIp(self):
         return self.ip
     
