@@ -14,14 +14,14 @@ def closeLog():
     
 while True:
     print "Aguardando download"
-    downloadSocket.settimeout(None)
+    downloadSocket.settimeout(10)
     mensagem, endereco = downloadSocket.recvWithError(8192)
     
     if mensagem == "DOWNLOAD":
         print "Msg DOWNLOAD recebida"
         openLog("r")
         print "Abriu log"
-        temp = file.read()
+        temp = open(logFile, "r").read()
         print "Leu log"
         closeLog()
         print "fechou log"
