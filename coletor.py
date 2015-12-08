@@ -297,7 +297,7 @@ class Coletor():
                             break
                         
                         chaveFluxo = (transporte, ipOrigem, portaOrigem, ipDestino, portaDestino)
-                        print str(chaveFluxo)
+                        #print str(chaveFluxo)
                         
                         found = False
                         
