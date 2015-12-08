@@ -288,17 +288,17 @@ class Coletor():
                         found = False
 
                         if chaveFluxo not in self.fluxos.keys():
-                            print "A chave nao existe"
+                            #print "A chave nao existe"
                             tamanho = len(app)
                             duracao = 0.000001
                             stormtrooper = self.schedule.enter(100, 1, self.enviarFila, argument=(chaveFluxo,))
                             self.startSchedule = True
                             self.fluxos[chaveFluxo] = [self.classificarProtocolo(app), ts, tamanho, duracao, stormtrooper, ts, 0, 1]
-                            print "Criou " + str(chaveFluxo)
+                            #print "Criou " + str(chaveFluxo)
                             self.enviarFila(chaveFluxo)
-                            print "Criou - Startou a thread"
+                            #print "Criou - Startou a thread"
                         else:
-                            print "A chave existe"
+                            #print "A chave existe"
                             self.fluxos[chaveFluxo][2] += len(app)
                             stormtrooper = self.fluxos[chaveFluxo][4]
                             self.fluxos[chaveFluxo][6] = (ts - (self.fluxos[chaveFluxo][5] + self.fluxos[chaveFluxo][6]))
@@ -308,9 +308,9 @@ class Coletor():
                             self.fluxos[chaveFluxo][3] = duracao + (ts - self.fluxos[chaveFluxo][1])
                             stormtrooper = self.schedule.enter(100, 1, self.enviarFila, argument=(chaveFluxo,))
                             self.startSchedule = True
-                            print "Atualizou " + str(self.fluxos.get(chaveFluxo))
+                            #print "Atualizou " + str(self.fluxos.get(chaveFluxo))
                             self.enviarFila(chaveFluxo)
-                            print "Atualizou - Startou a thread"
+                            #print "Atualizou - Startou a thread"
                             self.fluxos[chaveFluxo][4] = stormtrooper
                         
                     else:
@@ -327,7 +327,7 @@ class Coletor():
                 self.closeLog()
 
     def enviarFila(self, chaveFluxo):
-        print "foi pra fila"
+        #print "foi pra fila"
         fluxo = self.fluxos[chaveFluxo]
         tamanho = fluxo[2]
         duracao = fluxo[3]
@@ -336,11 +336,11 @@ class Coletor():
 
         if (quantidade > 0) and (tamanho > 0):
             media = float(tamanho)/duracao
-            print media
+            #print media
             atraso = float(fluxo[6])/quantidade
-            print atraso
+            #print atraso
             mensagem = str(tamanho)+"#"+str(duracao)+"#"+str(media)+"#"+str(atraso)
-            print mensagem
+            #print mensagem
             print "Fluxo " + str(chaveFluxo) + " sendo enviado..."
             self.channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
             self.channel.basic_publish(exchange='topic_logs',routing_key="ALL",body=mensagem)
