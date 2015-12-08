@@ -191,7 +191,7 @@ class Monitor():
                         mensagem, endereco = self.downloadSocket.recvWithError(2048)
                         if mensagem != "nothing":
                             string.append(mensagem[3:].replace("COM:THEEND",""))
-                            self.downloadSocket.sendWithError("NACK"+str(cont),coletor,6020)
+                            self.downloadSocket.sendWithError("NACK"+str(cont),(coletor,6020))
                             cont+=1
                     file = open("log.txt", "w")
                     for line in string:

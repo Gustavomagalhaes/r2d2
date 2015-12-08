@@ -9,12 +9,11 @@ class Coletor():
     def __init__(self, ip):
         
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
-        
+        self.serverSocket.settimeout(20)
         
         #socketerror
+        self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
         self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.serverSocket.settimeout(20)
         self.logFile = "log.txt"
         self.file = None
         

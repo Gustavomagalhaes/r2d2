@@ -17,10 +17,9 @@ class socketError(socket.socket):
         else:
             self.sendto(mensagem, endereco)
 
-    def recvWithError(self, n=8192):
+    def recvWithError(self, n):
         if (self.type == socket.SOCK_DGRAM):
-            mensagem, endereco = self.recvfrom(n)
-            data = mensagem, endereco
+            data = self.recvfrom(n)
             u = random.random()
             if (u>self.errorProb):
                 return data
