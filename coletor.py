@@ -140,7 +140,7 @@ class Coletor():
     def receberComando(self, monitor):
         
         if self.getStatusColeta() == True:
-            yoda = threading.Thread(target=self.iniciarColeta("files/gus.pcap",0))
+            yoda = threading.Thread(target=self.iniciarColeta("files/test.pcap",0))
         # yoda = threading.Thread(target=self.iniciarColeta("",0))
         serverSocket = self.getServerSocket()
         
@@ -308,10 +308,11 @@ class Coletor():
                             print "A chave nao existe"
                             tamanho = len(app)
                             duracao = 0.000001
-                            stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
-                            self.fluxos[chaveFluxo] = [self.classificarProtocolo(app), ts, tamanho, duracao, stormtrooper, ts, 0, 1]
+                            #stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
+                            self.fluxos[chaveFluxo] = [self.classificarProtocolo(app), ts, tamanho, duracao, "stormtrooper", ts, 0, 1]
                             print "Criou " + str(self.fluxos.get(chaveFluxo))
-                            stormtrooper.start()
+                            #stormtrooper.start()
+                            self.enviarFila(chaveFluxo)
                             print "Criou - Startou a thread"
                         else:
                             print "A chave existe"
@@ -321,10 +322,10 @@ class Coletor():
                             self.fluxos[chaveFluxo][5] = ts
                             self.fluxos[chaveFluxo][3] = duracao + (ts - self.fluxos[chaveFluxo][1])
                             print "Atualizou " + str(self.fluxos.get(chaveFluxo))
-                            stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
-                            stormtrooper.start()
+                            #stormtrooper = threading.Thread(target=self.enviarFila(chaveFluxo))
+                            #stormtrooper.start()
                             print "Atualizou - Startou a thread"
-                            self.fluxos[chaveFluxo][4] = stormtrooper
+                            self.fluxos[chaveFluxo][4] = "stormtrooper"
                             
                         print "Final - " + key, value
                         
@@ -351,11 +352,15 @@ class Coletor():
         duracao = fluxo[3]
         quantidade = fluxo[7]
         routing_key = fluxo[0]
+        print tamanho, duracao, quantidade, routing_key
         
         if (quantidade > 1) and (tamanho > 0) and (duracao > 0.0000001):
             media = float(tamanho)/duracao
+            print media
             atraso = float(fluxo[6])/quantidade
+            print atraso
             mensagem = str(tamanho)+"#"+str(duracao)+"#"+str(media)+"#"+str(atraso)
+            print mensagem
             print "Fluxo " + str(chaveFluxo) + " sendo enviado..."
             self.channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
             self.channel.basic_publish(exchange='topic_logs',routing_key="ALL",body=mensagem)
