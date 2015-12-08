@@ -314,6 +314,7 @@ class Coletor():
                             #stormtrooper.start()
                             self.enviarFila(chaveFluxo)
                             print "Criou - Startou a thread"
+                            continue
                         else:
                             print "A chave existe"
                             self.fluxos[chaveFluxo][2] += len(app)
@@ -326,6 +327,7 @@ class Coletor():
                             #stormtrooper.start()
                             print "Atualizou - Startou a thread"
                             self.fluxos[chaveFluxo][4] = "stormtrooper"
+                            
                             
                         print "Final - " + key, value
                         
