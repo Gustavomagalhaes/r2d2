@@ -78,8 +78,9 @@ class Coletor():
         
     def downloadLog(self):
         self.downloadSocket.bind(("",6020))
-        while 1:
+        while True:
             print "Aguardando download"
+            self.downloadSocket.settimeout(None)
             mensagem, endereco = self.downloadSocket.recvWithError(8192)
             
             if mensagem == "DOWNLOAD":

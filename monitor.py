@@ -16,7 +16,8 @@ class Monitor():
         #socketerror
         self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
         self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.downloadSocket.settimeout(3)
+        self.downloadSocket.settimeout(2.0)
+        self.downloadSocket.setErrorProb(0.5)
         self.file = None
         
         self.run()
@@ -72,27 +73,28 @@ class Monitor():
                     self.setColetor(endereco[0], "[COLETANDO]")
                 elif mensagem == "SUSPENSO":
                     self.setColetor(endereco[0], "[SUSPENSO]")
-                elif mensagem == "THEEND":
-                    try:
-                        self.downloadSocket.settimeout(None)
-                        mensagem = ""
-                        string = []
-                        cont = 0
-                        while mensagem.count("THEEND") < 1:
-                            mensagem, endereco = self.downloadSocket.recvWithError(2048)
-                            if mensagem != "nothing":
-                                string.append(mensagem[3:].replace("THEEND", ""))
-                                self.downloadSocket.sendWithError("NACK"+str(cont), endereco)
-                                cont+=1
+                # elif mensagem == "THEEND":
+                #     try:
+                #         self.downloadSocket.settimeout(None)
+                #         mensagem = ""
+                #         string = []
+                #         cont = 0
+                #         while mensagem.count("THEEND") < 1:
+                #             mensagem, endereco = self.downloadSocket.recvWithError(2048)
+                #             if mensagem != "nothing":
+                #                 string.append(mensagem[3:].replace("THEEND", ""))
+                #                 self.downloadSocket.sendWithError("NACK"+str(cont), endereco)
+                #                 cont+=1
                         
-                        file = open("log.txt", "w")
-                        for linha in string:
-                            file.write(linha)
-                        file.close()
-                        print "Download realizado com sucesso."
-                        self.downloadSocket.close()
-                    except:
-                        traceback.print_exc()
+                #         file = open("log.txt", "w")
+                #         for linha in string:
+                #             file.write(linha)
+                #         file.close()
+                #         print "Download realizado com sucesso."
+                #         self.downloadSocket.close()
+                #     except:
+                #         traceback.print_exc()
+                # elif mensagem[0:3] == "ACK":
                 else:
                     continue
                 self.inserirComando()
@@ -169,10 +171,36 @@ class Monitor():
             try:
                 if comando != "DOWNLOAD":
                     clientSocket.sendto(comando, (coletor, 6000))
+                    self.receive()
                 elif comando == "DOWNLOAD":
-                    self.downloadSocket.sendWithError("DOWNLOAD",(coletor,6020))
-                    print 'Enviou DOWNLOAD'
-                self.receive()
+                    self.downloadSocket.settimeout(3)
+                    while True:
+                        try:
+                            self.downloadSocket.sendWithError(comando, (coletor,6020))
+                            print 'Enviou DOWNLOAD'
+                            mensagem, endereco = self.downloadSocket.recvWithError(2048)
+                            break
+                        except:
+                            print "Timeout"
+                            continue
+                    self.downloadSocket.settimeout(None)
+                    mensagem = ""
+                    string = []
+                    cont = 0
+                    while mensagem.count("COM:THEEND") <1:
+                        mensagem, endereco = self.downloadSocket.recvWithError(2048)
+                        if mensagem != "nothing":
+                            string.append(mensagem[3:].replace("COM:THEEND",""))
+                            self.downloadSocket.sendWithError("NACK"+str(cont),coletor,6020)
+                            cont+=1
+                    file = open("log.txt", "w")
+                    for line in string:
+                        file.write(line)
+                    
+                    file.close()
+                    print "Download terminado com sucesso."
+                    self.downloadSocket.close()
+                    
             except:
                 traceback.print_exc()
                 print "..."
