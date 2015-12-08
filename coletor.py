@@ -369,6 +369,8 @@ class Coletor():
 if __name__ == '__main__':
     os.system('clear')
     ip = sys.argv[1]
+    if not ip:
+        ip = "192.168.25.118"
     coletor = Coletor(ip)
     #coletorThread = threading.Thread(target=coletor.start)
     #coletorThread.start()
