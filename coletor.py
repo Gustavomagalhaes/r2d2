@@ -72,58 +72,6 @@ class Coletor():
         
     def closeLog(self):
         self.file.close()
-        
-    def downloadLog(self):
-        print 'Download concluido'
-        # while True:
-        #     print "Aguardando download"
-        #     self.downloadSocket.settimeout(None)
-        #     mensagem, endereco = self.downloadSocket.recvWithError(8192)
-            
-        #     if mensagem == "DOWNLOAD":
-        #         print "Msg DOWNLOAD recebida"
-        #         self.openLog("r")
-        #         print "Abriu log"
-        #         temp = self.file.read()
-        #         print "Leu log"
-        #         self.closeLog()
-        #         print "fechou log"
-        #         buffers = {}
-                
-        #         try:
-        #             print "entrou no try"
-        #             print str(temp)
-        #             for i in range(0, (len(temp)/256)):
-        #                 print "Entrou no for i"
-        #                 buffers["ACK"+str(i)] = temp[i*256:((i+1)*256)]
-        #                 print "Adicionado " + "ACK"+str(i) + temp[i*256:((i+1)*256)] + "aos buffers"
-                    
-        #             for index in range(0, len(buffers.keys())):
-        #                 print "entrou no for index"
-        #                 ACK = "ACK"+str(index)
-        #                 print "ACK: " + ACK
-        #                 content = buffers[ACK]
-        #                 content = content.replace("\n", "\n ")
-        #                 print "CONTENT: " + content
-        #                 self.downloadSocket.settimeout(None)
-        #                 while not ("NACK"+str(index)) in mensagem:
-        #                     try:
-        #                         if index == len(buffers.keys()) -1:
-        #                             self.downloadSocket.sendWithError(ACK+content+"COM:THEEND", endereco)
-        #                             print "Pacote final " + ACK+content+"COM:THEEND" + " para " + str(endereco)
-        #                             mensagem, endereco = self.downloadSocket.recvWithError(8192)
-        #                         else:
-        #                             self.downloadSocket.sendWithError(ACK+content, endereco)
-        #                             print mensagem
-        #                             print "Enviou " + ACK+content + " para " + str(endereco)
-        #                             mensagem, endereco = self.downloadSocket.recvWithError(8192)
-        #                     except:
-        #                         traceback.print_exc()
-        #                         print "Timeout"
-        #         except:
-        #             traceback.print_exc()
-        #             print "caiu no except"
-                
 
     def localizarMonitor(self, mensagem = "", endereco = ()):
         serverSocket = self.getServerSocket()
@@ -143,8 +91,6 @@ class Coletor():
                     serverSocket.sendto("COLETOR", endereco)
                     serverSocket.settimeout(None)
                     
-                    download = threading.Thread(target=self.enviarDownload(endereco))
-                    download.start()
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
                     
@@ -176,8 +122,8 @@ class Coletor():
             try:
                 
                 mensagem, endereco = downloadSocket.recvfrom(8192)
-                if mensagem == "DOWNLOAD":
-                    print "[C3PO] Download"
+                #if mensagem == "DOWNLOAD":
+                #    print "[C3PO] Download"
 
                 self.openLog("r")
                 temp = self.file.read()
@@ -236,7 +182,10 @@ class Coletor():
                     self.serverSocket.sendto("COM:CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
                     self.setStatusColeta(True)
-                 
+                
+                elif mensagem == "DOWNLOAD":
+                    download = threading.Thread(target=self.enviarDownload(endereco))
+                    download.start()
                 elif mensagem == "MONITOR":
                     continue
                     
