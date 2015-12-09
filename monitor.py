@@ -68,7 +68,7 @@ class Monitor():
                         string.append(mensagem[3:].replace("COM:THEEND", ""))
                         self.enviarComando("NACK"+str(cont), endereco)
             
-            file = open("log_"+endereco[0]+".txt", "w")
+            file = open("log.txt", "w")
             for line in string:
                 file.write(line)
             file.close()
