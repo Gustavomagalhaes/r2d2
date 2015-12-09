@@ -1,7 +1,7 @@
 import socket, random, time
 
 class socketError(socket.socket):
-    errorProb = 0
+    errorProb = 0.0
 
     def setErrorProb(self, p):
         self.errorProb = float(p)
@@ -9,26 +9,24 @@ class socketError(socket.socket):
     def getErrorProb(self):
         return self.errorProb
     
-    def sendWithError(self, s,adress):
+    def sendWithError(self, s):
         if (self.type == socket.SOCK_DGRAM):
-            u = random.randint(0,10)
+            u = random.random()
             if (u>self.errorProb):
-                print "Enviado"
-                self.sendto(s,adress)
-            else:
-                print "Nao enviado - Aguarde o timeout do temporalizador"
+                self.sendto(s)
         else:
-            self.send(s)
+            print 'Nao envia'
+            self.sendto(s)
 
     def recvWithError(self, n):
         if (self.type == socket.SOCK_DGRAM):
             data = self.recvfrom(n)
-            u = random.randint(0,10)
+            print str(data)
+            u = random.random()
             if (u>self.errorProb):
-                print data
                 return data
             else:
-                print "Nao recebido - Aguarde o timeout do temporalizador"
-                return "nada","nada"
+                print 'Nao recebe'
+                return '', ''
         else:
-            return self.recv(n)        
+            return self.recvfrom(n)  
