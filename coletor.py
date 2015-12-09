@@ -185,10 +185,10 @@ class Coletor():
                     
                 for i in range(0, (len(temp)/256)):
                     buffers["ACK" + str(i)] = temp[i + 256 : ((i + 1) * 256)]
-                    print "pacote" + i
+                    print "pacote" + str(i)
                 
                 for index in range(0, len(buffers.keys())):
-                    print "index" + index
+                    print "index" + str(index)
                     ACK = "ACK" + str(index)
                     content = buffers[ACK]
                     content = content.replace("\n", "\n ")
