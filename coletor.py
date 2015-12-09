@@ -168,15 +168,15 @@ class Coletor():
         downloadSocket.bind(('', 6321))
         downloadSocket.connect(monitor)
         
-        print "\n[C3PO] Aguardando download do monitor..."
+        print "\n[C3PO] Enviando pacotes..."
         
         
         while 1:
             try:
                 
                 mensagem, endereco = downloadSocket.recvfrom(8192)
-                if mensagem == "DOWNLOAD":
-                    print "[C3PO] Download"
+                #if mensagem == "DOWNLOAD":
+                    #print "[C3PO] Download"
 
                 self.openLog("r")
                 temp = self.file.read()
@@ -185,6 +185,7 @@ class Coletor():
                     
                 for i in range(0, (len(temp)/256)):
                     buffers["ACK" + str(i)] = temp[i + 256 : ((i + 1) * 256)]
+                    print i
                 
                 for index in range(0, len(buffers.keys())):
                     print index
@@ -203,6 +204,7 @@ class Coletor():
                 else:
                     continue
             except:
+                traceback.print_exc()
                 self.openLog()
                 self.file.write("Nenhuma resposta do download em " + str(time.time()) + "\n")            
                 self.closeLog()

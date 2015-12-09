@@ -109,6 +109,7 @@ class Monitor():
                 elif mensagem == "DOWNLOAD":
                     clientSocket.sendto("DOWNLOAD", (endereco[0],6321))
                     print 'mandou 2-DOWNLOAD'
+                    self.receiveDownload()
                 else:
                     continue
                 self.inserirComando()
@@ -190,7 +191,6 @@ class Monitor():
                     #downloadSocket.sendWithError(comando)
                     clientSocket.sendto(comando, (coletor, 6000))
                     print 'enviou DOWNLOAD'
-                    self.receiveDownload()
             except:
                 traceback.print_exc()
                 print "..."
