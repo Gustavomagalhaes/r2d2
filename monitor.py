@@ -50,30 +50,33 @@ class Monitor():
         
     def receiveDownload(self):
         
-        clientSocket = self.getClientSocket()
-        string = []
-        cont = 0
-        while 1:
-            print 'antes do receive'
-            mensagem, endereco = clientSocket.recvfrom(8192)
-            print mensagem
-            if mensagem[0:3] == "ACK":
-                if mensagem[-10:] != "COM:THEEND":
-                    string.append(mensagem[3:].replace("COM:THEEND", ""))
-                    self.enviarComando("NACK"+str(cont), endereco)
-                    cont += 1
-                    continue
-                else:
-                    string.append(mensagem[3:].replace("COM:THEEND", ""))
-                    self.enviarComando("NACK"+str(cont), endereco)
-                    break
-        
-        file = open("log_"+endereco[0]+".txt", "w")
-        for line in string:
-            file.write(line)
-        file.close()
-        print "Download realizado com sucesso."
-        #self.downloadSocket.close()
+        try:
+            clientSocket = self.getClientSocket()
+            string = []
+            cont = 0
+            while 1:
+                print 'antes do receive'
+                mensagem, endereco = clientSocket.recvfrom(8192)
+                print mensagem
+                if mensagem[0:3] == "ACK":
+                    if mensagem[-10:] != "COM:THEEND":
+                        string.append(mensagem[3:].replace("COM:THEEND", ""))
+                        self.enviarComando("NACK"+str(cont), endereco)
+                        cont += 1
+                        continue
+                    else:
+                        string.append(mensagem[3:].replace("COM:THEEND", ""))
+                        self.enviarComando("NACK"+str(cont), endereco)
+                        break
+            
+            file = open("log_"+endereco[0]+".txt", "w")
+            for line in string:
+                file.write(line)
+            file.close()
+            print "Download realizado com sucesso."
+            #self.downloadSocket.close()
+        except:
+            traceback.print_exc()
                     
             
     
