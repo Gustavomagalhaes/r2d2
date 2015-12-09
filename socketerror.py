@@ -24,6 +24,7 @@ class socketError(socket.socket):
             print str(data)
             u = random.random()
             if (u>self.errorProb):
+                print data
                 return data
             else:
                 print 'Nao recebe'
