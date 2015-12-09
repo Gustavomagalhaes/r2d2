@@ -185,13 +185,15 @@ class Coletor():
                     
                 for i in range(0, (len(temp)/256)):
                     buffers["ACK" + str(i)] = temp[i + 256 : ((i + 1) * 256)]
-                    print i
+                    print "pacote" + i
                 
                 for index in range(0, len(buffers.keys())):
-                    print index
+                    print "index" + index
                     ACK = "ACK" + str(index)
                     content = buffers[ACK]
                     content = content.replace("\n", "\n ")
+                    
+                print mensagem
                 if not ("NACK" + str(index)) in mensagem:
                     if index == len(buffers.keys())-1:
                         self.downloadSocket.sendWithError(ACK + content + "COM:THEEND", endereco)
