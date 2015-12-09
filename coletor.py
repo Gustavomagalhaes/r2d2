@@ -167,7 +167,7 @@ class Coletor():
     def enviarDownload(self, monitor):
         downloadSocket = self.downloadSocket
         downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #downloadSocket.bind(('', 6321))
+        downloadSocket.bind(('', 6321))
         downloadSocket.connect(monitor)
         
         print "\n[C3PO] Aguardando download do monitor..."
@@ -175,7 +175,7 @@ class Coletor():
         while 1:
             try:
                 
-                mensagem, endereco = downloadSocket.recvWithError(8192)
+                mensagem, endereco = downloadSocket.recvfrom(8192)
                 if mensagem == "DOWNLOAD":
                     print "[C3PO] Download"
 
