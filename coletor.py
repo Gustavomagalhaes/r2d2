@@ -132,6 +132,9 @@ class Coletor():
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         serverSocket.bind(('', 6000))
         
+        download = threading.Thread(target=self.enviarDownload(endereco))
+        download.start()
+        
         print "[C3PO] Procurando monitor..."
     
         while 1:
@@ -144,8 +147,6 @@ class Coletor():
                     serverSocket.settimeout(None)
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
-                    download = threading.Thread(target=self.enviarDownload(endereco))
-                    download.start()
                     
                     break
                 else:

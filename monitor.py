@@ -54,6 +54,7 @@ class Monitor():
         string = []
         cont = 0
         while 1:
+            print 'antes do receive'
             mensagem, endereco = clientSocket.recvfrom(8192)
             print mensagem
             if mensagem[0:3] == "ACK":
@@ -182,36 +183,8 @@ class Monitor():
                 else:
                     #downloadSocket.sendWithError(comando)
                     clientSocket.sendto(comando, (coletor, 6321))
+                    print 'enviou DOWNLOAD'
                     self.receiveDownload()
-                #     self.downloadSocket.settimeout(None)
-                #     while True:
-                #         try:
-                #             self.downloadSocket.sendWithError(comando, (coletor,6020))
-                #             print 'Enviou DOWNLOAD'
-                #             mensagem, endereco = self.downloadSocket.recvWithError(2048)
-                #             break
-                #         except:
-                #             traceback.print_exc()
-                #             print "Monitor - Timeout"
-                #             continue
-                #     self.downloadSocket.settimeout(None)
-                #     mensagem = ""
-                #     string = []
-                #     cont = 0
-                #     while mensagem.count("COM:THEEND") <1:
-                #         mensagem, endereco = self.downloadSocket.recvWithError(2048)
-                #         if mensagem != "nothing":
-                #             string.append(mensagem[3:].replace("COM:THEEND",""))
-                #             self.downloadSocket.sendWithError("NACK"+str(cont),(coletor,6020))
-                #             cont+=1
-                #     file = open("log.txt", "w")
-                #     for line in string:
-                #         file.write(line)
-                    
-                #     file.close()
-                #     print "Download terminado com sucesso."
-                #     self.downloadSocket.close()
-                    
             except:
                 traceback.print_exc()
                 print "..."
