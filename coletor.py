@@ -240,6 +240,7 @@ class Coletor():
                     self.setStatusColeta(True)
                     
                 elif mensagem == "DOWNLOAD":
+                    self.serverSocket.sendto("COM:DOWNLOAD", endereco)
                     print "[C3PO] Download"
                     self.enviarDownload(endereco)
                  
