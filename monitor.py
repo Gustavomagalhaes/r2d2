@@ -50,11 +50,12 @@ class Monitor():
         
     def receiveDownload(self):
         
+        clientSocket = self.getClientSocket()
         downloadSocket = self.downloadSocket
         string = []
         cont = 0
         while 1:
-            mensagem, endereco = downloadSocket.recvWithError(8192)
+            mensagem, endereco = clientSocket.recvfrom(8192)
             print mensagem
             if mensagem[0:3] == "ACK":
                 if mensagem[-10:] != "COM:THEEND":
