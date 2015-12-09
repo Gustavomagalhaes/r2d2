@@ -30,11 +30,6 @@ for binding_key in binding_keys:
     
 print("[*] Waitinf for logs. To exit press CTRL+C")
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 3cb758fb7a0bb5aad03a9420d91aa8c87877321d
 def calculoRates():
     
     m,v=[],[]
@@ -65,7 +60,7 @@ def calculoRates():
     return medias, desvios
 
 def classificar(body):
-    valoreBody = body.split("#")
+    valoreBody = body.split("|")
     dados = [float(valoreBody[0]), float(valoreBody[1]), float(valoreBody[2])]
     dadosRate.append(dados)
     medias, desvios = calculoRates()
@@ -99,11 +94,7 @@ def callback(ch, method, properties, body):
     dadosClassificados = classificar(body)
     
     mensagem = dadosClassificados[0] + "|" + dadosClassificados[1] + "|" + dadosClassificados[2]    
-<<<<<<< HEAD
     connection = pika.BlockingConnection(pika.ConnectionParameters( '192.168.25.57', 5672, '/starwars', credentials))
-=======
-    connection = pika.BlockingConnection(pika.ConnectionParameters( '172.16.206.250', 5672, '/starwars', credentials))
->>>>>>> 3cb758fb7a0bb5aad03a9420d91aa8c87877321d
     channel = connection.channel()
     channel.exchange_declare(exchange='topic_logs',type='topic')
     channel.basic_publish(exchange='topic_logs',routing_key=method.routing_key,body=mensagem)
@@ -114,16 +105,8 @@ def callback(ch, method, properties, body):
    
 channel.basic_consume(callback, queue=queue_name, no_ack=True)
 
-<<<<<<< HEAD
-sc = SparkContext("spark://192.168.25.57:7077","consumer")
-ssc = StreamingContext(sc, 1)
-CSR = DStream(channel.start_consuming())
-ssc.start()
-ssc.awaitTermination()
-=======
 sc = SparkContext("spark://172.16.207.155:8088","consumer")
 ssc = StreamingContext(sc, 1)
 CSR = DStream(channel.start_consuming())
 ssc.start()
 ssc.awaitTermination()
->>>>>>> 3cb758fb7a0bb5aad03a9420d91aa8c87877321d
