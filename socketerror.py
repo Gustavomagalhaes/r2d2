@@ -12,6 +12,8 @@ class socketError(socket.socket):
     def sendWithError(self, s):
         if (self.type == socket.SOCK_DGRAM):
             u = random.random()
+            print u
+            print 'entrou no if antes'
             if (u>self.errorProb):
                 print 'enviou no socket'
                 self.sendto(s)
