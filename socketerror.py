@@ -20,7 +20,7 @@ class socketError(socket.socket):
 
     def recvWithError(self, n):
         if (self.type == socket.SOCK_DGRAM):
-            data = self.recvfrom(n)
+            data = self.recv(n)
             print str(data)
             u = random.random()
             if (u>self.errorProb):
@@ -29,4 +29,4 @@ class socketError(socket.socket):
                 print 'Nao recebe'
                 return '', ''
         else:
-            return self.recvfrom(n)  
+            return self.recv(n)  

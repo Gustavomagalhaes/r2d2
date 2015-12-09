@@ -385,7 +385,7 @@ class Coletor():
             #print media
             atraso = float(fluxo[6])/quantidade
             #print atraso
-            mensagem = str(tamanho)+"|"+str(duracao)+"|"+str(media)+"|"+str(atraso)
+            mensagem = str(tamanho)+"|"+str(duracao)+"|"+str(media)#+"|"+str(atraso)
             #print mensagem
             print "Fluxo " + str(chaveFluxo) + " sendo enviado..."
             self.channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
