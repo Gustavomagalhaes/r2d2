@@ -103,6 +103,8 @@ class Monitor():
                     self.setColetor(endereco[0], "[COLETANDO]")
                 elif mensagem == "SUSPENSO":
                     self.setColetor(endereco[0], "[SUSPENSO]")
+                elif mensagem == "DOWNLOAD":
+                    clientSocket.sendto("DOWNLOAD", endereco)
                 else:
                     continue
                 self.inserirComando()

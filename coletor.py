@@ -217,8 +217,8 @@ class Coletor():
         
         print "\n[C3PO] Aguardando comando do monitor..."
         
-        download = threading.Thread(target=self.enviarDownload(monitor))
-        download.start()
+        #download = threading.Thread(target=self.enviarDownload(monitor))
+        #download.start()
         
         while 1:
             try:
@@ -238,6 +238,10 @@ class Coletor():
                     self.serverSocket.sendto("COM:CAPTURANDO", endereco)
                     print "[C3PO] Capturando"
                     self.setStatusColeta(True)
+                    
+                elif mensagem == "DOWNLOAD":
+                    print "[C3PO] Download"
+                    self.enviarDownload(endereco)
                  
                 elif mensagem == "MONITOR":
                     continue
