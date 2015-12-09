@@ -1,4 +1,5 @@
 import socket, socketerror, sys, os, threading, time, traceback
+from socketerror import *
 
 class Monitor():
 
@@ -14,11 +15,11 @@ class Monitor():
         self.listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "DOWNLOAD":"", "SAIR":""}
         
         #socketerror
-        # self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
-        # self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        # self.downloadSocket.settimeout(2.0)
-        # self.downloadSocket.setErrorProb(0.5)
-        # self.file = None
+        self.downloadSocket = socketError(socket.AF_INET, socket.SOCK_DGRAM)
+        self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.downloadSocket.settimeout(2.0)
+        self.downloadSocket.setErrorProb(0.5)
+        self.file = None
         
         self.run()
         
@@ -47,6 +48,34 @@ class Monitor():
         monitor = threading.Thread(target=self.receive)
         monitor.start()
         
+    def receiveDownload(self):
+        
+        downloadSocket = self.downloadSocket
+        string = []
+        cont = 0
+        while 1:
+            mensagem, endereco = downloadSocket.recvWithError(2048)
+            print mensagem
+            if mensagem[0:3] == "ACK":
+                if mensagem[-10:] != "COM:THEEND":
+                    string.append(mensagem[3:].replace("COM:THEEND", ""))
+                    self.enviarComando("NACK"+str(cont), endereco)
+                    cont += 1
+                    continue
+                else:
+                    string.append(mensagem[3:].replace("COM:THEEND", ""))
+                    self.enviarComando("NACK"+str(cont), endereco)
+                    break
+        
+        file = open("log_"+endereco[0]+".txt", "w")
+        for line in string:
+            file.write(line)
+        file.close()
+        print "Download realizado com sucesso."
+        self.downloadSocket.close()
+                    
+            
+    
     def receive(self):
         
         coletores = self.getColetores()
@@ -142,16 +171,18 @@ class Monitor():
         
     def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
+        downloadSocket = self.downloadSocket
         listadecomandos = self.getListaComandos()
         if comando not in listadecomandos.keys():
             self.inserirComando()
         else:
             try:
-                if comando != "DOWNLOAD":
+                if comando != "DOWNLOAD" and comando[0:4] != "NACK":
                     clientSocket.sendto(comando, (coletor, 6000))
                     self.receive()
                 else:
-                    print "Download concluido"
+                    downloadSocket.sendWithError(comando, (coletor, 6020))
+                    self.receiveDownload()
                 #     self.downloadSocket.settimeout(None)
                 #     while True:
                 #         try:

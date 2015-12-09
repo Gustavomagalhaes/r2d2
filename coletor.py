@@ -1,6 +1,7 @@
 # -*- coding: cp1252 -*-
 #PARA PARAR O PROCESSO PARALELO DO COLETOR USAR sudo pkill -f coletor.py
-import os, socket, socketerror, traceback, sys, threading, re, time, pcap, dpkt, pika, logging, datetime, sched
+import os, socket, traceback, sys, threading, re, time, pcap, dpkt, pika, logging, datetime, sched
+from socketerror import *
 #logging.basicConfig(filename='erros.log',level=logging.DEBUG)
 #logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
@@ -12,9 +13,8 @@ class Coletor():
         self.serverSocket.settimeout(20)
         
         #socketerror
-        # self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
-        # self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        # self.downloadSocket.bind(("",6020))
+        self.downloadSocket = socketError(socket.AF_INET, socket.SOCK_DGRAM)
+        self.downloadSocket.settimeout(20)
         self.logFile = "log.txt"
         self.file = None
         
@@ -35,10 +35,7 @@ class Coletor():
         
         c3po = threading.Thread(target=self.localizarMonitor)
         c3po.start()
-        
-        leia = threading.Thread(target=self.downloadLog)
-        leia.start()
-        
+
     def run(self):
         while True:
             self.schedule.run()
@@ -138,12 +135,16 @@ class Coletor():
         while 1:
             try:
                 mensagem, endereco = serverSocket.recvfrom(8192)
+                
                 if mensagem == "MONITOR":
                     print "[C3PO] Monitor %s localizado" % (str(endereco))
                     serverSocket.sendto("COLETOR", endereco)
                     serverSocket.settimeout(None)
                     comando = threading.Thread(target=self.receberComando(endereco))
                     comando.start()
+                    download = threading.Thread(target=self.enviarDownload(endereco))
+                    download.start()
+                    
                     break
                 else:
                     continue
@@ -159,6 +160,51 @@ class Coletor():
                 self.closeLog()
                 
         serverSocket.close()
+        
+    def enviarDownload(self, monitor):
+        downloadSocket = self.downloadSocket
+        downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        downloadSocket.bind(('', 6020))
+        
+        print "\n[C3PO] Aguardando download do monitor..."
+        
+        while 1:
+            try:
+                
+                mensagem, endereco = downloadSocket.recvWithError(8192)
+                if mensagem == "DOWNLOAD":
+                    print "[C3PO] Download"
+
+                self.openLog("r")
+                temp = self.file.read()
+                self.closeLog()
+                buffers = {}
+                    
+                for i in range(0, (len(temp)/256)):
+                    buffers["ACK" + str(i)] = temp[i + 256 : ((i + 1) * 256)]
+                
+                for index in range(0, len(buffers.keys())):
+                    print index
+                    ACK = "ACK" + str(index)
+                    content = buffers[ACK]
+                    content = content.replace("\n", "\n ")
+                if not ("NACK" + str(index)) in mensagem:
+                    if index == len(buffers.keys())-1:
+                        self.downloadSocket.sendWithError(ACK + content + "COM:THEEND", endereco)
+                        break
+                    else:
+                        self.downloadSocket.sendWithError(ACK + content, endereco)
+                        continue
+                    
+                    
+                else:
+                    continue
+            except:
+                self.openLog()
+                self.file.write("Nenhuma resposta do download em " + str(time.time()) + "\n")            
+                self.closeLog()
+                
+        downloadSocket.close()
         
     def receberComando(self, monitor):
         
@@ -339,7 +385,7 @@ class Coletor():
             #print media
             atraso = float(fluxo[6])/quantidade
             #print atraso
-            mensagem = str(tamanho)+"#"+str(duracao)+"#"+str(media)+"#"+str(atraso)
+            mensagem = str(tamanho)+"|"+str(duracao)+"|"+str(media)+"|"+str(atraso)
             #print mensagem
             print "Fluxo " + str(chaveFluxo) + " sendo enviado..."
             self.channel.basic_publish(exchange='topic_logs',routing_key=routing_key,body=mensagem)
