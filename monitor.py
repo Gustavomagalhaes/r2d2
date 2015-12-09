@@ -182,7 +182,8 @@ class Monitor():
                     clientSocket.sendto(comando, (coletor, 6000))
                     self.receive()
                 else:
-                    downloadSocket.sendWithError(comando, (coletor, 6321))
+                    downloadSocket.connect(coletor, 6321)
+                    downloadSocket.sendWithError(comando)
                     self.receiveDownload()
                 #     self.downloadSocket.settimeout(None)
                 #     while True:
