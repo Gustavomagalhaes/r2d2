@@ -15,6 +15,8 @@ class Coletor():
         #socketerror
         self.downloadSocket = socketError(socket.AF_INET, socket.SOCK_DGRAM)
         self.downloadSocket.settimeout(20)
+        self.downloadSocket.settimeout(5.0)
+        self.downloadSocket.setErrorProb(0.01)
         self.logFile = "log.txt"
         self.file = None
         
@@ -165,7 +167,7 @@ class Coletor():
         downloadSocket = self.downloadSocket
         downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         downloadSocket.bind(('', 6321))
-        #downloadSocket.connect(monitor)
+        downloadSocket.connect(monitor)
         
         print "\n[C3PO] Aguardando download do monitor..."
         
