@@ -39,7 +39,7 @@ class FilaAPI(Resource):
             porcent = float(listaFluxos[fluxo]) / float(listaFluxos['todos']) *100
             return str(listaFluxos[fluxo]) + "   " + str(porcent) + "%"         
 
-api.add_resource(FilaAPI, '/r2d2/api/v1.0/filas/s<string:fluxo>', endpoint='fila')
+api.add_resource(FilaAPI, '/r2d2/todos/v1.0/filas/s<string:fluxo>', endpoint='fila')
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-import socket, sys, os, threading, time, traceback
+import socket, socketerror, sys, os, threading, time, traceback
 
 class Monitor():
 
@@ -6,10 +6,20 @@ class Monitor():
         
         self.destino = ('<broadcast>', 6000)
         self.clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         #self.clientSocket.settimeout(20)
+        self.statusComando = None
         self.coletores = {}
         self.coletorAtual = ""
-        self.listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "SAIR":""}
+        self.listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "DOWNLOAD":"", "SAIR":""}
+        
+        #socketerror
+        # self.downloadSocket = socketerror.socketError(socket.AF_INET, socket.SOCK_DGRAM)
+        # self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # self.downloadSocket.settimeout(2.0)
+        # self.downloadSocket.setErrorProb(0.5)
+        # self.file = None
+        
         self.run()
         
     def getListaComandos(self):
@@ -34,35 +44,38 @@ class Monitor():
         return self.destino
         
     def run(self):
-        monitor = threading.Thread(target=self.iniciarMonitor)
+        monitor = threading.Thread(target=self.receive)
         monitor.start()
         
-    def iniciarMonitor(self):
-        # Inicia o monitor para que esse seja percebido pelos coletores
-        clientSocket = self.getClientSocket()
-        coletores = self.getColetores()
-        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    def receive(self):
         
-        comandoStatus = False
+        coletores = self.getColetores()
+        clientSocket = self.getClientSocket()
+        listadecomandos = self.getListaComandos()
+        tComando = threading.Thread(target=self.inserirComando)
         
         while 1:
-            comando = threading.Thread(target=self.inserirComando)
             clientSocket.sendto("MONITOR", self.getDestino())
-            #print "teste de thread" 
             mensagem, endereco = clientSocket.recvfrom(2048)
-            if mensagem != "COLETOR":
-                break
-            else:
-                print "[R2D2] Coletor %s localizado: %s" % (str(endereco), mensagem)
+            print mensagem
+            if mensagem == "COLETOR":
                 if endereco[0] not in coletores.keys():
                     self.setColetor(endereco[0], "[INATIVO]")
-                    #print "[R2D2] Coletor adicionado a lista de coletores."
-                    #self.getClientSocket().close()
-                if comandoStatus == False:
-                    comando.start()
-                    comandoStatus = True
+                
+                if not coletores == True and self.statusComando == None:
+                    tComando.start()
+                    self.statusComando = True
+                elif not coletores == False:# and self.statusComando == True:
+                    continue
+            elif mensagem[0:4] == "COM:":
+                mensagem = mensagem[4:]
+                if mensagem == "CAPTURANDO":
+                    self.setColetor(endereco[0], "[COLETANDO]")
+                elif mensagem == "SUSPENSO":
+                    self.setColetor(endereco[0], "[SUSPENSO]")
                 else:
                     continue
+                self.inserirComando()
     
     def printCharacters(self):
         #os.system('clear')
@@ -120,36 +133,57 @@ class Monitor():
         coletor = self.ask()
         self.enviarComando("COLETAR", coletor)
         
+    def downloadLog(self):
+        self.printCharacters()
+        self.listaDeColetores()
+        print "\nEscolha o coletor que deseja fazer download:\n"
+        coletor = self.ask()
+        self.enviarComando("DOWNLOAD", coletor)
+        
     def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
-        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        mensagem = ""
         listadecomandos = self.getListaComandos()
         if comando not in listadecomandos.keys():
             self.inserirComando()
         else:
-            while mensagem != "CAPTURANDO":
-                print "Aguardando..."
-                try:
-                    print "entrou no try"
+            try:
+                if comando != "DOWNLOAD":
                     clientSocket.sendto(comando, (coletor, 6000))
-                    print str((comando, (coletor, 6000)))
-                    print 'enviou'
-                    time.sleep(2)
-                    mensagem, endereco = clientSocket.recvfrom(2048)
-                    print 'recebeu '+mensagem
-                    if mensagem == "CAPTURANDO":
-                        self.setColetor(endereco[0], "[COLETANDO]")
-                    elif mensagem == "SUSPENSO":
-                        self.setColetor(endereco[0], "[SUSPENSO]")
+                    self.receive()
+                else:
+                    print "Download concluido"
+                #     self.downloadSocket.settimeout(None)
+                #     while True:
+                #         try:
+                #             self.downloadSocket.sendWithError(comando, (coletor,6020))
+                #             print 'Enviou DOWNLOAD'
+                #             mensagem, endereco = self.downloadSocket.recvWithError(2048)
+                #             break
+                #         except:
+                #             traceback.print_exc()
+                #             print "Monitor - Timeout"
+                #             continue
+                #     self.downloadSocket.settimeout(None)
+                #     mensagem = ""
+                #     string = []
+                #     cont = 0
+                #     while mensagem.count("COM:THEEND") <1:
+                #         mensagem, endereco = self.downloadSocket.recvWithError(2048)
+                #         if mensagem != "nothing":
+                #             string.append(mensagem[3:].replace("COM:THEEND",""))
+                #             self.downloadSocket.sendWithError("NACK"+str(cont),(coletor,6020))
+                #             cont+=1
+                #     file = open("log.txt", "w")
+                #     for line in string:
+                #         file.write(line)
                     
-                    break
-                
-                except:
-                    print "..."
-                    traceback.print_exc()
-                    continue
+                #     file.close()
+                #     print "Download terminado com sucesso."
+                #     self.downloadSocket.close()
+                    
+            except:
+                traceback.print_exc()
+                print "..."
     
     def inserirComando(self):
         while True:
@@ -159,7 +193,7 @@ class Monitor():
                 #os.system('clear')
                 self.printCharacters()
                 print ""
-                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR | SAIR |"
+                print "| LISTAR | COLETAR | SUSPENDER | CONTINUAR | DOWNLOAD | SAIR |"
                 print ""
                 comando = self.ask().upper()
             if comando == "LISTAR":
@@ -171,6 +205,8 @@ class Monitor():
                 self.continuarColetando()
             elif comando == "COLETAR":
                 self.iniciarColeta()
+            elif comando == "DOWNLOAD":
+                self.downloadLog()
             elif comando == "SAIR":
                 os.system('clear')
                 break

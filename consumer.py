@@ -12,7 +12,8 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
 channel = connection.channel()
 
 #exchange - onde os produtores publicam suas mensagens
-channel.exchange_declare(exchange='topic_logs', type='topic')
+channel.exchange_declare(exchange='topic_logs',
+                         type='topic')
 
 result = channel.queue_declare(exclusive=True)
 queue_name = result.method.queue
@@ -27,9 +28,13 @@ dadosRate = []
 for binding_key in binding_keys:
     channel.queue_bind(exchange = "topic_logs", queue = queue_name, routing_key = binding_key)
     
-print("Aguardando. CTRL+C para sair")
+print("[*] Waitinf for logs. To exit press CTRL+C")
 
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 3cb758fb7a0bb5aad03a9420d91aa8c87877321d
 def calculoRates():
     
     m,v=[],[]
@@ -72,7 +77,8 @@ def classificar(body):
     else:
         dadosClassificados.append("rato")
         
-    if(dados[1] > (medias[1] + 3* desvios[1])):
+
+    if((dados[1] > (medias[1] + 3* desvios[1]) or dados[1]>900000)):
         dadosClassificados.append("tartaruga")
         
     else: 
@@ -93,7 +99,11 @@ def callback(ch, method, properties, body):
     dadosClassificados = classificar(body)
     
     mensagem = dadosClassificados[0] + "|" + dadosClassificados[1] + "|" + dadosClassificados[2]    
+<<<<<<< HEAD
     connection = pika.BlockingConnection(pika.ConnectionParameters( '192.168.25.57', 5672, '/starwars', credentials))
+=======
+    connection = pika.BlockingConnection(pika.ConnectionParameters( '172.16.206.250', 5672, '/starwars', credentials))
+>>>>>>> 3cb758fb7a0bb5aad03a9420d91aa8c87877321d
     channel = connection.channel()
     channel.exchange_declare(exchange='topic_logs',type='topic')
     channel.basic_publish(exchange='topic_logs',routing_key=method.routing_key,body=mensagem)
@@ -104,8 +114,16 @@ def callback(ch, method, properties, body):
    
 channel.basic_consume(callback, queue=queue_name, no_ack=True)
 
+<<<<<<< HEAD
 sc = SparkContext("spark://192.168.25.57:7077","consumer")
 ssc = StreamingContext(sc, 1)
 CSR = DStream(channel.start_consuming())
 ssc.start()
 ssc.awaitTermination()
+=======
+sc = SparkContext("spark://172.16.207.155:8088","consumer")
+ssc = StreamingContext(sc, 1)
+CSR = DStream(channel.start_consuming())
+ssc.start()
+ssc.awaitTermination()
+>>>>>>> 3cb758fb7a0bb5aad03a9420d91aa8c87877321d
