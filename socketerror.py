@@ -9,14 +9,14 @@ class socketError(socket.socket):
     def getErrorProb(self):
         return self.errorProb
     
-    def sendWithError(self, s, e):
+    def sendWithError(self, s):
         if (self.type == socket.SOCK_DGRAM):
             u = random.random()
             if (u>self.errorProb):
-                self.sendto(s, e)
+                self.sendto(s)
         else:
             print 'Nao envia'
-            self.sendto(s, e)
+            self.sendto(s)
 
     def recvWithError(self, n):
         if (self.type == socket.SOCK_DGRAM):
