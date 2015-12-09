@@ -171,6 +171,7 @@ class Monitor():
         
     def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
+        downloadSocket = self.downloadSocket
         listadecomandos = self.getListaComandos()
         if comando not in listadecomandos.keys():
             self.inserirComando()
