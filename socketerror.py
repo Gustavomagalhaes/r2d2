@@ -13,6 +13,7 @@ class socketError(socket.socket):
         if (self.type == socket.SOCK_DGRAM):
             u = random.random()
             if (u>self.errorProb):
+                print 'enviou no socket'
                 self.sendto(s)
         else:
             print 'Nao envia'
