@@ -15,10 +15,10 @@ class Monitor():
         self.listadecomandos = {"LISTAR":"", "COLETAR":"", "SUSPENDER":"", "CONTINUAR":"", "DOWNLOAD":"", "SAIR":""}
         
         #socketerror
-        self.downloadSocket = socketError(socket.AF_INET, socket.SOCK_DGRAM)
-        self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.downloadSocket.settimeout(2.0)
-        self.downloadSocket.setErrorProb(0.5)
+        #self.downloadSocket = socketError(socket.AF_INET, socket.SOCK_DGRAM)
+        #self.downloadSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        #self.downloadSocket.settimeout(2.0)
+        #self.downloadSocket.setErrorProb(0.5)
         self.file = None
         
         self.run()
@@ -51,7 +51,6 @@ class Monitor():
     def receiveDownload(self):
         
         clientSocket = self.getClientSocket()
-        downloadSocket = self.downloadSocket
         string = []
         cont = 0
         while 1:
@@ -73,7 +72,7 @@ class Monitor():
             file.write(line)
         file.close()
         print "Download realizado com sucesso."
-        self.downloadSocket.close()
+        #self.downloadSocket.close()
                     
             
     
@@ -172,7 +171,6 @@ class Monitor():
         
     def enviarComando(self, comando, coletor):
         clientSocket = self.getClientSocket()
-        downloadSocket = self.downloadSocket
         listadecomandos = self.getListaComandos()
         if comando not in listadecomandos.keys():
             self.inserirComando()
