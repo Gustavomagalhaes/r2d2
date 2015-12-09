@@ -54,7 +54,7 @@ class Monitor():
         string = []
         cont = 0
         while 1:
-            mensagem, endereco = downloadSocket.recvWithError(2048)
+            mensagem, endereco = downloadSocket.recvWithError(8192)
             print mensagem
             if mensagem[0:3] == "ACK":
                 if mensagem[-10:] != "COM:THEEND":
@@ -181,7 +181,7 @@ class Monitor():
                     clientSocket.sendto(comando, (coletor, 6000))
                     self.receive()
                 else:
-                    downloadSocket.sendWithError(comando, (coletor, 6020))
+                    downloadSocket.sendWithError(comando, (coletor, 6321))
                     self.receiveDownload()
                 #     self.downloadSocket.settimeout(None)
                 #     while True:
