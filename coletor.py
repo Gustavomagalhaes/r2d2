@@ -195,9 +195,11 @@ class Coletor():
                 if not ("NACK" + str(index)) in mensagem:
                     if index == len(buffers.keys())-1:
                         self.downloadSocket.sendWithError(ACK + content + "COM:THEEND", endereco)
+                        print ACK + " acabou"
                         break
                     else:
                         self.downloadSocket.sendWithError(ACK + content, endereco)
+                        print ACK + " continua"
                         continue
                     
                     
