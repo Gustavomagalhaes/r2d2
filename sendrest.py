@@ -12,7 +12,7 @@ class sendrest(Thread):
         self.__connection = pika.BlockingConnection(pika.ConnectionParameters(
                        '192.168.25.61', 5672, '/starwars', self.__credentials))
         self.__channel = self.__connection.channel()
-        self.__porcentagem = {"elefante":0, "rato":0, "tartaruga":0, "libelula":0, "caramujo":0, "guepardo":0} 
+        self.__porcentagem = {"todos":0, "elefante":0, "rato":0, "tartaruga":0, "libelula":0, "caramujo":0, "guepardo":0} 
             
     def getPorcentagem(self):
         return self.__porcentagem
@@ -31,5 +31,6 @@ class sendrest(Thread):
         
         for animal in animais:
             self.__porcentagem[animal] +=1
+            self.__porcentagem["todos"] +=1
             
             
